@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import styles from './Task.module.css'; // New CSS module
+import styles from './Task.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faClipboardList, 
   faCalendarAlt, 
-  faCalendarCheck, 
-  faGavel, 
-  faBriefcase,
+  faCalendarCheck,
   faArrowLeft, 
   faPlus, 
   faCheck
@@ -22,59 +20,18 @@ const TaskForm = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [status, setStatus] = useState('started');
-  const [lawyerId, setLawyerId] = useState('');
-  const [lawyerName, setLawyerName] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [caseDetails, setCaseDetails] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Removed caseDetails state as it's not needed
+  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Extract lawyerId from query parameters
-  const queryParams = new URLSearchParams(location.search);
-  const extractedLawyerId = queryParams.get('lawyerId');
-
-  // Fetch case details and lawyer name when the component mounts
+  // Set loading to false since we don't need to fetch case details
   useEffect(() => {
-    const fetchCaseAndLawyerDetails = async () => {
-      try {
-        setLoading(true);
-        // Fetching case details using caseId
-        const { data: caseData, error: caseError } = await supabase
-          .from('cases')
-          .select('*')
-          .eq('case_id', caseId)
-          .single();
-
-        if (caseError) throw new Error(caseError.message);
-        setCaseDetails(caseData);
-
-        // Fetching lawyer details using extractedLawyerId
-        if (extractedLawyerId) {
-          const { data: lawyerData, error: lawyerError } = await supabase
-            .from('attorney_at_law')
-            .select('lawyer_id, name')
-            .eq('lawyer_id', extractedLawyerId)
-            .single();
-
-          if (lawyerError) throw new Error(lawyerError.message);
-          if (lawyerData) {
-            setLawyerId(lawyerData.lawyer_id);
-            setLawyerName(lawyerData.name);
-          }
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCaseAndLawyerDetails();
-  }, [caseId, extractedLawyerId]);
+    setLoading(false);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,15 +62,13 @@ const TaskForm = () => {
 
       setSuccess('Task added successfully!');
       
-      // Navigate after a short delay to show success message
-      setTimeout(() => {
-        navigate(`/dashboard/case-details/${caseId}`);
-      }, 1500);
-      
+      // Navigate after success, but still inside the try block
+      navigate(`/dashboard/case-details/${caseId}`);
     } catch (err) {
       console.error(err);
       setError(err.message);
-      setSubmitting(false);
+    } finally {
+      setSubmitting(true);
     }
   };
 
@@ -176,38 +131,8 @@ const TaskForm = () => {
         <div className={styles.formCard}>
           <form onSubmit={handleSubmit}>
             <div className={styles.formContent}>
-              {/* Displaying Case Number as Non-Editable Field */}
-              {caseDetails && (
-                <div className={styles.formGroup}>
-                  <label htmlFor="caseNo">
-                    <FontAwesomeIcon icon={faBriefcase} className={styles.inputIcon} />
-                    {t('CaseNo')}
-                  </label>
-                  <input 
-                    type="text" 
-                    id="caseNo"
-                    value={caseDetails.case_no} 
-                    readOnly 
-                    className={`${styles.textInput} ${styles.readOnlyInput}`}
-                  />
-                </div>
-              )}
-
-              {/* Lawyer Name Display */}
-              <div className={styles.formGroup}>
-                <label htmlFor="lawyerName">
-                  <FontAwesomeIcon icon={faGavel} className={styles.inputIcon} />
-                  {t('Lawyer')}
-                </label>
-                <input 
-                  type="text" 
-                  id="lawyerName"
-                  value={lawyerName} 
-                  readOnly 
-                  className={`${styles.textInput} ${styles.readOnlyInput}`}
-                />
-              </div>
-
+              {/* Case info section removed as requested */}
+              
               {/* Step Field */}
               <div className={styles.formGroup}>
                 <label htmlFor="taskName">

@@ -13,7 +13,7 @@ const TaskUpdate = () => {
   const [status, setStatus] = useState('started');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const TaskUpdate = () => {
   useEffect(() => {
     const fetchTaskDetails = async () => {
       try {
-        setLoading(true);
+        setLoading(false);
         const { data: taskData, error: taskError } = await supabase
           .from('tasks')
           .select('*')

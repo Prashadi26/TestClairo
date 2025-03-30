@@ -13,14 +13,11 @@ const ClientSeeView = () => {
     const [clientData, setClientData] = useState(null); // State for clicked client details
     const [error, setError] = useState(null);
     const [tasks, setTasks] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('status'); // 'status' or 'tasks'
 
     useEffect(() => {
         const fetchCaseDetails = async () => {
             try {
-               // setLoading(true);
-
                 // Fetch case details directly using the caseId parameter
                 const { data: casesData, error: casesError } = await supabase
                     .from('cases')
@@ -61,8 +58,6 @@ const ClientSeeView = () => {
             } catch (err) {
                 console.error(err);
                 setError(err.message);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -131,126 +126,117 @@ const ClientSeeView = () => {
         <div className={styles.clientViewContainer}>
             {error && <div className={styles.errorAlert}>{error}</div>}
 
-            {loading ? (
-                <div className={styles.loadingContainer}>
-                    <div className={styles.spinner}></div>
-                    <p>{t('Loading')}</p>
+            <div className={styles.infoSection}>
+                {/* Client Details Card */}
+                {clientData && (
+                    <div className={styles.card}>
+                        <h2 className={styles.cardTitle}>{t('ClientDetails')}</h2>
+                        <div className={styles.cardContent}>
+                            <div className={styles.clientAvatar}>
+                                {clientData.name ? clientData.name.charAt(0).toUpperCase() : '?'}
+                            </div>
+                            <div className={styles.clientInfo}>
+                                <p className={styles.clientName}>{clientData.name}</p>
+                                <p className={styles.clientDetail}>
+                                    <span className={styles.label}>{t('ContactNo')}:</span> {clientData.contact_no}
+                                </p>
+                                <p className={styles.clientDetail}>
+                                    <span className={styles.label}>{t('Email')}:</span> {clientData.email}
+                                </p>
+                                {clientData.profession && (
+                                    <p className={styles.clientDetail}>
+                                        <span className={styles.label}>{t('Profession')}:</span> {clientData.profession}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Case Details Card */}
+                {caseDetails && (
+                    <div className={styles.card}>
+                        <h2 className={styles.cardTitle}>
+                            {t('CaseNo')} {caseDetails.case_no}
+                        </h2>
+                        <div className={styles.cardContent}>
+                            <div className={styles.caseInfo}>
+                                <p className={styles.caseDetail}>
+                                    <span className={styles.label}>{t('CaseType')}:</span> 
+                                    {caseTypeData ? caseTypeData.case_type : 'Loading...'}
+                                </p>
+                                <p className={styles.caseDetail}>
+                                    <span className={styles.label}>{t('OpenedDate')}:</span> 
+                                    {formatDate(caseDetails.opened_date)}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Tabs for Status Quo and Tasks */}
+            <div className={styles.tabsContainer}>
+                <div className={styles.tabsHeader}>
+                    <button 
+                        className={`${styles.tabButton} ${activeTab === 'status' ? styles.activeTab : ''}`}
+                        onClick={() => setActiveTab('status')}
+                    >
+                        {t('StatusQuo')}
+                    </button>
+                    <button 
+                        className={`${styles.tabButton} ${activeTab === 'tasks' ? styles.activeTab : ''}`}
+                        onClick={() => setActiveTab('tasks')}
+                    >
+                        {t('Tasks/steps')}
+                    </button>
                 </div>
-            ) : (
-                <>
-                    <div className={styles.infoSection}>
-                        {/* Client Details Card */}
-                        {clientData && (
-                            <div className={styles.card}>
-                                <h2 className={styles.cardTitle}>{t('ClientDetails')}</h2>
-                                <div className={styles.cardContent}>
-                                    <div className={styles.clientAvatar}>
-                                        {clientData.name ? clientData.name.charAt(0).toUpperCase() : '?'}
-                                    </div>
-                                    <div className={styles.clientInfo}>
-                                        <p className={styles.clientName}>{clientData.name}</p>
-                                        <p className={styles.clientDetail}>
-                                            <span className={styles.label}>{t('ContactNo')}:</span> {clientData.contact_no}
-                                        </p>
-                                        <p className={styles.clientDetail}>
-                                            <span className={styles.label}>{t('Email')}:</span> {clientData.email}
-                                        </p>
-                                        {clientData.profession && (
-                                            <p className={styles.clientDetail}>
-                                                <span className={styles.label}>{t('Profession')}:</span> {clientData.profession}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
 
-                        {/* Case Details Card */}
-                        {caseDetails && (
-                            <div className={styles.card}>
-                                <h2 className={styles.cardTitle}>
-                                    {t('CaseNo')} {caseDetails.case_no}
-                                </h2>
-                                <div className={styles.cardContent}>
-                                    <div className={styles.caseInfo}>
-                                        <p className={styles.caseDetail}>
-                                            <span className={styles.label}>{t('CaseType')}:</span> 
-                                            {caseTypeData ? caseTypeData.case_type : 'Loading...'}
-                                        </p>
-                                        <p className={styles.caseDetail}>
-                                            <span className={styles.label}>{t('OpenedDate')}:</span> 
-                                            {formatDate(caseDetails.opened_date)}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Tabs for Status Quo and Tasks */}
-                    <div className={styles.tabsContainer}>
-                        <div className={styles.tabsHeader}>
-                            <button 
-                                className={`${styles.tabButton} ${activeTab === 'status' ? styles.activeTab : ''}`}
-                                onClick={() => setActiveTab('status')}
-                            >
-                                {t('StatusQuo')}
-                            </button>
-                            <button 
-                                className={`${styles.tabButton} ${activeTab === 'tasks' ? styles.activeTab : ''}`}
-                                onClick={() => setActiveTab('tasks')}
-                            >
-                                {t('Tasks/steps')}
-                            </button>
-                        </div>
-
-                        <div className={styles.tabContent}>
-                            {/* Status Quo Tab Content */}
-                            {activeTab === 'status' && (
-                                <div className={styles.statusContent}>
-                                    {updates.length > 0 ? (
-                                        <table className={styles.statusTable}>
-                                            <thead>
-                                                <tr>
-                                                    <th>{t('PreviousDate')}</th>
-                                                    <th>{t('Description')}</th>
-                                                    <th>{t('NextStep')}</th>
-                                                    <th>{t('NextDate')}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {updates.map((update) => (
-                                                    <tr key={update.case_update_id}>
-                                                        <td>{formatDate(update.previous_date)}</td>
-                                                        <td>{update.description}</td>
-                                                        <td>{update.next_step}</td>
-                                                        <td>{formatDate(update.next_date)}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    ) : (
-                                        <p>{t('NoUpdatesFound')}</p>
-                                    )}
-                                </div>
-                            )}
-
-                            {/* Tasks Tab Content */}
-                            {activeTab === 'tasks' && (
-                                tasks.length > 0 ? (
-                                    tasks.map(task => (
-                                        <div key={task.client_case_task_id} style={{ marginBottom: '10px' }}>
-                                            Task Name: {task.client_case_task} | Deadline: {formatDate(task.deadline)}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p>{t('NoTasksFound')}</p>
-                                )
+                <div className={styles.tabContent}>
+                    {/* Status Quo Tab Content */}
+                    {activeTab === 'status' && (
+                        <div className={styles.statusContent}>
+                            {updates.length > 0 ? (
+                                <table className={styles.statusTable}>
+                                    <thead>
+                                        <tr>
+                                            <th>{t('PreviousDate')}</th>
+                                            <th>{t('Description')}</th>
+                                            <th>{t('NextStep')}</th>
+                                            <th>{t('NextDate')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {updates.map((update) => (
+                                            <tr key={update.case_update_id}>
+                                                <td>{formatDate(update.previous_date)}</td>
+                                                <td>{update.description}</td>
+                                                <td>{update.next_step}</td>
+                                                <td>{formatDate(update.next_date)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <p>{t('NoUpdatesFound')}</p>
                             )}
                         </div>
-                    </div>
-                </>
-            )}
+                    )}
+
+                    {/* Tasks Tab Content */}
+                    {activeTab === 'tasks' && (
+                        tasks.length > 0 ? (
+                            tasks.map(task => (
+                                <div key={task.client_case_task_id} style={{ marginBottom: '10px' }}>
+                                    Task Name: {task.client_case_task} | Deadline: {formatDate(task.deadline)}
+                                </div>
+                            ))
+                        ) : (
+                            <p>{t('NoTasksFound')}</p>
+                        )
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
