@@ -77,7 +77,7 @@ const SignInPage = ({ onLogin }) => {
       <div className="auth-container">
         <div className="auth-form-container">
           <h1>{t('signin')}</h1>
-          <p className="auth-subtitle">{t('welcome_back')}</p>
+         
           
           <form className="auth-form" onSubmit={handleSignIn}>
             <div className="form-group">
@@ -89,7 +89,7 @@ const SignInPage = ({ onLogin }) => {
                 value={formData.email}
                 onChange={handleChange}
                 className="auth-input"
-                placeholder={t('enter_email')}
+                placeholder="abc@gmail.com"
                 required
               />
             </div>
@@ -103,7 +103,7 @@ const SignInPage = ({ onLogin }) => {
                 value={formData.password}
                 onChange={handleChange}
                 className="auth-input"
-                placeholder={t('enter_password')}
+                placeholder="xxxxxx"
                 required
               />
             </div>
@@ -126,7 +126,7 @@ const SignInPage = ({ onLogin }) => {
               </Link>
               
               <p className="signup-prompt">
-                {t("don't_have_account")}{' '}
+                {t('dont_have_account')}
                 <Link to="/signup" className="signup-link">
                   {t('signup')}
                 </Link>
@@ -137,8 +137,8 @@ const SignInPage = ({ onLogin }) => {
         
         <div className="auth-image">
           <div className="auth-quote">
-            <h2>{t('legal_platform')}</h2>
-            <p>{t('case_management_quote')}</p>
+            <h2>Clairo</h2>
+          
           </div>
         </div>
       </div>

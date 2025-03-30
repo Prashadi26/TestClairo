@@ -57,14 +57,14 @@
   padding: 0.4rem 0.75rem;
   margin-right: 1rem;
   cursor: pointer;
-  color: #2c3e50;
+  color: #2e3843;
   font-weight: 500;
   transition: all 0.3s;
 }
 
 .language-button:hover {
   background-color: #f5f8fa;
-  border-color: #3498db;
+  border-color: #0f1a26;
 }
 
 /* Language Slider Container */
@@ -76,17 +76,17 @@
 
 /* Language Slider Styles - Will be applied when slider component is added */
 .language-slider .slider-track {
-  background-color: #f1f2f6;
-  border: 1px solid #e0e0e0;
+  background-color:transparent;
+  border: 1px solid #dfdee3;
 }
 
 .language-slider .slider-option {
   font-weight: 500;
-  color: #2c3e50;
+  /* color: #5c666d; */
 }
 
 .language-slider .slider-indicator {
-  background-color: #3498db;
+  background-color: #0f1a26;
 }
 
 /* User dropdown */
@@ -113,7 +113,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #3498db;
+  background-color: #25353e;
   color: white;
   display: flex;
   align-items: center;

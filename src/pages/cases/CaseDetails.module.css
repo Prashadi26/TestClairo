@@ -198,7 +198,7 @@
   font-size: 1rem;
   line-height: 1.5;
   color: #fff;
-  background-color: #3498db;
+  background-color: #0f1a26;
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
@@ -242,8 +242,8 @@
 }
 
 .activeTab {
-  color: #3498db;
-  border-bottom: 2px solid #3498db;
+  color: #0f1a26;
+  border-bottom: 2px solid #0f1a26;
   font-weight: 600;
 }
 
@@ -291,27 +291,27 @@
 }
 
 .addButton {
-  background-color: #2ecc71;
+  background-color: #0f1a26;
 }
 
 .addButton:hover {
-  background-color: #27ae60;
+  background-color: #6783a1;
 }
 
 .uploadButton {
-  background-color: #3498db;
+  background-color: #0f1a26;
 }
 
 .uploadButton:hover {
-  background-color: #2980b9;
+  background-color: #6783a1;
 }
 
 .historyButton {
-  background-color: #7f8c8d;
+  background-color: #0f1a26;
 }
 
 .historyButton:hover {
-  background-color: #6c7a89;
+  background-color: #6783a1;
 }
 
 /* Tables */

@@ -31,7 +31,6 @@ const PublicLayout = () => {
         <div className="container navbar-container">
           {/* Logo */}
           <Link to="/" className="logo">
-            <span className="logo-icon">⚖️</span>
             <span className="logo-text">Clairo</span>
           </Link>
           
@@ -41,7 +40,7 @@ const PublicLayout = () => {
             onClick={toggleMenu}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
           >
-            {menuOpen ? '✕' : '☰'}
+            {menuOpen ? 'X' : '☰'}
           </button>
           
           {/* Navigation Links */}
@@ -102,11 +101,10 @@ const PublicLayout = () => {
           <div className="container">
             <div className="footer-content">
               <div className="footer-logo">
-                <span className="logo-icon">⚖️</span>
-                <span className="logo-text">LegalCase</span>
+                <span className="logo-text">Clairo</span>
               </div>
               <p className="footer-copyright">
-                &copy; {new Date().getFullYear()} LegalCase. {t('all_rights_reserved')}
+                &copy; {new Date().getFullYear()} Clairo. {t('all_rights_reserved')}
               </p>
             </div>
           </div>

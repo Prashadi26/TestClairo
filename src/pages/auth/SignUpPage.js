@@ -41,10 +41,25 @@ const SignUpPage = () => {
     });
   };
   
+  const validateForm = () => {
+    // Password validation
+    if (formData.password.length < 6) {
+      setError(t('password_too_short') || 'Password should be at least 6 characters');
+      return false;
+    }
+    return true;
+  };
+  
   const handleSignUp = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      return;
+    }
+    
     setLoading(true);
     
     try {
@@ -66,18 +81,7 @@ const SignUpPage = () => {
         throw new Error(t('user_creation_failed'));
       }
 
-      // Step 2: Insert user details into users table
-      const { error: userInsertError } = await supabase
-        .from('users')
-        .insert([{
-          email: formData.email,
-          username: formData.username,
-          // Do not insert lawyer_id yet
-        }]);
-
-      if (userInsertError) throw userInsertError;
-
-      // Step 3: Proceed with attorney details insertion
+      // Step 2: First create the attorney record to get the lawyer_id
       // Convert language array to comma-separated string
       const languageString = formData.languageCompetency.join(', ');
 
@@ -98,13 +102,17 @@ const SignUpPage = () => {
       // Get the newly created attorney's ID
       const attorneyId = attorneyData[0].lawyer_id;
 
-      // Step 4: Update the user table with the attorney ID
-      const { error: updateUserError } = await supabase
+      // Step 3: Now insert user details into users table with the lawyer_id
+      // Step 4: Insert user details with the lawyer_id we now have
+      const { error: userInsertError } = await supabase
         .from('users')
-        .update({ lawyer_id: attorneyId })
-        .eq('email', formData.email);
+        .insert([{
+          email: formData.email,
+          username: formData.username,
+          lawyer_id: attorneyId
+        }]);
 
-      if (updateUserError) throw updateUserError;
+      if (userInsertError) throw userInsertError;
 
       setSuccess(t('signup_successful'));
       setTimeout(() => {
@@ -124,12 +132,12 @@ const SignUpPage = () => {
       <div className="auth-container signup-container">
         <div className="auth-form-container">
           <h1>{t('signup')}</h1>
-          <p className="auth-subtitle">{t('create_account')}</p>
+         
           
           <form className="auth-form" onSubmit={handleSignUp}>
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="name">{t('name')}</label>
+                <label htmlFor="name">{t('Name')}</label>
                 <input
                   type="text"
                   id="name"
@@ -142,7 +150,7 @@ const SignUpPage = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="email">{t('email')}</label>
+                <label htmlFor="email">{t('Email')}</label>
                 <input
                   type="email"
                   id="email"
@@ -179,13 +187,15 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   className="auth-input"
                   required
+                  minLength="6"
                 />
+                <small className="form-hint">{t('Password_must_be_at_least_6_characters')}</small>
               </div>
             </div>
             
             <div className="form-row">
               <div className="form-group">
-                <label htmlFor="contactNo">{t('contact_no')}</label>
+                <label htmlFor="contactNo">{t('ContactNo')}</label>
                 <input
                   type="text"
                   id="contactNo"
@@ -198,7 +208,7 @@ const SignUpPage = () => {
               </div>
               
               <div className="form-group">
-                <label htmlFor="yearsOfExperience">{t('years_of_experience')}</label>
+                <label htmlFor="yearsOfExperience">{t('Years_Of_Experience')}</label>
                 <input
                   type="text"
                   id="yearsOfExperience"
@@ -211,7 +221,7 @@ const SignUpPage = () => {
             </div>
             
             <div className="form-group">
-              <label>{t('language_competency')}</label>
+              <label>{t('Language_Competency')}</label>
               <div className="language-checkboxes">
                 {languages.map((language) => (
                   <div key={language} className="checkbox-group">
@@ -254,8 +264,7 @@ const SignUpPage = () => {
         
         <div className="auth-image">
           <div className="auth-quote">
-            <h2>{t('join_legal_platform')}</h2>
-            <p>{t('signup_quote')}</p>
+            <h2>Clairo</h2>
           </div>
         </div>
       </div>

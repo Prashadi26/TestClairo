@@ -103,15 +103,15 @@ const ApprenticeDetails = () => {
       <div className={styles.header}>
         <div className={styles.titleContainer}>
           <FaUserGraduate className={styles.headerIcon} />
-          <h2>{t('ApprenticeDetails', 'Apprentice Details')}</h2>
+          <h2>{t('ApprenticeDetails')}</h2>
         </div>
         <button 
           onClick={handleAddClick} 
           className={styles.addButton}
-          title={t('Add_New_Apprentice', 'Add New Apprentice')}
+          title={t('Add')}
         >
           <FaPlus className={styles.buttonIcon} />
-          <span>{t('AddApprentice', 'Add Apprentice')}</span>
+          <span>{t('Add')}</span>
         </button>
       </div>
 
@@ -122,7 +122,7 @@ const ApprenticeDetails = () => {
             <FaUserGraduate />
           </div>
           <div className={styles.statContent}>
-            <h3>{t('TotalApprentices', 'Total Apprentices')}</h3>
+            <h3>{t('TotalApprentices')}</h3>
             <p className={styles.statValue}>{totalApprentices}</p>
           </div>
         </div>
@@ -134,7 +134,7 @@ const ApprenticeDetails = () => {
           <FaSearch className={styles.searchIcon} />
           <input
             type="text"
-            placeholder={t('SearchApprentices', 'Search apprentices...')}
+            placeholder={t('SearchApprentice')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
@@ -218,7 +218,7 @@ const ApprenticeDetails = () => {
                 onClick={handleAddClick}
                 className={styles.addButtonEmpty}
               >
-                {t('AddFirstApprentice', 'Add your first apprentice')}
+                {t('Add')}
               </button>
             </div>
           )}

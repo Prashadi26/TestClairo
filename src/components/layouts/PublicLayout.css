@@ -117,8 +117,8 @@
 }
 
 .signin-button {
-  color: #3498db;
-  border: 1px solid #3498db;
+  color: #0f1a26;
+  border: 1px solid #0f1a26;
 }
 
 .signin-button:hover {
@@ -126,14 +126,14 @@
 }
 
 .signup-button {
-  background-color: #3498db;
+  background-color: #0f1a26;
   color: white;
-  border: 1px solid #3498db;
+  border: 1px solid #0f1a26;
 }
 
 .signup-button:hover {
-  background-color: #2980b9;
-  border-color: #2980b9;
+  background-color: #497bb0;
+  border-color: #497bb0;
 }
 
 /* Mobile Menu Toggle */

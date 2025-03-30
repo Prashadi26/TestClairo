@@ -6,12 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faUserPlus, 
-  faEdit, 
-  faTrashAlt, 
   faUserTie, 
   faSearch,
   faExclamationTriangle
 } from '@fortawesome/free-solid-svg-icons';
+import {Pencil,
+        Trash2
+      } from 'lucide-react';
 
 const ClientList = ({ userInfo }) => {
   const { t } = useTranslation();
@@ -22,8 +23,6 @@ const ClientList = ({ userInfo }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  // Ensure we have a lawyer ID
-  const lawyerId = userInfo?.lawyer_id || localStorage.getItem('lawyerId');
 
   // Fetch clients from Supabase on component mount
   useEffect(() => {
@@ -190,14 +189,14 @@ const ClientList = ({ userInfo }) => {
                               className={`${styles.actionButton} ${styles.editButton}`}
                               title={t('Update')}
                             >
-                              <FontAwesomeIcon icon={faEdit} />
+                              <Pencil/>
                             </button>
                             <button
                               onClick={() => handleDelete(client.client_id)}
                               className={`${styles.actionButton} ${styles.deleteButton}`}
                               title={t('Delete')}
                             >
-                              <FontAwesomeIcon icon={faTrashAlt} />
+                                <Trash2/>
                             </button>
                           </div>
                         </td>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient'; // Adjust the path as needed
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next'; // Import for internationalization
 import { FaUserGraduate, FaArrowLeft, FaTimes, FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaCalendarAlt } from 'react-icons/fa';
 import styles from './Apprentice.module.css'; // Ensure this path is correct
@@ -8,7 +8,6 @@ import styles from './Apprentice.module.css'; // Ensure this path is correct
 const Apprentice = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const location = useLocation();
 
   // Form state
   const [formData, setFormData] = useState({
@@ -24,9 +23,7 @@ const Apprentice = () => {
   const [loading, setLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
-  // Extract lawyerId from query parameters
-  const queryParams = new URLSearchParams(location.search);
-  const lawyerId = queryParams.get('lawyerId');
+ 
 
   // Handle input change
   const handleChange = (e) => {

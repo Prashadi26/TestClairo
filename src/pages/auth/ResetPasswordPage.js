@@ -15,7 +15,7 @@ const ResetPasswordPage = () => {
     e.preventDefault();
     setMessage('');
     setError('');
-  //  setLoading(true);
+    setLoading(true); // Uncommented this line to properly set loading state
 
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
@@ -39,7 +39,7 @@ const ResetPasswordPage = () => {
       <div className="auth-container">
         <div className="auth-form-container">
           <h1>{t('reset_password')}</h1>
-          <p className="auth-subtitle">{t('enter_email_for_reset')}</p>
+       
           
           <form className="auth-form" onSubmit={handleResetPassword}>
             <div className="form-group">
@@ -50,7 +50,7 @@ const ResetPasswordPage = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="auth-input"
-                placeholder={t('enter_your_email')}
+                placeholder={t('enter_your_mail')}
                 required
               />
             </div>
@@ -78,8 +78,7 @@ const ResetPasswordPage = () => {
         
         <div className="auth-image">
           <div className="auth-quote">
-            <h2>{t('password_recovery')}</h2>
-            <p>{t('reset_password_description')}</p>
+            <h2>Clairo</h2>
           </div>
         </div>
       </div>

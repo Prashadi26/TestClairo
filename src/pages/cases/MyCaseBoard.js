@@ -31,12 +31,8 @@ const CaseBoard = ({ userInfo }) => {
        // setLoading(true);
         
         // Build query to fetch cases
-        const query = supabase.from('cases').select('*');
+        const query = supabase.from('cases').select('*').eq('lawyer_id', lawyerId);
         
-        // If lawyerId is provided, filter by lawyer_id
-        if (lawyerId) {
-          query.eq('lawyer_id', lawyerId);
-        }
         
         const { data: caseData, error: caseError } = await query;
 
@@ -106,26 +102,16 @@ const CaseBoard = ({ userInfo }) => {
     setFilteredCases(filtered);
   };
 
-  // If no lawyer ID is found, show an error message
-  if (!lawyerId && !loading) {
-    return (
-      <div className={styles.caseBoardContainer}>
-        <p className={`${styles.notification} ${styles.errorNotification}`}>
-          {t('no_lawyer_id_found')}
-        </p>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.caseBoardContainer}>
       <div className={styles.header}>
-        <h2>{t('case_board')}</h2>
+        <h2>{t('MyCases')}</h2>
         <button 
           className={styles.backButton}
           onClick={() => navigate('/dashboard')}
         >
-          <FontAwesomeIcon icon={faArrowLeft} /> {t('back_to_dashboard')}
+          <FontAwesomeIcon icon={faArrowLeft} />
         </button>
       </div>
 

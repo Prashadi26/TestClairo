@@ -26,7 +26,7 @@
   
   .header-icon {
     margin-right: 0.75rem;
-    color: #6366f1; /* Indigo color for apprentice-specific styling */
+    color: #0f1a26; /* Indigo color for apprentice-specific styling */
     font-size: 1.5rem;
   }
   
@@ -91,7 +91,7 @@
   
   .input-icon {
     margin-right: 0.5rem;
-    color: #6366f1;
+    color: #0f1a26;
     font-size: 1rem;
   }
   
@@ -108,7 +108,7 @@
   
   .form-group input:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: #0f1a26;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     background-color: white;
   }
@@ -158,14 +158,14 @@
   }
   
   .primary-button {
-    background-color: #6366f1; /* Indigo for apprentice-specific styling */
+    background-color: #0f1a26; /* Indigo for apprentice-specific styling */
     color: white;
     border: none;
     box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.1);
   }
   
   .primary-button:hover {
-    background-color: #4f46e5;
+    background-color: #446e9b;
     transform: translateY(-2px);
     box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3), 0 2px 4px -1px rgba(99, 102, 241, 0.1);
   }
@@ -260,7 +260,7 @@
   
   /* Input Focus Effects */
   .form-group.focused label {
-    color: #6366f1;
+    color: #0f1a26;
   }
   
   /* Responsive Adjustments */

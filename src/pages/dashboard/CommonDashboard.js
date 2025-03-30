@@ -4,7 +4,7 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Lege
 import { supabase } from '../../supabaseClient';
 import styles from './CommonDashboard.module.css';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   BarChart4,
   Users,
@@ -23,7 +23,7 @@ ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const CommonDashboard = ({ userInfo }) => {
   const navigate = useNavigate();
-  const location = useLocation();
+ 
   const { t } = useTranslation();
 
   const [counts, setCounts] = useState({ employees: 0, clients: 0, cases: 0 });
@@ -36,9 +36,8 @@ const CommonDashboard = ({ userInfo }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Extract lawyerId from query parameters or fallback to localStorage
-  const queryParams = new URLSearchParams(location.search);
-  let lawyerId = queryParams.get('lawyerId') || localStorage.getItem('lawyerId');
+  
+  
 
   const toggleCaseDetails = () => {
     setShowCaseDetails(!showCaseDetails);
@@ -185,7 +184,7 @@ const CommonDashboard = ({ userInfo }) => {
 
   // Prepare data for the chart
   const chartData = {
-    labels: ['In-Progress', 'On Hold', 'Completed'],
+    labels: [t('InProgress_'), t('OnHold'), t('Completed_')],
     datasets: [
       {
         label: t('Cases'),
@@ -271,7 +270,7 @@ const CommonDashboard = ({ userInfo }) => {
               <div className={styles.cardContent}>
                 <h3 className={styles.cardTitle}>{t('Employees')}</h3>
                 <p className={styles.cardValue}>{counts.employees}</p>
-                <p className={styles.cardLabel}>{t('Total_Employees')}</p>
+                
               </div>
               <div className={styles.cardAction}>
                 <ChevronRight size={20} />
@@ -288,7 +287,7 @@ const CommonDashboard = ({ userInfo }) => {
               <div className={styles.cardContent}>
                 <h3 className={styles.cardTitle}>{t('Clients')}</h3>
                 <p className={styles.cardValue}>{counts.clients}</p>
-                <p className={styles.cardLabel}>{t('Total_Clients')}</p>
+              
               </div>
               <div className={styles.cardAction}>
                 <ChevronRight size={20} />
@@ -305,7 +304,7 @@ const CommonDashboard = ({ userInfo }) => {
               <div className={styles.cardContent}>
                 <h3 className={styles.cardTitle}>{t('Cases')}</h3>
                 <p className={styles.cardValue}>{counts.cases}</p>
-                <p className={styles.cardLabel}>{t('Total_Cases')}</p>
+               
               </div>
               <div className={styles.cardAction}>
                 <ChevronRight size={20} />
@@ -320,7 +319,7 @@ const CommonDashboard = ({ userInfo }) => {
               <div className={styles.cardHeader}>
                 <h2 className={styles.cardHeaderTitle}>
                   <Clock size={20} />
-                  <span>Upcoming Tasks</span>
+                  <span>{t('UpcomingTasks')}</span>
                 </h2>
               </div>
               
@@ -347,7 +346,7 @@ const CommonDashboard = ({ userInfo }) => {
                         </div>
                         <div className={styles.deadlineIndicator}>
                           <span className={styles.daysLeft}>
-                            {Math.ceil((new Date(task.end_date) - new Date()) / (1000 * 60 * 60 * 24))} days
+                            {Math.ceil((new Date(task.end_date) - new Date()) / (1000 * 60 * 60 * 24))} {t('days')}
                           </span>
                         </div>
                       </div>
@@ -355,7 +354,7 @@ const CommonDashboard = ({ userInfo }) => {
                   </div>
                 ) : (
                   <div className={styles.emptyStateMessage}>
-                    <p>No upcoming tasks in the next week</p>
+                    <p>{t('NoUpcomingTasksInThisWeek')}</p>
                   </div>
                 )}
               </div>
@@ -366,7 +365,7 @@ const CommonDashboard = ({ userInfo }) => {
               <div className={styles.cardHeader}>
                 <h2 className={styles.cardHeaderTitle}>
                   <Calendar size={20} />
-                  <span>Upcoming Hearings</span>
+                  <span>{t('UpcomingHearings')}</span>
                 </h2>
               </div>
               
@@ -399,7 +398,7 @@ const CommonDashboard = ({ userInfo }) => {
                   </div>
                 ) : (
                   <div className={styles.emptyStateMessage}>
-                    <p>No upcoming hearings in the next month</p>
+                    <p>{t('NoUpcomingHearingsInTheNextMonth')}</p>
                   </div>
                 )}
               </div>
@@ -409,13 +408,13 @@ const CommonDashboard = ({ userInfo }) => {
               <div className={styles.cardHeader}>
                 <h2 className={styles.cardHeaderTitle}>
                   <BarChart4 size={20} />
-                  <span>Case Status Analytics</span>
+                  <span>{t('Cases_Progress_Analytics')}</span>
                 </h2>
                 <button 
                   className={styles.toggleDetailsButton}
                   onClick={toggleCaseDetails}
                 >
-                  {showCaseDetails ? 'Hide Details' : 'View Details'}
+                  {showCaseDetails ? t('HideDetails') : t('ViewDetails')}
                 </button>
               </div>
               
@@ -432,7 +431,7 @@ const CommonDashboard = ({ userInfo }) => {
                           <TimerIcon size={24} />
                         </div>
                         <div className={styles.statusCount}>{caseStatusCounts.in_progress}</div>
-                        <div className={styles.statusLabel}>In Progress</div>
+                        <div className={styles.statusLabel}>{t('InProgress')}</div>
                       </div>
                       
                       <div className={`${styles.statusCard} ${styles.onHoldCard}`}>
@@ -440,7 +439,7 @@ const CommonDashboard = ({ userInfo }) => {
                           <PauseCircle size={24} />
                         </div>
                         <div className={styles.statusCount}>{caseStatusCounts.on_hold}</div>
-                        <div className={styles.statusLabel}>On Hold</div>
+                        <div className={styles.statusLabel}>{t('OnHold')}</div>
                       </div>
                       
                       <div className={`${styles.statusCard} ${styles.completedCard}`}>
@@ -448,13 +447,13 @@ const CommonDashboard = ({ userInfo }) => {
                           <CheckCircle2 size={24} />
                         </div>
                         <div className={styles.statusCount}>{caseStatusCounts.completed}</div>
-                        <div className={styles.statusLabel}>Completed</div>
+                        <div className={styles.statusLabel}>{t('Completed')}</div>
                       </div>
                     </div>
                     
                     <div className={styles.caseDetailsTables}>
                       <div className={styles.detailSection}>
-                        <h3 className={styles.detailSectionTitle}>In-Progress Cases</h3>
+                        <h3 className={styles.detailSectionTitle}>{t('InProgressCases')}</h3>
                         <div className={styles.caseChips}>
                           {caseDetails.in_progress.length > 0 ? (
                             caseDetails.in_progress.map(caseInfo => (
@@ -467,13 +466,13 @@ const CommonDashboard = ({ userInfo }) => {
                               </a>
                             ))
                           ) : (
-                            <span className={styles.noCasesMessage}>No cases</span>
+                            <span className={styles.noCasesMessage}>{t('NoCases')}</span>
                           )}
                         </div>
                       </div>
                       
                       <div className={styles.detailSection}>
-                        <h3 className={styles.detailSectionTitle}>On Hold Cases</h3>
+                        <h3 className={styles.detailSectionTitle}>{t('OnHoldCases')}</h3>
                         <div className={styles.caseChips}>
                           {caseDetails.on_hold.length > 0 ? (
                             caseDetails.on_hold.map(caseInfo => (
@@ -486,13 +485,13 @@ const CommonDashboard = ({ userInfo }) => {
                               </a>
                             ))
                           ) : (
-                            <span className={styles.noCasesMessage}>No cases</span>
+                            <span className={styles.noCasesMessage}>{t('NoCases')}</span>
                           )}
                         </div>
                       </div>
                       
                       <div className={styles.detailSection}>
-                        <h3 className={styles.detailSectionTitle}>Completed Cases</h3>
+                        <h3 className={styles.detailSectionTitle}>{t('CompletedCases')}</h3>
                         <div className={styles.caseChips}>
                           {caseDetails.completed.length > 0 ? (
                             caseDetails.completed.map(caseInfo => (
@@ -505,7 +504,7 @@ const CommonDashboard = ({ userInfo }) => {
                               </a>
                             ))
                           ) : (
-                            <span className={styles.noCasesMessage}>No cases</span>
+                            <span className={styles.noCasesMessage}>{t('NoCases')}</span>
                           )}
                         </div>
                       </div>

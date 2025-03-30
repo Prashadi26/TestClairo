@@ -19,7 +19,7 @@
   }
   
   .headerIcon {
-    color: #6366f1;
+    color: #0f1a26;
     font-size: 1.75rem;
     margin-right: 0.75rem;
   }
@@ -36,7 +36,7 @@
   .addButton {
     display: flex;
     align-items: center;
-    background-color: #6366f1;
+    background-color: #0f1a26;
     color: white;
     border: none;
     border-radius: 8px;
@@ -49,7 +49,7 @@
   }
   
   .addButton:hover {
-    background-color: #4f46e5;
+    background-color: #447ab4;
     transform: translateY(-2px);
     box-shadow: 0 6px 10px -1px rgba(99, 102, 241, 0.3), 0 2px 4px -1px rgba(99, 102, 241, 0.1);
   }
@@ -84,7 +84,7 @@
   
   .statIcon {
     background-color: rgba(99, 102, 241, 0.1);
-    color: #6366f1;
+    color: #0f1a26;
     border-radius: 50%;
     width: 3rem;
     height: 3rem;
@@ -151,7 +151,7 @@
   
   .searchInput:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: #0f1a26;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
   }
   
@@ -167,7 +167,7 @@
   .spinner {
     border: 3px solid rgba(99, 102, 241, 0.1);
     border-radius: 50%;
-    border-top: 3px solid #6366f1;
+    border-top: 3px solid #0f1a26;
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
@@ -228,7 +228,7 @@
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    background-color: #6366f1;
+    background-color: #0f1a26;
     color: white;
     display: flex;
     align-items: center;
@@ -259,7 +259,7 @@
   
   .editButton {
     background-color: rgba(99, 102, 241, 0.1);
-    color: #6366f1;
+    color: #0f1a26;
   }
   
   .editButton:hover {
@@ -305,7 +305,7 @@
   }
   
   .addButtonEmpty {
-    background-color: #6366f1;
+    background-color: #0f1a26;
     color: white;
     border: none;
     border-radius: 8px;
@@ -316,7 +316,7 @@
   }
   
   .addButtonEmpty:hover {
-    background-color: #4f46e5;
+    background-color: #0f1a26;
     transform: translateY(-2px);
   }
   

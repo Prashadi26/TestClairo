@@ -12,6 +12,7 @@ import AboutPage from './pages/public/AboutPage';
 import SignInPage from './pages/auth/SignInPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import ResetPasswordPage from './pages/auth/ResetPasswordPage';
+import UpdatePassword from './pages/auth/UpdatePassword';
 
 // Dashboard Pages
 import CommonDashboard from './pages/dashboard/CommonDashboard';
@@ -175,6 +176,7 @@ function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/clientseeview/:clientId/:caseId" element={<ClientSeeView />} />
           <Route
             path="/signin"
             element={
@@ -192,6 +194,7 @@ function App() {
             }
           />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/update-password" element= { <UpdatePassword /> }/>
         </Route>
 
         {/* Dashboard routes - protected */}

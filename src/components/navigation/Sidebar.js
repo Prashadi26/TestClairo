@@ -1,9 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate(); // Initialize the navigate function
   
   // Navigation items
   const navItems = [
@@ -49,6 +51,39 @@ const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
       return true;
     }
     return currentPath.includes(path) && path !== '/dashboard';
+  };
+  
+  // Handle logout function with memory clearing
+  const handleLogout = () => {
+    // Clear any stored credentials from localStorage
+    localStorage.removeItem('email');
+    localStorage.removeItem('password');
+    localStorage.removeItem('credentials');
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    
+    // Clear sessionStorage as well
+    sessionStorage.removeItem('email');
+    sessionStorage.removeItem('password');
+    sessionStorage.removeItem('credentials');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    
+    // For additional security, clear all form data that might be saved in the browser
+    const inputElements = document.querySelectorAll('input[type="email"], input[type="password"]');
+    inputElements.forEach(input => {
+      input.value = '';
+      // Set autocomplete attribute to prevent browser from remembering these fields
+      input.setAttribute('autocomplete', 'off');
+    });
+    
+    // Call the existing onLogout function if provided
+    if (onLogout) {
+      onLogout();
+    }
+    
+    // Navigate to the home page
+    navigate('/');
   };
   
   return (
@@ -111,7 +146,7 @@ const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
       
       {/* Sidebar footer with logout button */}
       <div className="sidebar-footer">
-        <button className="logout-button" onClick={onLogout}>
+        <button className="logout-button" onClick={handleLogout}>
           <span className="logout-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>

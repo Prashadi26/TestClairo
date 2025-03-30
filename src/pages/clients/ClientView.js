@@ -31,7 +31,7 @@ const ClientView = () => {
     const [clientData, setClientData] = useState(null);
     const [error, setError] = useState(null);
     const [status, setStatus] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('status'); // 'status' or 'tasks'
 
     // State for managing tasks
@@ -44,7 +44,7 @@ const ClientView = () => {
 
         const fetchCaseDetails = async () => {
             try {
-                setLoading(true);
+               // setLoading(true);
                 
                 const { data: casesData, error: casesError } = await supabase
                     .from('cases')
@@ -238,18 +238,19 @@ const ClientView = () => {
             return;
         }
 
-        try {
-            const response = await axios.post('http://localhost:5000/send-message', {
-                phoneNumber,
-                message,
-            });
-            setStatus('URL sent successfully!');
-            setTimeout(() => setStatus(''), 3000);
-        } catch (error) {
-            console.error('Error sending URL:', error);
-            setStatus('Failed to send URL.');
-            setTimeout(() => setStatus(''), 3000);
-        }
+        console.log(message)
+        // try {
+        //     const response = await axios.post('http://localhost:5000/send-message', {
+        //         phoneNumber,
+        //         message,
+        //     });
+        //     setStatus('URL sent successfully!');
+        //     setTimeout(() => setStatus(''), 3000);
+        // } catch (error) {
+        //     console.error('Error sending URL:', error);
+        //     setStatus('Failed to send URL.');
+        //     setTimeout(() => setStatus(''), 3000);
+        // }
     };
 
     // Format dates for better display

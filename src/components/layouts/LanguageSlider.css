@@ -6,7 +6,6 @@
   .slider-track {
     position: relative;
     display: flex;
-    background-color: #f1f2f6;
     border-radius: 30px;
     padding: 3px;
     width: 180px;
@@ -23,7 +22,6 @@
     background: none;
     font-size: 14px;
     font-weight: 500;
-    color: #2c3e50;
     cursor: pointer;
     z-index: 2;
     transition: color 0.3s ease;
@@ -31,8 +29,9 @@
   }
   
   .slider-option.active {
-    color: white;
-  }
+     color: rgb(255, 255, 255); 
+  } 
+ 
   
   .slider-indicator {
     position: absolute;

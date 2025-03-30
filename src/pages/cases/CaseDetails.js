@@ -713,9 +713,9 @@ const CaseDetails = ({ userInfo }) => {
       {/* Tab Navigation */}
       <div className={styles.tabNavigation}>
         {[
-          { key: 'clients', icon: <Users />, label: t('Clients') },
-          { key: 'rivalParties', icon: <MessageSquare />, label: t('RivalParties') },
-          { key: 'tasks', icon: <Clock />, label: t('Tasks') },
+          { key: 'clients', icon: <Users />, label: t('ClientName') },
+          { key: 'rivalParties', icon: <MessageSquare />, label: t('OppositeParty') },
+          { key: 'tasks', icon: <Clock />, label: t('Tasks/steps') },
           { key: 'fee', icon: <DollarSign />, label: t('Fee') },
           { key: 'documents', icon: <FileText />, label: t('Documents') },
           { key: 'status', icon: <History />, label: t('Status') }
@@ -742,7 +742,7 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={() => navigate(`/dashboard/client-creation/${caseId}`)}
                 className={styles.addButton}
               >
-                <Plus /> {t('NewClient')}
+                <Plus /> {t('Add')}
               </button>
             </div>
 
@@ -799,7 +799,7 @@ const CaseDetails = ({ userInfo }) => {
 
             {/* Add Clients Section */}
             <div className={styles.addSection}>
-              <h3>{t('AddExistingClientsToCase')}</h3>
+              <h3>{t('AddClientsToCase')}</h3>
               <select
                 multiple
                 className={styles.multiSelect}
@@ -841,6 +841,8 @@ const CaseDetails = ({ userInfo }) => {
                     <th>{t('Name')}</th>
                     <th>{t('Address')}</th>
                     <th>{t('ContactNo')}</th>
+                    <th>{t('RivalCounsel')}</th>
+                    <th>{t('GSDivision')}</th>
                     <th>{t('Actions')}</th>
                   </tr>
                 </thead>
@@ -850,6 +852,8 @@ const CaseDetails = ({ userInfo }) => {
                       <td>{party.name}</td>
                       <td>{party.address}</td>
                       <td>{party.contact_no}</td>
+                      <td>{party.rival_counsel}</td>
+                      <td>{party.gs_division}</td>
                       <td>
                         <div className={styles.actionButtons}>
                           <button

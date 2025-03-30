@@ -3,7 +3,7 @@ import { supabase } from '../../supabaseClient';
 import styles from './CaseBoard.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faBriefcase, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus, faBriefcase } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
 const CaseBoard = () => {
@@ -96,9 +96,7 @@ const CaseBoard = () => {
 
   return (
     <div className={styles.caseBoardContainer}>
-      <div className={styles.header}>
-        <h2>{t('welcome')}</h2>
-      </div>
+      
 
       {/* Error Handling */}
       {error && (
@@ -131,7 +129,6 @@ const CaseBoard = () => {
             {/* Case Type Filter */}
             <div className={styles.caseTypeFilter}>
               <div className={styles.filterHeader}>
-                <FontAwesomeIcon icon={faFilter} className={styles.filterIcon} />
                 <h3>{t('filter_case_type')}</h3>
               </div>
               <div className={styles.checkboxGroup}>
@@ -161,7 +158,7 @@ const CaseBoard = () => {
               className={styles.addButton}
             >
               <FontAwesomeIcon icon={faPlus} className={styles.buttonIcon} />
-              {t('add_case')}
+              {t('Add')}
             </button>
           </div>
 
