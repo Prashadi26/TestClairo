@@ -87,6 +87,7 @@ const EmployeeDetails = ({ userInfo }) => {
           {/* Employee Category Cards */}
           <div className={styles.cardsGrid}>
             {/* Apprentice Card */}
+            
             <div
               className={`${styles.employeeCard} ${styles.apprenticeCard}`}
               onClick={() => navigate("/employee-details/apprentice-details")}
