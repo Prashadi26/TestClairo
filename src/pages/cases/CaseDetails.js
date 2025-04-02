@@ -820,7 +820,9 @@ const CaseDetails = ({ userInfo }) => {
                         <div className={styles.actionButtons}>
                           <button
                             onClick={() =>
-                              navigate(`client-view/:caseUpdateId/${caseId}`)
+                              navigate(
+                                `client-view/${client.client_id}/${caseId}`
+                              )
                             }
                             className={styles.viewButton}
                             title={t("ViewClient")}
@@ -886,7 +888,7 @@ const CaseDetails = ({ userInfo }) => {
               <h3>{t("OppositePartiesList")}</h3>
               <button
                 className={styles.addButton}
-                onClick={() => navigate(`/case-boards/rival-party/${caseId}`)}
+                onClick={() => navigate(`/rival-party/${caseId}`)}
               >
                 <Plus /> {t("CreateOppositeParty")}
               </button>
@@ -917,7 +919,7 @@ const CaseDetails = ({ userInfo }) => {
                           <button
                             onClick={() =>
                               navigate(
-                                `/case-boards/rival-party/update/${party.oppositeparty_id}/${caseId}`
+                                `/rival-party/update/${party.oppositeparty_id}/${caseId}`
                               )
                             }
                             className={styles.editButton}
@@ -980,7 +982,7 @@ const CaseDetails = ({ userInfo }) => {
             <div className={styles.contentHeader}>
               <h3>{t("TasksList")}</h3>
               <button
-                onClick={() => navigate(`/case-boards/task/${caseId}`)}
+                onClick={() => navigate(`/task/${caseId}`)}
                 className={styles.addButton}
               >
                 <Plus /> {t("AddTask")}
@@ -1017,9 +1019,7 @@ const CaseDetails = ({ userInfo }) => {
                         <div className={styles.actionButtons}>
                           <button
                             onClick={() =>
-                              navigate(
-                                `/case-boards/task/update/${task.task_id}/${caseId}`
-                              )
+                              navigate(`/task/update/${task.task_id}/${caseId}`)
                             }
                             className={styles.editButton}
                             title={t("EditTask")}

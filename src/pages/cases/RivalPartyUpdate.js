@@ -86,17 +86,14 @@ const RivalPartyUpdate = () => {
     }
   };
 
-  // Function to go back
-  const handleBack = () => {
-    navigate(`/dashboard/case-details/${caseId}`);
-  };
+  
 
   return (
     <div className={styles.formContainer}>
       <div className={styles.header}>
         <button 
           className={styles.backButton} 
-          onClick={handleBack}
+          onClick={()=> navigate(-1)}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
@@ -201,7 +198,7 @@ const RivalPartyUpdate = () => {
               <button 
                 type="button" 
                 className={styles.cancelButton}
-                onClick={handleBack}
+                onClick={()=> navigate(-1)}
               >
                 {t('Cancel')}
               </button>

@@ -166,7 +166,7 @@ const TaskUpdate = () => {
 
             {/* Submit Button */}
             <div className={styles.formActions}>
-              <button type="button" className={styles.cancelButton} onClick={() => navigate(`/dashboard/case-details/${caseId}`)}>
+              <button type="button" className={styles.cancelButton} onClick={() => navigate(-1)}>
                 {t('Cancel')}
               </button>
               <button type="submit" className={styles.submitButton}>
