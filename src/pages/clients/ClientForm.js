@@ -45,7 +45,7 @@ const ClientForm = () => {
 
   // Go back to client list
   const handleBack = () => {
-    navigate('/dashboard/clients');
+    navigate('/clients');
   };
 
   // Handle form submission
@@ -78,7 +78,7 @@ const ClientForm = () => {
       
       // Navigate back to ClientList after short delay
       setTimeout(() => {
-        navigate('/dashboard/clients');
+        navigate('/clients');
       }, 800);
       
     } catch (err) {

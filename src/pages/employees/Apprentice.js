@@ -48,7 +48,7 @@ const Apprentice = () => {
 
   // Go back to apprentice list
   const handleBack = () => {
-    navigate(`/dashboard/apprentice-details`);
+    navigate(`/employee-details/apprentice-details`);
   };
 
   // Handle form submission
@@ -81,7 +81,7 @@ const Apprentice = () => {
       
       // Navigate back to apprentice details page after short delay
       setTimeout(() => {
-        navigate(`/dashboard/apprentice-details`);
+        navigate(`/employee-details/apprentice-details`);
       }, 1500);
       
     } catch (err) {

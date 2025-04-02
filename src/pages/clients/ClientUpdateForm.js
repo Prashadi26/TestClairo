@@ -78,7 +78,7 @@ const ClientUpdateForm = () => {
 
   // Handle cancel button
   const handleCancel = () => {
-    navigate('/dashboard/clients');
+    navigate('/clients');
   };
 
   return (

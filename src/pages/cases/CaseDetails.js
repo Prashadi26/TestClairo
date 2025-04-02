@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../../supabaseClient';
-import styles from './CaseDetails.module.css';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+import styles from "./CaseDetails.module.css";
+import { useTranslation } from "react-i18next";
 import {
   Plus,
   Trash2,
@@ -19,13 +19,13 @@ import {
   Clock,
   Briefcase,
   AlertTriangle,
-  MessageSquare
-} from 'lucide-react';
+  MessageSquare,
+} from "lucide-react";
 
 const CaseDetails = ({ userInfo }) => {
   // All state variables and hooks
   const [isOwner, setIsOwner] = useState(false);
-  const [buttonTitle, setButtonTitle] = useState('Take Over');
+  const [buttonTitle, setButtonTitle] = useState("Take Over");
   const [selectedLawyerId, setSelectedLawyerId] = useState(null);
   const [lawyers, setLawyers] = useState([]);
   const { t } = useTranslation();
@@ -44,12 +44,12 @@ const CaseDetails = ({ userInfo }) => {
   const [caseTypeData, setCaseTypeData] = useState(null);
   const [updates, setUpdates] = useState([]);
   const [tasks, setTasks] = useState([]);
-  const [currentStatus, setCurrentStatus] = useState('in-progress');
+  const [currentStatus, setCurrentStatus] = useState("in-progress");
   const [fees, setFees] = useState([]);
   const [error, setError] = useState(null);
 
-  const [activeTab, setActiveTab] = useState('clients');
-  const [activeOppositePartyTab, setActiveOppositePartyTab] = useState('list');
+  const [activeTab, setActiveTab] = useState("clients");
+  const [activeOppositePartyTab, setActiveOppositePartyTab] = useState("list");
 
   // Document handling states
   const [newDocuments, setNewDocuments] = useState([]);
@@ -58,11 +58,13 @@ const CaseDetails = ({ userInfo }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
 
   // Use userInfo or fallback to localStorage
-  const lawyerId = userInfo?.lawyer_id || localStorage.getItem('lawyerId');
+  const lawyerId = userInfo?.lawyer_id || localStorage.getItem("lawyerId");
 
   const fetchAllLawyers = async () => {
     try {
-      const { data: allLawyersData, error } = await supabase.from('attorney_at_law').select('*');
+      const { data: allLawyersData, error } = await supabase
+        .from("attorney_at_law")
+        .select("*");
       if (error) throw new Error(error.message);
       setLawyers(allLawyersData);
     } catch (err) {
@@ -81,12 +83,13 @@ const CaseDetails = ({ userInfo }) => {
     fetchAllLawyers();
   }, [caseId]);
 
+  // This is taking the lawyers from the DB and setting it to layer variable
   const checkLawyerOwnership = async () => {
     try {
       const { data, error } = await supabase
-        .from('cases')
-        .select('lawyer_id')
-        .eq('case_id', caseId)
+        .from("cases")
+        .select("lawyer_id")
+        .eq("case_id", caseId)
         .single();
 
       if (error) throw error;
@@ -95,10 +98,10 @@ const CaseDetails = ({ userInfo }) => {
 
       if (caseLawyerId === lawyerId) {
         setIsOwner(true);
-        setButtonTitle('Handover');
+        setButtonTitle("Handover");
       } else {
         setIsOwner(false);
-        setButtonTitle('Take Over');
+        setButtonTitle("Take Over");
       }
     } catch (err) {
       console.error("Error fetching lawyer ID:", err.message);
@@ -113,16 +116,15 @@ const CaseDetails = ({ userInfo }) => {
 
     try {
       const { error } = await supabase
-        .from('cases')
+        .from("cases")
         .update({ lawyer_id: selectedLawyerId })
-        .eq('case_id', caseId);
+        .eq("case_id", caseId);
 
       if (error) throw error;
       setIsOwner(false);
-      setButtonTitle('Take Over');
+      setButtonTitle("Take Over");
       fetchDetails();
       alert("Case handed over successfully!");
-
     } catch (err) {
       console.error("Error during handover:", err.message);
     }
@@ -131,13 +133,13 @@ const CaseDetails = ({ userInfo }) => {
   const handleTakeOver = async () => {
     try {
       const { error } = await supabase
-        .from('cases')
+        .from("cases")
         .update({ lawyer_id: lawyerId })
-        .eq('case_id', caseId);
+        .eq("case_id", caseId);
 
       if (error) throw error;
       setIsOwner(true);
-      setButtonTitle('Handover');
+      setButtonTitle("Handover");
 
       alert("You have taken over the case successfully!");
       fetchDetails();
@@ -147,7 +149,7 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleClick = () => {
-    if (buttonTitle === 'Handover') {
+    if (buttonTitle === "Handover") {
       handleHandover();
     } else {
       handleTakeOver();
@@ -157,34 +159,31 @@ const CaseDetails = ({ userInfo }) => {
   const fetchDetails = async () => {
     try {
       // Fetch case details
-      const { data: caseDetail, error: caseError } = await supabase
-        .from('cases')
-        .select('*')
-        .eq('case_id', caseId)
+      const { data: caseDetail } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("case_id", caseId)
         .single();
 
-      if (caseError) throw new Error(caseError.message);
       setCaseData(caseDetail);
-      setCurrentStatus(caseDetail.current_status || 'in-progress');
+      setCurrentStatus(caseDetail.current_status || "in-progress");
 
       // Fetch clients associated with this case using client_case table
-      const { data: clientCases, error: clientCaseError } = await supabase
-        .from('client_case')
-        .select('client_id')
-        .eq('case_id', caseId);
-
-      if (clientCaseError) throw new Error(clientCaseError.message);
+      const { data: clientCases } = await supabase
+        .from("client_case")
+        .select("client_id")
+        .eq("case_id", caseId);
 
       if (clientCases.length > 0) {
         // Fetch client details for each client_id obtained
-        const clientIds = clientCases.map(clientCase => clientCase.client_id);
+        const clientIds = clientCases.map((clientCase) => clientCase.client_id);
 
         // Ensure that clientIds is not empty before querying
         if (clientIds.length > 0) {
           const { data: clientsDetail, error: clientsError } = await supabase
-            .from('clients')
-            .select('*')
-            .in('client_id', clientIds);
+            .from("clients")
+            .select("*")
+            .in("client_id", clientIds);
 
           if (clientsError) throw new Error(clientsError.message);
 
@@ -196,20 +195,21 @@ const CaseDetails = ({ userInfo }) => {
       }
 
       // Fetch OppositeParty associated with this case using case_oppositeparty table
-      const { data: OppositePartyCases, error: OppositePartyCaseError } = await supabase
-        .from('case_oppositeparty')
-        .select('oppositeparty_id')
-        .eq('case_id', caseId);
-
-      if (OppositePartyCaseError) throw new Error(OppositePartyCaseError.message);
+      const { data: OppositePartyCases } = await supabase
+        .from("case_oppositeparty")
+        .select("oppositeparty_id")
+        .eq("case_id", caseId);
 
       if (OppositePartyCases.length > 0) {
         // Fetch OppositeParty details for each OppositeParty_Id obtained
-        const OppositePartyIds = OppositePartyCases.map(OppositePartyCase => OppositePartyCase.oppositeparty_id);
-        const { data: OppositePartyDetail, error: OppositePartyError } = await supabase
-          .from('opposite_parties')
-          .select('*')
-          .in('oppositeparty_id', OppositePartyIds);
+        const OppositePartyIds = OppositePartyCases.map(
+          (OppositePartyCase) => OppositePartyCase.oppositeparty_id
+        );
+        const { data: OppositePartyDetail, error: OppositePartyError } =
+          await supabase
+            .from("opposite_parties")
+            .select("*")
+            .in("oppositeparty_id", OppositePartyIds);
 
         if (OppositePartyError) throw new Error(OppositePartyError.message);
         setOppositePartyData(OppositePartyDetail);
@@ -217,16 +217,11 @@ const CaseDetails = ({ userInfo }) => {
 
       // Fetch lawyer details
       if (caseDetail.lawyer_id) {
-        const { data: lawyerDetail, error: lawyerError } = await supabase
-          .from('attorney_at_law')
-          .select('*')
-          .eq('lawyer_id', caseDetail.lawyer_id)
+        const { data: lawyerDetail } = await supabase
+          .from("attorney_at_law")
+          .select("*")
+          .eq("lawyer_id", caseDetail.lawyer_id)
           .single();
-
-        if (lawyerError && lawyerError.code !== 'PGRST116') {
-          // PGRST116 is "No rows returned" error which we can handle
-          throw new Error(lawyerError.message);
-        }
 
         setLawyerData(lawyerDetail || null);
       } else {
@@ -235,10 +230,10 @@ const CaseDetails = ({ userInfo }) => {
 
       // Fetch current updates for the specific case
       const { data: updateData, error: updateError } = await supabase
-        .from('case_updates')
-        .select('*')
-        .eq('case_id', caseId)
-        .order('next_date', { ascending: false })
+        .from("case_updates")
+        .select("*")
+        .eq("case_id", caseId)
+        .order("next_date", { ascending: false })
         .limit(1);
 
       if (updateError) throw new Error(updateError.message);
@@ -251,28 +246,29 @@ const CaseDetails = ({ userInfo }) => {
 
       // Fetch tasks for the specific case
       const { data: taskData, error: taskError } = await supabase
-        .from('tasks')
-        .select('*')
-        .eq('case_id', caseId);
+        .from("tasks")
+        .select("*")
+        .eq("case_id", caseId);
 
       if (taskError) throw new Error(taskError.message);
       setTasks(taskData);
 
       // Fetch fee details for the specific case
       const { data: feeData, error: feeError } = await supabase
-        .from('fee_details')
-        .select('*')
-        .eq('case_id', caseId);
+        .from("fee_details")
+        .select("*")
+        .eq("case_id", caseId);
 
       if (feeError) throw new Error(feeError.message);
       setFees(feeData);
 
       // Fetch the corresponding case type using the case_type_id from the fetched case detail
+
       if (caseDetail.case_type_id) {
         const { data: caseTypeDetail, error: caseTypeError } = await supabase
-          .from('case_types')
-          .select('*')
-          .eq('id', caseDetail.case_type_id)
+          .from("case_types")
+          .select("*")
+          .eq("id", caseDetail.case_type_id)
           .single();
 
         if (caseTypeError) throw new Error(caseTypeError.message);
@@ -286,7 +282,9 @@ const CaseDetails = ({ userInfo }) => {
 
   const fetchAllClients = async () => {
     try {
-      const { data: allClientsData, error } = await supabase.from('clients').select('*');
+      const { data: allClientsData, error } = await supabase
+        .from("clients")
+        .select("*");
       if (error) throw new Error(error.message);
       setAllClients(allClientsData);
     } catch (err) {
@@ -296,7 +294,10 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleClientSelectionChange = (e) => {
-    const value = Array.from(e.target.selectedOptions, option => option.value);
+    const value = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setSelectedClientIds(value);
   };
 
@@ -306,14 +307,14 @@ const CaseDetails = ({ userInfo }) => {
 
       for (const clientId of selectedClientIds) {
         const { data: existingEntry } = await supabase
-          .from('client_case')
-          .select('*')
-          .eq('case_id', caseId)
-          .eq('client_id', clientId)
+          .from("client_case")
+          .select("*")
+          .eq("case_id", caseId)
+          .eq("client_id", clientId)
           .single();
 
         if (!existingEntry) {
-          await supabase.from('client_case').insert({
+          await supabase.from("client_case").insert({
             case_id: caseId,
             client_id: clientId,
           });
@@ -325,16 +326,23 @@ const CaseDetails = ({ userInfo }) => {
 
       if (duplicateClients.length > 0) {
         const duplicateClientNames = await Promise.all(
-          duplicateClients.map(async id => {
-            const { data: clientNameEntry } = await supabase.from('clients').select('name').eq('client_id', id).single();
+          duplicateClients.map(async (id) => {
+            const { data: clientNameEntry } = await supabase
+              .from("clients")
+              .select("name")
+              .eq("client_id", id)
+              .single();
             return clientNameEntry ? clientNameEntry.name : id;
           })
         );
-        alert(`The following clients are already associated with this case and cannot be added again: ${duplicateClientNames.join(', ')}`);
+        alert(
+          `The following clients are already associated with this case and cannot be added again: ${duplicateClientNames.join(
+            ", "
+          )}`
+        );
       }
 
       fetchDetails();
-
     } catch (err) {
       console.error(err);
       alert(`Failed to add clients: ${err.message}`);
@@ -343,7 +351,9 @@ const CaseDetails = ({ userInfo }) => {
 
   const fetchAllOppositeParties = async () => {
     try {
-      const { data: allOppositePartyData, error } = await supabase.from('opposite_parties').select('*');
+      const { data: allOppositePartyData, error } = await supabase
+        .from("opposite_parties")
+        .select("*");
       if (error) throw new Error(error.message);
       setAllOppositeParty(allOppositePartyData);
     } catch (err) {
@@ -353,7 +363,10 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleOppositePartySelectionChange = (e) => {
-    const value = Array.from(e.target.selectedOptions, option => option.value);
+    const value = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setSelectedOppositePartyIds(value);
   };
 
@@ -363,14 +376,14 @@ const CaseDetails = ({ userInfo }) => {
 
       for (const OppositePartyId of selectedOppositePartyIds) {
         const { data: existingEntry } = await supabase
-          .from('case_oppositeparty')
-          .select('*')
-          .eq('case_id', caseId)
-          .eq('oppositeparty_id', OppositePartyId)
+          .from("case_oppositeparty")
+          .select("*")
+          .eq("case_id", caseId)
+          .eq("oppositeparty_id", OppositePartyId)
           .single();
 
         if (!existingEntry) {
-          await supabase.from('case_oppositeparty').insert({
+          await supabase.from("case_oppositeparty").insert({
             case_id: caseId,
             oppositeparty_id: OppositePartyId,
           });
@@ -382,16 +395,23 @@ const CaseDetails = ({ userInfo }) => {
 
       if (duplicateOppositeParties.length > 0) {
         const duplicateOppositePartiesNames = await Promise.all(
-          duplicateOppositeParties.map(async id => {
-            const { data: OppositePartyNameEntry } = await supabase.from('opposite_parties').select('name').eq('oppositeparty_id', id).single();
+          duplicateOppositeParties.map(async (id) => {
+            const { data: OppositePartyNameEntry } = await supabase
+              .from("opposite_parties")
+              .select("name")
+              .eq("oppositeparty_id", id)
+              .single();
             return OppositePartyNameEntry ? OppositePartyNameEntry.name : id;
           })
         );
-        alert(`The following OppositeParties are already associated with this case and cannot be added again: ${duplicateOppositePartiesNames.join(', ')}`);
+        alert(
+          `The following OppositeParties are already associated with this case and cannot be added again: ${duplicateOppositePartiesNames.join(
+            ", "
+          )}`
+        );
       }
 
       fetchDetails();
-
     } catch (err) {
       console.error(err);
       alert(`Failed to add OppositeParties: ${err.message}`);
@@ -404,9 +424,9 @@ const CaseDetails = ({ userInfo }) => {
 
     try {
       const { error } = await supabase
-        .from('cases')
+        .from("cases")
         .update({ current_status: newStatus })
-        .eq('case_id', caseId);
+        .eq("case_id", caseId);
 
       if (error) throw new Error(error.message);
       console.log("Status updated successfully!");
@@ -459,7 +479,9 @@ const CaseDetails = ({ userInfo }) => {
         const file = newDocuments[i];
         const fileName = `${Date.now()}_${file.name}`;
 
-        const { error } = await supabase.storage.from('case-documents').upload(fileName, file);
+        const { error } = await supabase.storage
+          .from("case-documents")
+          .upload(fileName, file);
 
         if (error) throw error;
 
@@ -469,9 +491,12 @@ const CaseDetails = ({ userInfo }) => {
         setUploadProgress(Math.round(((i + 1) / totalFiles) * 100));
       }
 
-      const { error: updateError } = await supabase.from('cases').update({
-        case_documents: [...(caseData.case_documents || []), ...urls],
-      }).eq('case_id', caseId);
+      const { error: updateError } = await supabase
+        .from("cases")
+        .update({
+          case_documents: [...(caseData.case_documents || []), ...urls],
+        })
+        .eq("case_id", caseId);
 
       if (updateError) throw updateError;
 
@@ -484,7 +509,6 @@ const CaseDetails = ({ userInfo }) => {
 
       alert("Documents uploaded successfully!");
       fetchDetails();
-
     } catch (err) {
       console.error(err);
       setUploadError(`Failed to upload documents: ${err.message}`);
@@ -492,17 +516,26 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleDeleteDocument = async (docUrl) => {
-    const fileName = docUrl.substring(docUrl.lastIndexOf('/') + 1).split('?')[0];
+    const fileName = docUrl
+      .substring(docUrl.lastIndexOf("/") + 1)
+      .split("?")[0];
 
     if (window.confirm("Are you sure you want to delete this document?")) {
       try {
-        const { error: deleteError } = await supabase.storage.from('case-documents').remove([fileName]);
+        const { error: deleteError } = await supabase.storage
+          .from("case-documents")
+          .remove([fileName]);
         if (deleteError) throw deleteError;
 
-        const updatedDocuments = caseData.case_documents.filter(url => url !== docUrl);
-        const { error: updateError } = await supabase.from('cases').update({
-          case_documents: updatedDocuments,
-        }).eq('case_id', caseId);
+        const updatedDocuments = caseData.case_documents.filter(
+          (url) => url !== docUrl
+        );
+        const { error: updateError } = await supabase
+          .from("cases")
+          .update({
+            case_documents: updatedDocuments,
+          })
+          .eq("case_id", caseId);
 
         if (updateError) throw updateError;
 
@@ -516,7 +549,10 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from('tasks').select('*').eq('case_id', caseId);
+    const { data, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("case_id", caseId);
     if (error) {
       setError(error.message);
     } else {
@@ -526,7 +562,10 @@ const CaseDetails = ({ userInfo }) => {
 
   const handleDelete = async (taskId) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      const { error } = await supabase.from('tasks').delete().eq('task_id', taskId);
+      const { error } = await supabase
+        .from("tasks")
+        .delete()
+        .eq("task_id", taskId);
       if (error) {
         setError(error.message);
       } else {
@@ -536,19 +575,25 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleDeleteClient = async (clientId, caseId) => {
-    if (window.confirm("Are you sure you want to delete this client from the case?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this client from the case?"
+      )
+    ) {
       try {
         const { error } = await supabase
-          .from('client_case')
+          .from("client_case")
           .delete()
-          .eq('client_id', clientId)
-          .eq('case_id', caseId);
+          .eq("client_id", clientId)
+          .eq("case_id", caseId);
 
         if (error) {
           throw new Error(error.message);
         }
 
-        setClientsData(prevClients => prevClients.filter(client => client.client_id !== clientId));
+        setClientsData((prevClients) =>
+          prevClients.filter((client) => client.client_id !== clientId)
+        );
       } catch (err) {
         console.error("Error deleting client:", err);
       }
@@ -556,19 +601,28 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleDeleteOppositeParty = async (OppositePartyId, caseId) => {
-    if (window.confirm("Are you sure you want to delete this oppositeparty from the case?")) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this oppositeparty from the case?"
+      )
+    ) {
       try {
         const { error } = await supabase
-          .from('case_oppositeparty')
+          .from("case_oppositeparty")
           .delete()
-          .eq('oppositeparty_id', OppositePartyId)
-          .eq('case_id', caseId);
+          .eq("oppositeparty_id", OppositePartyId)
+          .eq("case_id", caseId);
 
         if (error) {
           throw new Error(error.message);
         }
 
-        setOppositePartyData(prevOppositeParty => prevOppositeParty.filter(OppositeParty => OppositeParty.oppositeparty_id !== OppositePartyId));
+        setOppositePartyData((prevOppositeParty) =>
+          prevOppositeParty.filter(
+            (OppositeParty) =>
+              OppositeParty.oppositeparty_id !== OppositePartyId
+          )
+        );
       } catch (err) {
         console.error("Error deleting client:", err);
       }
@@ -580,50 +634,51 @@ const CaseDetails = ({ userInfo }) => {
       {error && <div className={styles.errorNotification}>{error}</div>}
 
       <header className={styles.pageHeader}>
-        <h1>{t('CaseDetails')}</h1>
+        <h1>{t("CaseDetails")}</h1>
       </header>
 
       {/* Main Information Section */}
       <div className={styles.infoSections}>
         {/* Case Information Section */}
+
         {caseData && (
           <section className={styles.caseInfoSection}>
             <h2 className={styles.sectionTitle}>
               <Briefcase className={styles.sectionIcon} />
-              {t('CaseInformation')}
+              {t("Case Information")}
             </h2>
             <div className={styles.caseDetails}>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t('CaseNo')}</span>
+                <span className={styles.detailLabel}>{t("CaseNo")}</span>
                 <span className={styles.detailValue}>{caseData.case_no}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t('CaseType')}</span>
+                <span className={styles.detailLabel}>{t("CaseType")}</span>
                 <span className={styles.detailValue}>
-                  {caseTypeData ? caseTypeData.case_type : t('Loading')}
+                  {caseTypeData ? caseTypeData.case_type : t("Loading")}
                 </span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t('OpenedDate')}</span>
+                <span className={styles.detailLabel}>{t("OpenedDate")}</span>
                 <span className={styles.detailValue}>
                   {new Date(caseData.opened_date).toLocaleDateString()}
                 </span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t('Court')}:</span>
+                <span className={styles.detailLabel}>{t("Court")}:</span>
                 <span className={styles.detailValue}>{caseData.court}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t('Status')}:</span>
+                <span className={styles.detailLabel}>{t("Status")}:</span>
                 <div className={styles.statusSelectWrapper}>
                   <select
                     value={currentStatus}
                     onChange={handleStatusChange}
                     className={styles.statusSelect}
                   >
-                    <option value="in_progress">{t('InProgress')}</option>
-                    <option value="on_hold">{t('OnHold')}</option>
-                    <option value="completed">{t('Completed')}</option>
+                    <option value="in_progress">{t("InProgress")}</option>
+                    <option value="on_hold">{t("OnHold")}</option>
+                    <option value="completed">{t("Completed")}</option>
                   </select>
                 </div>
               </div>
@@ -635,13 +690,13 @@ const CaseDetails = ({ userInfo }) => {
         <section className={styles.attorneySection}>
           <h2 className={styles.sectionTitle}>
             <UserCircle2 className={styles.sectionIcon} />
-            {t('AttorneyInformation')}
+            {t("Attorney Information")}
           </h2>
 
           {lawyerData ? (
             <div className={styles.attorneyProfile}>
               <div className={styles.attorneyAvatar}>
-                <UserCircle2 size={64}  />
+                <UserCircle2 size={64} />
               </div>
               <div className={styles.attorneyDetails}>
                 <h3 className={styles.attorneyName}>{lawyerData.name}</h3>
@@ -664,45 +719,36 @@ const CaseDetails = ({ userInfo }) => {
           ) : (
             <div className={styles.noAttorneyAlert}>
               <AlertTriangle className={styles.alertIcon} />
-              <p>{t('This case is not taken by an attorney yet.')}</p>
+              <p>{t("This case is not taken by an Attorney yet.")}</p>
             </div>
           )}
 
           {/* Handover/Takeover Section */}
           <div className={styles.caseOwnershipActions}>
             <h3 className={styles.ownershipTitle}>
-              {isOwner ? t('HandoverCase') : t('TakeOverCase')}
+              {isOwner ? t("Handover Case") : t("Take Over Case")}
             </h3>
 
             {isOwner ? (
               <div className={styles.handoverControls}>
                 <select
                   onChange={(e) => setSelectedLawyerId(e.target.value)}
-                  value={selectedLawyerId || ''}
+                  value={selectedLawyerId || ""}
                   className={styles.lawyerSelect}
                 >
-                  <option value="">{t('SelectLawyer')}</option>
+                  <option value="">{t("Select Lawyer")}</option>
                   {lawyers.map((lawyer) => (
-                    <option
-                      key={lawyer.lawyer_id}
-                      value={lawyer.lawyer_id}
-                    >
+                    <option key={lawyer.lawyer_id} value={lawyer.lawyer_id}>
                       {lawyer.name}
                     </option>
                   ))}
                 </select>
-                <button
-                  onClick={handleClick}
-                  className={styles.actionButton}
-                >
+                <button onClick={handleClick} className={styles.actionButton}>
                   {buttonTitle}
                 </button>
               </div>
             ) : (
-              <button
-                onClick={handleClick}
-                className={styles.actionButton}
-              >
+              <button onClick={handleClick} className={styles.actionButton}>
                 {buttonTitle}
               </button>
             )}
@@ -710,19 +756,25 @@ const CaseDetails = ({ userInfo }) => {
         </section>
       </div>
 
-      {/* Tab Navigation */}
+      {/* Tab Navigation took it as a list */}
       <div className={styles.tabNavigation}>
         {[
-          { key: 'clients', icon: <Users />, label: t('ClientName') },
-          { key: 'rivalParties', icon: <MessageSquare />, label: t('OppositeParty') },
-          { key: 'tasks', icon: <Clock />, label: t('Tasks/steps') },
-          { key: 'fee', icon: <DollarSign />, label: t('Fee') },
-          { key: 'documents', icon: <FileText />, label: t('Documents') },
-          { key: 'status', icon: <History />, label: t('Status') }
-        ].map(tab => (
+          { key: "clients", icon: <Users />, label: t("ClientName") },
+          {
+            key: "rivalParties",
+            icon: <MessageSquare />,
+            label: t("OppositeParty"),
+          },
+          { key: "tasks", icon: <Clock />, label: t("Tasks/steps") },
+          { key: "fee", icon: <DollarSign />, label: t("Fee") },
+          { key: "documents", icon: <FileText />, label: t("Documents") },
+          { key: "status", icon: <History />, label: t("Status") },
+        ].map((tab) => (
           <button
             key={tab.key}
-            className={`${styles.tabButton} ${activeTab === tab.key ? styles.activeTab : ''}`}
+            className={`${styles.tabButton} ${
+              activeTab === tab.key ? styles.activeTab : ""
+            }`}
             onClick={() => setActiveTab(tab.key)}
           >
             {tab.icon}
@@ -734,15 +786,15 @@ const CaseDetails = ({ userInfo }) => {
       {/* Tab Content */}
       <div className={styles.tabContent}>
         {/* Clients Tab */}
-        {activeTab === 'clients' && (
+        {activeTab === "clients" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t('ClientsList')}</h3>
+              <h3>{t("Clients List")}</h3>
               <button
-                onClick={() => navigate(`/dashboard/client-creation/${caseId}`)}
+                onClick={() => navigate(`/clients/add`)}
                 className={styles.addButton}
               >
-                <Plus /> {t('Add')}
+                <Plus /> {t("Add")}
               </button>
             </div>
 
@@ -750,15 +802,15 @@ const CaseDetails = ({ userInfo }) => {
               <table className={styles.dataTable}>
                 <thead>
                   <tr>
-                    <th>{t('Name')}</th>
-                    <th>{t('ContactNo')}</th>
-                    <th>{t('Email')}</th>
-                    <th>{t('Profession')}</th>
-                    <th>{t('Actions')}</th>
+                    <th>{t("Name")}</th>
+                    <th>{t("ContactNo")}</th>
+                    <th>{t("Email")}</th>
+                    <th>{t("Profession")}</th>
+                    <th>{t("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {clientsData.map(client => (
+                  {clientsData.map((client) => (
                     <tr key={client.client_id}>
                       <td>{client.name}</td>
                       <td>{client.contact_no}</td>
@@ -767,25 +819,31 @@ const CaseDetails = ({ userInfo }) => {
                       <td>
                         <div className={styles.actionButtons}>
                           <button
-                            onClick={() => navigate(`/dashboard/client-view/${client.client_id}/${caseId}`)}
+                            onClick={() =>
+                              navigate(`client-view/:caseUpdateId/${caseId}`)
+                            }
                             className={styles.viewButton}
-                            title={t('ViewClient')}
+                            title={t("ViewClient")}
                           >
-                            <UserCircle2 className={styles.actionIcon}/>
+                            <UserCircle2 className={styles.actionIcon} />
                           </button>
                           <button
-                            onClick={() => navigate(`/dashboard/clients/update/${client.client_id}/${caseId}`)}
+                            onClick={() =>
+                              navigate(`/clients/update/${client.client_id}`)
+                            }
                             className={styles.editButton}
-                            title={t('EditClient')}
+                            title={t("EditClient")}
                           >
-                            <Pencil className={styles.actionIcon}/>
+                            <Pencil className={styles.actionIcon} />
                           </button>
                           <button
-                            onClick={() => handleDeleteClient(client.client_id, caseId)}
+                            onClick={() =>
+                              handleDeleteClient(client.client_id, caseId)
+                            }
                             className={styles.deleteButton}
-                            title={t('DeleteClient')}
+                            title={t("DeleteClient")}
                           >
-                            <Trash2 className={styles.actionIcon}/>
+                            <Trash2 className={styles.actionIcon} />
                           </button>
                         </div>
                       </td>
@@ -794,18 +852,18 @@ const CaseDetails = ({ userInfo }) => {
                 </tbody>
               </table>
             ) : (
-              <p className={styles.emptyState}>{t('NoClientsAdded')}</p>
+              <p className={styles.emptyState}>{t("NoClientsAdded")}</p>
             )}
 
             {/* Add Clients Section */}
             <div className={styles.addSection}>
-              <h3>{t('AddClientsToCase')}</h3>
+              <h3>{t("AddClientsToCase")}</h3>
               <select
                 multiple
                 className={styles.multiSelect}
                 onChange={handleClientSelectionChange}
               >
-                {allClients.map(client => (
+                {allClients.map((client) => (
                   <option key={client.client_id} value={client.client_id}>
                     {client.name}
                   </option>
@@ -815,22 +873,22 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={handleAddClientsToCase}
                 className={styles.addButton}
               >
-                <Plus /> {t('AddClients')}
+                <Plus /> {t("AddClients")}
               </button>
             </div>
           </div>
         )}
 
         {/* Rival Parties Tab */}
-        {activeTab === 'rivalParties' && (
+        {activeTab === "rivalParties" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t('OppositePartiesList')}</h3>
+              <h3>{t("OppositePartiesList")}</h3>
               <button
                 className={styles.addButton}
-                onClick={() => navigate(`/dashboard/rival-party/${caseId}`)}
+                onClick={() => navigate(`/case-boards/rival-party/${caseId}`)}
               >
-                <Plus /> {t('CreateOppositeParty')}
+                <Plus /> {t("CreateOppositeParty")}
               </button>
             </div>
 
@@ -838,16 +896,16 @@ const CaseDetails = ({ userInfo }) => {
               <table className={styles.dataTable}>
                 <thead>
                   <tr>
-                    <th>{t('Name')}</th>
-                    <th>{t('Address')}</th>
-                    <th>{t('ContactNo')}</th>
-                    <th>{t('RivalCounsel')}</th>
-                    <th>{t('GSDivision')}</th>
-                    <th>{t('Actions')}</th>
+                    <th>{t("Name")}</th>
+                    <th>{t("Address")}</th>
+                    <th>{t("ContactNo")}</th>
+                    <th>{t("RivalCounsel")}</th>
+                    <th>{t("GSDivision")}</th>
+                    <th>{t("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {oppositePartyData.map(party => (
+                  {oppositePartyData.map((party) => (
                     <tr key={party.oppositeparty_id}>
                       <td>{party.name}</td>
                       <td>{party.address}</td>
@@ -857,18 +915,27 @@ const CaseDetails = ({ userInfo }) => {
                       <td>
                         <div className={styles.actionButtons}>
                           <button
-                            onClick={() => navigate(`/dashboard/rival-party/update/${party.oppositeparty_id}/${caseId}`)}
+                            onClick={() =>
+                              navigate(
+                                `/case-boards/rival-party/update/${party.oppositeparty_id}/${caseId}`
+                              )
+                            }
                             className={styles.editButton}
-                            title={t('EditOppositeParty')}
+                            title={t("EditOppositeParty")}
                           >
-                            <Pencil className={styles.actionIcon}/>
+                            <Pencil className={styles.actionIcon} />
                           </button>
                           <button
-                            onClick={() => handleDeleteOppositeParty(party.oppositeparty_id, caseId)}
+                            onClick={() =>
+                              handleDeleteOppositeParty(
+                                party.oppositeparty_id,
+                                caseId
+                              )
+                            }
                             className={styles.deleteButton}
-                            title={t('DeleteOppositeParty')}
+                            title={t("DeleteOppositeParty")}
                           >
-                            <Trash2 className={styles.actionIcon}/>
+                            <Trash2 className={styles.actionIcon} />
                           </button>
                         </div>
                       </td>
@@ -877,19 +944,22 @@ const CaseDetails = ({ userInfo }) => {
                 </tbody>
               </table>
             ) : (
-              <p className={styles.emptyState}>{t('NoOppositePartiesAdded')}</p>
+              <p className={styles.emptyState}>{t("NoOppositePartiesAdded")}</p>
             )}
 
             {/* Add Opposite Parties Section */}
             <div className={styles.addSection}>
-              <h3>{t('AddExistingOppositeParties')}</h3>
+              <h3>{t("AddExistingOppositeParties")}</h3>
               <select
                 multiple
                 className={styles.multiSelect}
                 onChange={handleOppositePartySelectionChange}
               >
-                {alloppositeParties.map(party => (
-                  <option key={party.oppositeparty_id} value={party.oppositeparty_id}>
+                {alloppositeParties.map((party) => (
+                  <option
+                    key={party.oppositeparty_id}
+                    value={party.oppositeparty_id}
+                  >
                     {party.name}
                   </option>
                 ))}
@@ -898,22 +968,22 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={handleAddOppositePartyToCase}
                 className={styles.addButton}
               >
-                <Plus /> {t('AddOppositeParties')}
+                <Plus /> {t("AddOppositeParties")}
               </button>
             </div>
           </div>
         )}
 
         {/* Tasks Tab */}
-        {activeTab === 'tasks' && (
+        {activeTab === "tasks" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t('TasksList')}</h3>
+              <h3>{t("TasksList")}</h3>
               <button
-                onClick={() => navigate(`/dashboard/task/${caseId}`)}
+                onClick={() => navigate(`/case-boards/task/${caseId}`)}
                 className={styles.addButton}
               >
-                <Plus /> {t('AddTask')}
+                <Plus /> {t("AddTask")}
               </button>
             </div>
 
@@ -921,11 +991,11 @@ const CaseDetails = ({ userInfo }) => {
               <table className={styles.dataTable}>
                 <thead>
                   <tr>
-                    <th>{t('TaskName')}</th>
-                    <th>{t('StartDate')}</th>
-                    <th>{t('Deadline')}</th>
-                    <th>{t('Status')}</th>
-                    <th>{t('Actions')}</th>
+                    <th>{t("TaskName")}</th>
+                    <th>{t("StartDate")}</th>
+                    <th>{t("Deadline")}</th>
+                    <th>{t("Status")}</th>
+                    <th>{t("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -935,25 +1005,33 @@ const CaseDetails = ({ userInfo }) => {
                       <td>{new Date(task.start_date).toLocaleDateString()}</td>
                       <td>{new Date(task.end_date).toLocaleDateString()}</td>
                       <td>
-                        <span className={`${styles.statusBadge} ${styles[task.status.toLowerCase()]}`}>
+                        <span
+                          className={`${styles.statusBadge} ${
+                            styles[task.status.toLowerCase()]
+                          }`}
+                        >
                           {task.status}
                         </span>
                       </td>
                       <td>
                         <div className={styles.actionButtons}>
                           <button
-                            onClick={() => navigate(`/dashboard/task/update/${task.task_id}/${caseId}`)}
+                            onClick={() =>
+                              navigate(
+                                `/case-boards/task/update/${task.task_id}/${caseId}`
+                              )
+                            }
                             className={styles.editButton}
-                            title={t('EditTask')}
+                            title={t("EditTask")}
                           >
-                            <Pencil className={styles.actionIcon}/>
+                            <Pencil className={styles.actionIcon} />
                           </button>
                           <button
                             onClick={() => handleDelete(task.task_id)}
                             className={styles.deleteButton}
-                            title={t('DeleteTask')}
+                            title={t("DeleteTask")}
                           >
-                            <Trash2 className={styles.actionIcon}/>
+                            <Trash2 className={styles.actionIcon} />
                           </button>
                         </div>
                       </td>
@@ -962,21 +1040,21 @@ const CaseDetails = ({ userInfo }) => {
                 </tbody>
               </table>
             ) : (
-              <p className={styles.emptyState}>{t('NoTasksFound')}</p>
+              <p className={styles.emptyState}>{t("NoTasksFound")}</p>
             )}
           </div>
         )}
 
         {/* Fee Tab */}
-        {activeTab === 'fee' && (
+        {activeTab === "fee" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t('FeeDetails')}</h3>
+              <h3>{t("FeeDetails")}</h3>
               <button
-                onClick={() => navigate(`/dashboard/fee/${caseId}`)}
+                onClick={() => navigate(`/case-boards/fee/${caseId}`)}
                 className={styles.addButton}
               >
-                <Plus /> {t('AddFeeDetails')}
+                <Plus /> {t("AddFeeDetails")}
               </button>
             </div>
 
@@ -984,25 +1062,32 @@ const CaseDetails = ({ userInfo }) => {
               <table className={styles.dataTable}>
                 <thead>
                   <tr>
-                    <th>{t('Date')}</th>
-                    <th>{t('Amount')}</th>
-                    <th>{t('Purpose')}</th>
-                    <th>{t('Actions')}</th>
+                    <th>{t("Date")}</th>
+                    <th>{t("Amount")}</th>
+                    <th>{t("Purpose")}</th>
+                    <th>{t("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {fees.map(fee => (
+                  {fees.map((fee) => (
                     <tr key={fee.fee_id}>
                       <td>{new Date(fee.date).toLocaleDateString()}</td>
-                      <td className={styles.amountCell}>{t('Currency')}{fee.amount.toFixed(2)}</td>
+                      <td className={styles.amountCell}>
+                        {t("Currency")}
+                        {fee.amount.toFixed(2)}
+                      </td>
                       <td>{fee.purpose}</td>
                       <td>
                         <button
-                          onClick={() => navigate(`/dashboard/fee/update/${fee.fee_id}/${caseId}`)}
+                          onClick={() =>
+                            navigate(
+                              `/case-boards/fee/update/${fee.fee_id}/${caseId}`
+                            )
+                          }
                           className={styles.editButton}
-                          title={t('EditFee')}
+                          title={t("EditFee")}
                         >
-                          <Pencil className={styles.actionIcon}/>
+                          <Pencil className={styles.actionIcon} />
                         </button>
                       </td>
                     </tr>
@@ -1010,31 +1095,33 @@ const CaseDetails = ({ userInfo }) => {
                 </tbody>
               </table>
             ) : (
-              <p className={styles.emptyState}>{t('NoFeeDetailsFound')}</p>
+              <p className={styles.emptyState}>{t("NoFeeDetailsFound")}</p>
             )}
           </div>
         )}
 
         {/* Documents Tab */}
-        {activeTab === 'documents' && (
+        {activeTab === "documents" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t('CaseDocuments')}</h3>
+              <h3>{t("CaseDocuments")}</h3>
             </div>
 
             {/* Document Upload Area */}
             <div
-              className={`${styles.documentDropzone} ${isDragging ? styles.dragging : ''}`}
+              className={`${styles.documentDropzone} ${
+                isDragging ? styles.dragging : ""
+              }`}
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
             >
               <div className={styles.dropzoneContent}>
                 <Upload size={48} className={styles.uploadIcon} />
-                <p className={styles.dragText}>{t('DragDocumentsHere')}</p>
-                <p className={styles.orText}>{t('Or')}</p>
+                <p className={styles.dragText}>{t("DragDocumentsHere")}</p>
+                <p className={styles.orText}>{t("Or")}</p>
                 <label className={styles.fileInputLabel}>
-                  {t('BrowseFiles')}
+                  {t("BrowseFiles")}
                   <input
                     type="file"
                     multiple
@@ -1062,7 +1149,7 @@ const CaseDetails = ({ userInfo }) => {
 
               {newDocuments.length > 0 && (
                 <div className={styles.selectedFiles}>
-                  <h4>{t('SelectedFiles')}:</h4>
+                  <h4>{t("SelectedFiles")}:</h4>
                   <ul className={styles.filesList}>
                     {newDocuments.map((file, index) => (
                       <li key={index} className={styles.fileItem}>
@@ -1079,25 +1166,29 @@ const CaseDetails = ({ userInfo }) => {
                     className={styles.uploadButton}
                     disabled={uploadProgress > 0 && uploadProgress < 100}
                   >
-                    <Upload /> {t('UploadDocuments')}
+                    <Upload /> {t("UploadDocuments")}
                   </button>
                 </div>
               )}
             </div>
 
             {/* Document Table */}
-            <h4 className={styles.sectionSubtitle}>{t('UploadedDocuments')}</h4>
-            {caseData && caseData.case_documents && caseData.case_documents.length > 0 ? (
+            <h4 className={styles.sectionSubtitle}>{t("UploadedDocuments")}</h4>
+            {caseData &&
+            caseData.case_documents &&
+            caseData.case_documents.length > 0 ? (
               <table className={styles.dataTable}>
                 <thead>
                   <tr>
-                    <th>{t('FileName')}</th>
-                    <th>{t('Actions')}</th>
+                    <th>{t("FileName")}</th>
+                    <th>{t("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {caseData.case_documents.map((docUrl, index) => {
-                    const fileName = docUrl.substring(docUrl.lastIndexOf('/') + 1).split('?')[0];
+                    const fileName = docUrl
+                      .substring(docUrl.lastIndexOf("/") + 1)
+                      .split("?")[0];
                     return (
                       <tr key={index}>
                         <td>
@@ -1114,7 +1205,7 @@ const CaseDetails = ({ userInfo }) => {
                           <button
                             onClick={() => handleDeleteDocument(docUrl)}
                             className={styles.deleteButton}
-                            title={t('DeleteDocument')}
+                            title={t("DeleteDocument")}
                           >
                             <Trash2 />
                           </button>
@@ -1125,29 +1216,31 @@ const CaseDetails = ({ userInfo }) => {
                 </tbody>
               </table>
             ) : (
-              <p className={styles.emptyState}>{t('NoDocumentsFound')}</p>
+              <p className={styles.emptyState}>{t("NoDocumentsFound")}</p>
             )}
           </div>
         )}
 
         {/* Status Tab */}
-        {activeTab === 'status' && (
+        {activeTab === "status" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t('CaseStatus')}</h3>
+              <h3>{t("CaseStatus")}</h3>
               <div className={styles.headerActions}>
                 <button
-                  onClick={() => navigate(`/dashboard/casestatus/${caseId}/`)}
+                  onClick={() => navigate(`/case-boards/casestatus/${caseId}/`)}
                   className={styles.addButton}
                 >
-                  <Plus /> {t('AddUpdate')}
+                  <Plus /> {t("AddUpdate")}
                 </button>
                 <button
-                  onClick={() => navigate(`/dashboard/case-history/${caseId}`)}
+                  onClick={() =>
+                    navigate(`/case-boards/case-history/${caseId}`)
+                  }
                   className={styles.historyButton}
-                  title={t('CaseHistory')}
+                  title={t("CaseHistory")}
                 >
-                  <History /> {t('ViewHistory')}
+                  <History /> {t("ViewHistory")}
                 </button>
               </div>
             </div>
@@ -1156,25 +1249,31 @@ const CaseDetails = ({ userInfo }) => {
               <table className={styles.dataTable}>
                 <thead>
                   <tr>
-                    <th>{t('PreviousDate')}</th>
-                    <th>{t('Description')}</th>
-                    <th>{t('NextStep')}</th>
-                    <th>{t('NextDate')}</th>
-                    <th>{t('Actions')}</th>
+                    <th>{t("PreviousDate")}</th>
+                    <th>{t("Description")}</th>
+                    <th>{t("NextStep")}</th>
+                    <th>{t("NextDate")}</th>
+                    <th>{t("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {updates.map(update => (
+                  {updates.map((update) => (
                     <tr key={update.case_update_id}>
-                      <td>{new Date(update.previous_date).toLocaleDateString()}</td>
+                      <td>
+                        {new Date(update.previous_date).toLocaleDateString()}
+                      </td>
                       <td>{update.description}</td>
                       <td>{update.next_step}</td>
                       <td>{new Date(update.next_date).toLocaleDateString()}</td>
                       <td>
                         <button
-                          onClick={() => navigate(`/dashboard/casestatus/${update.case_update_id}/${caseId}`)}
+                          onClick={() =>
+                            navigate(
+                              `/case-boards/casestatus/${update.case_update_id}/${caseId}`
+                            )
+                          }
                           className={styles.editButton}
-                          title={t('EditUpdate')}
+                          title={t("EditUpdate")}
                         >
                           <Pencil />
                         </button>
@@ -1184,7 +1283,7 @@ const CaseDetails = ({ userInfo }) => {
                 </tbody>
               </table>
             ) : (
-              <p className={styles.emptyState}>{t('NoUpdatesFound')}</p>
+              <p className={styles.emptyState}>{t("NoUpdatesFound")}</p>
             )}
           </div>
         )}
