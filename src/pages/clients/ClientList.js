@@ -14,10 +14,6 @@ import {Pencil,
         Trash2
       } from 'lucide-react';
 
-
-
-
-
 const ClientList = ({ userInfo }) => {
   const { t } = useTranslation();
   const [clients, setClients] = useState([]);
@@ -35,13 +31,16 @@ const ClientList = ({ userInfo }) => {
         setLoading(true);
         
         // Fetch clients linked to this lawyer
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('clients')
           .select('*');
 
+        if (error) {
+          throw new Error(error.message);
+        } else {
           setClients(data);
           setTotalClients(data.length);
-        
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -58,11 +57,12 @@ const ClientList = ({ userInfo }) => {
         setLoading(true);
         
         // Step 1: Check if the client is associated with any cases
-        const { data: associatedCases } = await supabase
+        const { data: associatedCases, error: caseError } = await supabase
           .from('client_case')
           .select('case_id')
           .eq('client_id', clientId);
 
+        if (caseError) throw caseError;
 
         // If there are associated cases, fetch their details
         if (associatedCases && associatedCases.length > 0) {
@@ -87,9 +87,12 @@ const ClientList = ({ userInfo }) => {
           .delete()
           .eq('client_id', clientId);
           
-      
+        if (error) {
+          throw new Error(error.message);
+        } else {
           setClients(clients.filter(client => client.client_id !== clientId));
           setTotalClients(totalClients - 1);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -113,7 +116,7 @@ const ClientList = ({ userInfo }) => {
           {t('Client_List')}
         </h2>
         <button
-          onClick={() => navigate('/clients/add')}
+          onClick={() => navigate('/dashboard/clients/add')}
           className={styles.addButton}
         >
           <FontAwesomeIcon icon={faUserPlus} className={styles.buttonIcon} />
@@ -182,7 +185,7 @@ const ClientList = ({ userInfo }) => {
                         <td>
                           <div className={styles.actionButtons}>
                             <button
-                              onClick={() => navigate(`/clients/update/${client.client_id}`)}
+                              onClick={() => navigate(`/dashboard/clients/update/${client.client_id}`)}
                               className={`${styles.actionButton} ${styles.editButton}`}
                               title={t('Update')}
                             >
@@ -209,7 +212,7 @@ const ClientList = ({ userInfo }) => {
                 <FontAwesomeIcon icon={faUserTie} className={styles.emptyIcon} />
                 <p>{searchTerm ? t('NoClientsMatchingSearch') : t('NoClientsFound')}</p>
                 <button
-                  onClick={() => navigate('/clients/add')}
+                  onClick={() => navigate('/dashboard/clients/add')}
                   className={styles.emptyStateButton}
                 >
                   <FontAwesomeIcon icon={faUserPlus} className={styles.buttonIcon} />

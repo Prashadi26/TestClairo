@@ -106,10 +106,10 @@ const CaseBoard = ({ userInfo }) => {
   return (
     <div className={styles.caseBoardContainer}>
       <div className={styles.header}>
-        <h2>{t("MyCases")}</h2>
-        <button
+        <h2>{t('MyCases')}</h2>
+        <button 
           className={styles.backButton}
-          onClick={() => navigate("/my-case-boards")}
+          onClick={() => navigate('/dashboard')}
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
@@ -126,7 +126,7 @@ const CaseBoard = ({ userInfo }) => {
       {loading ? (
         <div className={styles.loadingContainer}>
           <div className={styles.spinner}></div>
-          <p>{t("loading")}</p>
+          <p>{t('loading')}</p>
         </div>
       ) : (
         <>
@@ -135,25 +135,22 @@ const CaseBoard = ({ userInfo }) => {
             <div className={styles.searchBar}>
               <input
                 type="text"
-                placeholder={t("search_placeholder")}
+                placeholder={t('search_placeholder')}
                 value={searchInput}
                 onChange={handleSearchChange}
                 className={styles.searchInput}
               />
               <button className={styles.searchButton}>
-                <FontAwesomeIcon icon={faSearch} /> {t("search")}
+                <FontAwesomeIcon icon={faSearch} /> {t('search')}
               </button>
             </div>
 
             {/* Case Type Filter */}
             <div className={styles.caseTypeFilter}>
-              <h3>{t("filter_case_type")}</h3>
+              <h3>{t('filter_case_type')}</h3>
               <div className={styles.checkboxGrid}>
                 {caseTypes.map((type) => (
-                  <div
-                    key={type.case_type_id}
-                    className={styles.checkboxContainer}
-                  >
+                  <div key={type.case_type_id} className={styles.checkboxContainer}>
                     <input
                       type="checkbox"
                       id={type.case_type_id}
@@ -169,11 +166,11 @@ const CaseBoard = ({ userInfo }) => {
           </div>
 
           {/* Add Case Button */}
-          <button
-            onClick={() => navigate("/my-case-boards/case/add")}
+          <button 
+            onClick={() => navigate('/dashboard/case/add')} 
             className={styles.addCaseButton}
           >
-            <FontAwesomeIcon icon={faPlus} /> {t("add_case")}
+            <FontAwesomeIcon icon={faPlus} /> {t('add_case')}
           </button>
 
           {/* Case Cards */}
@@ -182,19 +179,19 @@ const CaseBoard = ({ userInfo }) => {
               filteredCases.map((caseItem) => (
                 <Link
                   key={caseItem.case_id}
-                  to={`my-case-boards/case-details/${caseItem.case_id}`}
+                  to={`/dashboard/case-details/${caseItem.case_id}`}
                   className={styles.caseCard}
                 >
                   <h3>{caseItem.case_no}</h3>
                   <p>
-                    <strong>{t("opened_date")}:</strong>{" "}
+                    <strong>{t('opened_date')}:</strong>{' '}
                     {new Date(caseItem.opened_date).toLocaleDateString()}
                   </p>
                 </Link>
               ))
             ) : (
               <div className={styles.noCases}>
-                <p>{t("no_cases_found")}</p>
+                <p>{t('no_cases_found')}</p>
               </div>
             )}
           </div>

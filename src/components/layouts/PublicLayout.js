@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./PublicLayout.css";
-import LanguageSlider from "./LanguageSlider"; // Import the language slider component
+
+const LanguageSlider = React.lazy(() => import("./LanguageSlider")); // Lazy load LanguageSlider component
 
 const PublicLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -10,16 +11,15 @@ const PublicLayout = () => {
   const { t } = useTranslation();
 
   // Toggle mobile menu
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  const toggleMenu = useCallback(() => {
+    setMenuOpen((prevState) => !prevState);
+  }, []);
 
   // Close menu when clicking a link
-  const closeMenu = () => {
+  const closeMenu = useCallback(() => {
     setMenuOpen(false);
-  };
+  }, []);
 
-  // Check if on auth pages
   const isAuthPage =
     location.pathname.includes("/signin") ||
     location.pathname.includes("/signup") ||
@@ -58,17 +58,19 @@ const PublicLayout = () => {
               </li>
               <li>
                 <Link
-                  to="/aboutUs"
-                  className={location.pathname === "/aboutUs" ? "active" : ""}
+                  to="/about"
+                  className={location.pathname === "/about" ? "active" : ""}
                   onClick={closeMenu}
                 >
-                  {t("About Us")}
+                  {t("about")}
                 </Link>
               </li>
             </ul>
 
             {/* Language Slider Toggle */}
-            <LanguageSlider />
+            <React.Suspense fallback={<div>Loading Language Slider...</div>}>
+              <LanguageSlider />
+            </React.Suspense>
 
             {/* Auth Buttons */}
             <div className="auth-buttons">
@@ -116,4 +118,4 @@ const PublicLayout = () => {
   );
 };
 
-export default PublicLayout;
+export default React.memo(PublicLayout);
