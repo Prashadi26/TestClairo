@@ -96,6 +96,8 @@ const CaseBoard = () => {
 
   return (
     <div className={styles.caseBoardContainer}>
+      
+
       {/* Error Handling */}
       {error && (
         <div className={`${styles.notification} ${styles.errorNotification}`}>
@@ -107,7 +109,7 @@ const CaseBoard = () => {
       {loading ? (
         <div className={styles.loadingContainer}>
           <div className={styles.spinner}></div>
-          <p>{t("loading")}</p>
+          <p>{t('loading')}</p>
         </div>
       ) : (
         <>
@@ -117,7 +119,7 @@ const CaseBoard = () => {
               <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
               <input
                 type="text"
-                placeholder={t("search_placeholder")}
+                placeholder={t('search_placeholder')}
                 value={searchInput}
                 onChange={handleSearchChange}
                 className={styles.searchInput}
@@ -127,14 +129,11 @@ const CaseBoard = () => {
             {/* Case Type Filter */}
             <div className={styles.caseTypeFilter}>
               <div className={styles.filterHeader}>
-                <h3>{t("filter_case_type")}</h3>
+                <h3>{t('filter_case_type')}</h3>
               </div>
               <div className={styles.checkboxGroup}>
                 {caseTypes.map((type) => (
-                  <div
-                    key={type.case_type_id}
-                    className={styles.checkboxContainer}
-                  >
+                  <div key={type.case_type_id} className={styles.checkboxContainer}>
                     <input
                       type="checkbox"
                       id={type.case_type_id}
@@ -143,10 +142,7 @@ const CaseBoard = () => {
                       onChange={handleTypeChange}
                       className={styles.checkbox}
                     />
-                    <label
-                      htmlFor={type.case_type_id}
-                      className={styles.checkboxLabel}
-                    >
+                    <label htmlFor={type.case_type_id} className={styles.checkboxLabel}>
                       {type.case_type}
                     </label>
                   </div>
@@ -154,44 +150,37 @@ const CaseBoard = () => {
               </div>
             </div>
           </div>
-     
+
           {/* Add Case Button */}
           <div className={styles.actionButtonContainer}>
-            <button
-              onClick={() => navigate("/case/add")}
+            <button 
+              onClick={() => navigate('/dashboard/case/add')} 
               className={styles.addButton}
             >
               <FontAwesomeIcon icon={faPlus} className={styles.buttonIcon} />
-              {t("Add")}
+              {t('Add')}
             </button>
           </div>
 
           {/* Case Cards */}
-
           <div className={styles.caseCardGrid}>
             {filteredCases.length === 0 ? (
               <div className={styles.emptyState}>
-                <FontAwesomeIcon
-                  icon={faBriefcase}
-                  className={styles.emptyIcon}
-                />
-                <p>{t("no_cases_found")}</p>
+                <FontAwesomeIcon icon={faBriefcase} className={styles.emptyIcon} />
+                <p>{t('no_cases_found')}</p>
               </div>
             ) : (
               filteredCases.map((caseItem) => (
                 <Link
                   key={caseItem.case_id}
-                  to={`/case-details/${caseItem.case_id}`}
+                  to={`/dashboard/case-details/${caseItem.case_id}`}
                   className={styles.caseCard}
                 >
                   <div className={styles.caseCardHeader}>
                     <h3>{caseItem.case_no}</h3>
                   </div>
                   <div className={styles.caseCardContent}>
-                    <p>
-                      <strong>{t("opened_date")}:</strong>
-                      {caseItem.opened_date}
-                    </p>
+                    <p><strong>{t('opened_date')}:</strong> {caseItem.opened_date}</p>
                   </div>
                 </Link>
               ))

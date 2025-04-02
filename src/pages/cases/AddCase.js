@@ -41,7 +41,7 @@ const AddCase = () => {
 
   // Go back to case board
   const handleBack = () => {
-    navigate('/case-boards');
+    navigate('/dashboard/case-boards');
   };
 
   // Handle form submission
@@ -68,7 +68,7 @@ const AddCase = () => {
 
       setSuccess('Case added successfully!');
       resetForm();
-      navigate('/case-boards');
+      navigate('/dashboard/case-boards');
     } catch (err) {
       console.error(err);
       setError(err.message);

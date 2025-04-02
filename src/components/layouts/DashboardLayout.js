@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import Sidebar from "../navigation/Sidebar";
-import Header from "../navigation/Header";
-import LanguageSlider from "./LanguageSlider";
-import "./DashboardLayout.css";
 import { useTranslation } from "react-i18next";
+import "./DashboardLayout.css";
+
+const Sidebar = React.lazy(() => import("../navigation/Sidebar")); // Lazy load Sidebar
+const Header = React.lazy(() => import("../navigation/Header")); // Lazy load Header
+const LanguageSlider = React.lazy(() => import("./LanguageSlider")); // Lazy load LanguageSlider
 
 const DashboardLayout = ({ onLogout, userInfo }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,13 +19,9 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
     const handleResize = () => {
       const isMobile = window.innerWidth < 1024;
       setMobileView(isMobile);
-
-      // Auto-close sidebar on mobile
       if (isMobile && sidebarOpen) {
         setSidebarOpen(false);
       }
-
-      // Auto-open sidebar on desktop
       if (!isMobile && !sidebarOpen) {
         setSidebarOpen(true);
       }
@@ -34,25 +31,22 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, [sidebarOpen]);
 
-  // Toggle sidebar
+  const toggleSidebar = useCallback(() => {
+    setSidebarOpen((prevState) => !prevState);
+  }, []);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+  const handleNavigation = useCallback(
+    (path) => {
+      navigate(path);
+      if (mobileView) {
+        setSidebarOpen(false);
+      }
+    },
+    [mobileView, navigate]
+  );
 
-  // Handle navigation
-  const handleNavigation = (path) => {
-    navigate(path);
-    // Close sidebar on navigation in mobile view
-    if (mobileView) {
-      setSidebarOpen(false);
-    }
-  };
-
-  // Get the current page title
-  const getPageTitle = () => {
+  const getPageTitle = useMemo(() => {
     const path = location.pathname.split("/").pop();
-
     switch (path) {
       case "dashboard":
         return t("dashboard");
@@ -73,38 +67,37 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
       default:
         return t("dashboard");
     }
-  };
+  }, [location.pathname, t]);
 
   return (
     <div className="dashboard-layout">
-      {/* Sidebar */}
-      <Sidebar
-        isOpen={sidebarOpen}
-        currentPath={location.pathname}
-        onNavigation={handleNavigation}
-        userInfo={userInfo}
-        onLogout={onLogout}
-      />
-
-      {/* Main Content Area */}
-      <main className={`main-content ${sidebarOpen ? "" : "expanded"}`}>
-        {/* Header with toggle button */}
-        <Header
-          toggleSidebar={toggleSidebar}
-          sidebarOpen={sidebarOpen}
-          pageTitle={getPageTitle()}
+      <React.Suspense fallback={<div>Loading Sidebar...</div>}>
+        <Sidebar
+          isOpen={sidebarOpen}
+          currentPath={location.pathname}
+          onNavigation={handleNavigation}
           userInfo={userInfo}
           onLogout={onLogout}
-          languageSlider={<LanguageSlider />}
         />
+      </React.Suspense>
 
-        {/* Page content */}
+      <main className={`main-content ${sidebarOpen ? "" : "expanded"}`}>
+        <React.Suspense fallback={<div>Loading Header...</div>}>
+          <Header
+            toggleSidebar={toggleSidebar}
+            sidebarOpen={sidebarOpen}
+            pageTitle={getPageTitle}
+            userInfo={userInfo}
+            onLogout={onLogout}
+            languageSlider={<LanguageSlider />}
+          />
+        </React.Suspense>
+
         <div className="page-content">
           <Outlet />
         </div>
       </main>
 
-      {/* Overlay for mobile */}
       {mobileView && sidebarOpen && (
         <div className="sidebar-overlay" onClick={toggleSidebar}></div>
       )}
@@ -112,4 +105,4 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
   );
 };
 
-export default DashboardLayout;
+export default React.memo(DashboardLayout);
