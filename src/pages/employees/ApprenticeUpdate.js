@@ -71,10 +71,6 @@ const ApprenticeUpdateForm = () => {
     }));
   };
 
-  // Go back to apprentice details
-  const handleBack = () => {
-    navigate(`/dashboard/apprentice-details`);
-  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -117,14 +113,17 @@ const ApprenticeUpdateForm = () => {
   return (
     <div className={styles.formContainer}>
       <div className={styles.formHeader}>
-        <button 
-          className={styles.backButton} 
-          onClick={handleBack}
-          aria-label={t('Back')}
+        <button
+          className={styles.backButton}
+          onClick={() => navigate(-1)}
+          aria-label={t("Back")}
         >
           <FaArrowLeft />
         </button>
-        <h2><FaUserGraduate className={styles.headerIcon} /> {t('UpdateApprenticeDetails', 'Update Apprentice Details')}</h2>
+        <h2>
+          <FaUserGraduate className={styles.headerIcon} />{" "}
+          {t("UpdateApprenticeDetails", "Update Apprentice Details")}
+        </h2>
       </div>
 
       {/* Notification area */}
@@ -134,7 +133,7 @@ const ApprenticeUpdateForm = () => {
           <span>{error}</span>
         </div>
       )}
-      
+
       {success && (
         <div className={`${styles.notification} ${styles.successNotification}`}>
           <span>{success}</span>
@@ -145,108 +144,137 @@ const ApprenticeUpdateForm = () => {
       {loading ? (
         <div className={styles.loadingContainer}>
           <div className={styles.spinner}></div>
-          <p>{t('loading', 'Loading apprentice details...')}</p>
+          <p>{t("loading", "Loading apprentice details...")}</p>
         </div>
       ) : (
         <div className={styles.cardContainer}>
           <form onSubmit={handleSubmit} className={styles.formCard}>
-            <div className={`${styles.formGroup} ${focusedField === 'name' ? styles.focused : ''}`}>
+            <div
+              className={`${styles.formGroup} ${
+                focusedField === "name" ? styles.focused : ""
+              }`}
+            >
               <label htmlFor="name">
-                <FaUser className={styles.inputIcon} /> {t('Name', 'Name')}
+                <FaUser className={styles.inputIcon} /> {t("Name", "Name")}
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="name"
                 name="name"
-                value={formData.name} 
-                onChange={handleChange} 
-                placeholder={t('EnterName', 'Enter apprentice name')}
-                required 
-                onFocus={() => setFocusedField('name')}
+                value={formData.name}
+                onChange={handleChange}
+                placeholder={t("EnterName", "Enter apprentice name")}
+                required
+                onFocus={() => setFocusedField("name")}
                 onBlur={() => setFocusedField(null)}
               />
             </div>
 
-            <div className={`${styles.formGroup} ${focusedField === 'email' ? styles.focused : ''}`}>
+            <div
+              className={`${styles.formGroup} ${
+                focusedField === "email" ? styles.focused : ""
+              }`}
+            >
               <label htmlFor="email">
-                <FaEnvelope className={styles.inputIcon} /> {t('Email', 'Email')}
+                <FaEnvelope className={styles.inputIcon} />{" "}
+                {t("Email", "Email")}
               </label>
-              <input 
-                type="email" 
+              <input
+                type="email"
                 id="email"
                 name="email"
-                value={formData.email} 
-                onChange={handleChange} 
-                placeholder={t('EnterEmail', 'Enter email address')}
+                value={formData.email}
+                onChange={handleChange}
+                placeholder={t("EnterEmail", "Enter email address")}
                 required
-                onFocus={() => setFocusedField('email')}
+                onFocus={() => setFocusedField("email")}
                 onBlur={() => setFocusedField(null)}
               />
             </div>
 
-            <div className={`${styles.formGroup} ${focusedField === 'contactNo' ? styles.focused : ''}`}>
+            <div
+              className={`${styles.formGroup} ${
+                focusedField === "contactNo" ? styles.focused : ""
+              }`}
+            >
               <label htmlFor="contactNo">
-                <FaPhone className={styles.inputIcon} /> {t('ContactNo', 'Contact Number')}
+                <FaPhone className={styles.inputIcon} />{" "}
+                {t("ContactNo", "Contact Number")}
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="contactNo"
                 name="contactNo"
-                value={formData.contactNo} 
-                onChange={handleChange} 
-                placeholder={t('EnterContactNumber', 'Enter contact number')}
-                required 
-                onFocus={() => setFocusedField('contactNo')}
+                value={formData.contactNo}
+                onChange={handleChange}
+                placeholder={t("EnterContactNumber", "Enter contact number")}
+                required
+                onFocus={() => setFocusedField("contactNo")}
                 onBlur={() => setFocusedField(null)}
               />
             </div>
 
-            <div className={`${styles.formGroup} ${focusedField === 'education' ? styles.focused : ''}`}>
+            <div
+              className={`${styles.formGroup} ${
+                focusedField === "education" ? styles.focused : ""
+              }`}
+            >
               <label htmlFor="education">
-                <FaGraduationCap className={styles.inputIcon} /> {t('Education', 'Education')} ({t('Optional', 'optional')})
+                <FaGraduationCap className={styles.inputIcon} />{" "}
+                {t("Education", "Education")} ({t("Optional", "optional")})
               </label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="education"
                 name="education"
-                value={formData.education} 
-                onChange={handleChange} 
-                placeholder={t('EnterEducation', 'Enter education details (optional)')}
-                onFocus={() => setFocusedField('education')}
+                value={formData.education}
+                onChange={handleChange}
+                placeholder={t(
+                  "EnterEducation",
+                  "Enter education details (optional)"
+                )}
+                onFocus={() => setFocusedField("education")}
                 onBlur={() => setFocusedField(null)}
               />
             </div>
 
-            <div className={`${styles.formGroup} ${focusedField === 'joinedDate' ? styles.focused : ''}`}>
+            <div
+              className={`${styles.formGroup} ${
+                focusedField === "joinedDate" ? styles.focused : ""
+              }`}
+            >
               <label htmlFor="joinedDate">
-                <FaCalendarAlt className={styles.inputIcon} /> {t('JoinedDate', 'Joined Date')}
+                <FaCalendarAlt className={styles.inputIcon} />{" "}
+                {t("JoinedDate", "Joined Date")}
               </label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 id="joinedDate"
                 name="joinedDate"
-                value={formData.joinedDate} 
-                onChange={handleChange} 
-                required 
-                onFocus={() => setFocusedField('joinedDate')}
+                value={formData.joinedDate}
+                onChange={handleChange}
+                required
+                onFocus={() => setFocusedField("joinedDate")}
                 onBlur={() => setFocusedField(null)}
               />
             </div>
 
             <div className={styles.formActions}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={styles.secondaryButton}
-                onClick={handleBack}
+                onClick={() => navigate(-1)}
               >
-                {t('Cancel', 'Cancel')}
+                {t("Cancel", "Cancel")}
               </button>
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className={styles.primaryButton}
                 disabled={submitting}
               >
-                {submitting ? t('Updating', 'Updating...') : t('UpdateApprentice', 'Update Apprentice')}
+                {submitting
+                  ? t("Updating", "Updating...")
+                  : t("UpdateApprentice", "Update Apprentice")}
                 {submitting && <span className={styles.buttonSpinner}></span>}
               </button>
             </div>

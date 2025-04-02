@@ -80,11 +80,11 @@ const ApprenticeDetails = () => {
   };
 
   const handleUpdateClick = (apprenticeId) => {
-    navigate(`/dashboard/apprentice/update/${apprenticeId}`);
+    navigate(`/employee-details/apprentice/update/${apprenticeId}`);
   };
 
   const handleAddClick = () => {
-    navigate(`/dashboard/apprentice/add`);
+    navigate(`/employee-details/apprentice/add`);
   };
 
   // Format date function

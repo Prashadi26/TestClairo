@@ -18,15 +18,18 @@ background-color: #f8fafc;
   margin: 0;
   letter-spacing: -0.025em;
 }
+
 .headerIcon {
   color: #0f1a26;
   font-size: 1.75rem;
   margin-right: 0.75rem;
 }
+
 .titleContainer {
   display: flex;
   align-items: center;
 }
+
 .addButton {
   background-color: #f8f9fa;
   color: #333;

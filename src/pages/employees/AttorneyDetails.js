@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "./AttorneyDetails.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,17 +19,23 @@ const AttorneyDetails = () => {
   const [lawyers, setLawyers] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [totalLawyers, setTotalLawyers] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Extract lawyerId from query parameters
+  const queryParams = new URLSearchParams(location.search);
+  const lawyerId = queryParams.get("lawyerId");
 
   // Fetch lawyers on component mount
   useEffect(() => {
     fetchLawyers();
-  }, []);
+  }, [lawyerId]);
 
   const fetchLawyers = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
 
       // Fetch all lawyers
       const { data, error } = await supabase
@@ -39,7 +45,8 @@ const AttorneyDetails = () => {
       if (error) {
         setError(error.message);
       } else {
-        setLawyers(data);
+        setLawyers(data || []);
+        setTotalLawyers(data?.length || 0);
       }
     } catch (err) {
       setError(err.message);
@@ -49,6 +56,20 @@ const AttorneyDetails = () => {
   };
 
   const handleDelete = async (lawyerId) => {
+    // Retrieve the logged-in user's ID from local storage
+    const currentUserId = localStorage.getItem("lawyerId");
+
+    // Ensure correct key
+    console.log("Current User ID from localStorage:", currentUserId);
+    console.log("Requested Delete ID:", lawyerId);
+
+    // Prevent self-deletion
+    // Show an alert message
+    if (currentUserId === lawyerId) {
+      alert(t("cannot_delete_self"));
+      return;
+    }
+
     if (window.confirm(t("confirm_delete_lawyer"))) {
       try {
         setLoading(true);
@@ -60,7 +81,8 @@ const AttorneyDetails = () => {
         if (error) {
           setError(error.message);
         } else {
-          fetchLawyers(); // Refresh the list after deletion
+          fetchLawyers();
+          // Refresh the list after deletion
         }
       } catch (err) {
         setError(err.message);
@@ -71,7 +93,7 @@ const AttorneyDetails = () => {
   };
 
   const handleUpdateClick = (lawyerId) => {
-    navigate(`/dashboard/attorney/update/${lawyerId}`);
+    navigate(`/employee-details/attorney/update/${lawyerId}`);
   };
 
   // Filter lawyers based on search term
@@ -96,7 +118,7 @@ const AttorneyDetails = () => {
           <FaArrowLeft className={styles.headerIcon} />
         </button>
         <div className={styles.titleContainer}>
-          <FontAwesomeIcon icon={faUserTie} className={styles.headerIcon}/>
+          <FontAwesomeIcon icon={faUserTie} className={styles.headerIcon} />
           <h2>{t("Attorney_at_law_details")}</h2>
         </div>
         <div></div>
