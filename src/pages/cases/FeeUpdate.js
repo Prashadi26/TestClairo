@@ -81,7 +81,7 @@ const FeeUpdate = () => {
 
   // Function to go back to case details
   const handleBack = () => {
-    navigate(`/dashboard/case-details/${caseId}`);
+    navigate(-1);
   };
 
   return (
@@ -145,6 +145,8 @@ const FeeUpdate = () => {
                   placeholder={t('EnterAmount')} 
                   required
                   className={styles.numberInput}
+                  min={0}
+                  
                 />
               </div>
 

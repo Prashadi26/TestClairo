@@ -70,9 +70,10 @@ const CaseStatusUpdate = () => {
       // After successful update
       setTimeout(() => {
         if (caseId) {
-            navigate(`/dashboard/case-details/${caseId}`); // Navigate to case details with lawyer ID
+          navigate(`/case-history/${caseId}`); // Navigate to case history if no lawyer ID
+
         } else {
-            navigate(`/dashboard/case-history/${caseId}`); // Navigate to case history if no lawyer ID
+          navigate(`/case-details/${caseId}`); // Navigate to case details with lawyer ID
         }
       }, 1500);
       
@@ -86,9 +87,9 @@ const CaseStatusUpdate = () => {
   // Handle cancel button click
   const handleCancel = () => {
     if (caseId) {
-      navigate(`/dashboard/case-details/${caseId}`);
+      navigate(`/case-details/${caseId}`);
     } else {
-      navigate(`/dashboard/case-history/${caseId}`);
+      navigate(`/case-history/${caseId}`);
     }
   };
 

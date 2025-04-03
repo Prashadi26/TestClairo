@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../../supabaseClient';
-import styles from './ClientList.module.css';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faUserPlus, 
-  faUserTie, 
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../supabaseClient";
+import styles from "./ClientList.module.css";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUserPlus,
+  faUserTie,
   faSearch,
-  faExclamationTriangle
-} from '@fortawesome/free-solid-svg-icons';
-import {Pencil,
-        Trash2
-      } from 'lucide-react';
-
-
-
-
+  faExclamationTriangle,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
+import { Pencil, Trash2 } from "lucide-react";
 
 const ClientList = ({ userInfo }) => {
   const { t } = useTranslation();
@@ -24,24 +19,20 @@ const ClientList = ({ userInfo }) => {
   const [error, setError] = useState(null);
   const [totalClients, setTotalClients] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
-
 
   // Fetch clients from Supabase on component mount
   useEffect(() => {
     const fetchClients = async () => {
       try {
         setLoading(true);
-        
-        // Fetch clients linked to this lawyer
-        const { data } = await supabase
-          .from('clients')
-          .select('*');
 
-          setClients(data);
-          setTotalClients(data.length);
-        
+        // Fetch clients linked to this lawyer
+        const { data } = await supabase.from("clients").select("*");
+
+        setClients(data);
+        setTotalClients(data.length);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -53,43 +44,41 @@ const ClientList = ({ userInfo }) => {
   }, []);
 
   const handleDelete = async (clientId) => {
-    if (window.confirm(t('confirm_delete_client'))) {
+    if (window.confirm(t("confirm_delete_client"))) {
       try {
         setLoading(true);
-        
+
         // Step 1: Check if the client is associated with any cases
         const { data: associatedCases } = await supabase
-          .from('client_case')
-          .select('case_id')
-          .eq('client_id', clientId);
-
+          .from("client_case")
+          .select("case_id")
+          .eq("client_id", clientId);
 
         // If there are associated cases, fetch their details
         if (associatedCases && associatedCases.length > 0) {
           // Step 2: Retrieve case numbers from the cases table
-          const caseIds = associatedCases.map(c => c.case_id);
+          const caseIds = associatedCases.map((c) => c.case_id);
           const { data: caseDetails, error: detailsError } = await supabase
-            .from('cases')
-            .select('case_no')
-            .in('case_id', caseIds);
+            .from("cases")
+            .select("case_no")
+            .in("case_id", caseIds);
 
           if (detailsError) throw detailsError;
 
           // Step 3: Create a message listing the associated case numbers
-          const caseNumbers = caseDetails.map(c => c.case_no).join(', ');
-          alert(`${t('client_association_warning')}: ${caseNumbers}`);
+          const caseNumbers = caseDetails.map((c) => c.case_no).join(", ");
+          alert(`${t("client_association_warning")}: ${caseNumbers}`);
           return; // Exit without deleting
         }
 
         // Step 4: Proceed with deletion since there are no associated cases
         const { error } = await supabase
-          .from('clients')
+          .from("clients")
           .delete()
-          .eq('client_id', clientId);
-          
-      
-          setClients(clients.filter(client => client.client_id !== clientId));
-          setTotalClients(totalClients - 1);
+          .eq("client_id", clientId);
+
+        setClients(clients.filter((client) => client.client_id !== clientId));
+        setTotalClients(totalClients - 1);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -99,32 +88,35 @@ const ClientList = ({ userInfo }) => {
   };
 
   // Filter clients based on search term
-  const filteredClients = clients.filter(client => 
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (client.profession && client.profession.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filteredClients = clients.filter(
+    (client) =>
+      client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (client.profession &&
+        client.profession.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
     <div className={styles.clientListContainer}>
       <div className={styles.header}>
+        
         <h2>
           <FontAwesomeIcon icon={faUserTie} className={styles.headerIcon} />
-          {t('Client_List')}
+          {t("Client_List")}
         </h2>
         <button
-          onClick={() => navigate('/clients/add')}
+          onClick={() => navigate("/clients/add")}
           className={styles.addButton}
         >
           <FontAwesomeIcon icon={faUserPlus} className={styles.buttonIcon} />
-          {t('Add')}
+          {t("Add")}
         </button>
       </div>
 
       {/* Total Clients Overview */}
       <div className={styles.totalClientsCard}>
         <div className={styles.cardContent}>
-          <h3>{t('TotalClients')}</h3>
+          <h3>{t("TotalClients")}</h3>
           <div className={styles.clientCount}>{totalClients}</div>
         </div>
       </div>
@@ -132,7 +124,10 @@ const ClientList = ({ userInfo }) => {
       {/* Error Handling */}
       {error && (
         <div className={`${styles.notification} ${styles.errorNotification}`}>
-          <FontAwesomeIcon icon={faExclamationTriangle} className={styles.notificationIcon} />
+          <FontAwesomeIcon
+            icon={faExclamationTriangle}
+            className={styles.notificationIcon}
+          />
           {error}
         </div>
       )}
@@ -143,7 +138,7 @@ const ClientList = ({ userInfo }) => {
           <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
           <input
             type="text"
-            placeholder={t('SearchClient')}
+            placeholder={t("SearchClient")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
@@ -155,7 +150,7 @@ const ClientList = ({ userInfo }) => {
       {loading ? (
         <div className={styles.loadingContainer}>
           <div className={styles.spinner}></div>
-          <p>{t('loading')}</p>
+          <p>{t("loading")}</p>
         </div>
       ) : (
         <>
@@ -165,35 +160,37 @@ const ClientList = ({ userInfo }) => {
                 <table className={styles.clientTable}>
                   <thead>
                     <tr>
-                      <th>{t('ClientName')}</th>
-                      <th>{t('ContactNo')}</th>
-                      <th>{t('Email')}</th>
-                      <th>{t('Profession')}</th>
+                      <th>{t("ClientName")}</th>
+                      <th>{t("ContactNo")}</th>
+                      <th>{t("Email")}</th>
+                      <th>{t("Profession")}</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredClients.map(client => (
+                    {filteredClients.map((client) => (
                       <tr key={client.client_id}>
                         <td>{client.name}</td>
                         <td>{client.contact_no}</td>
                         <td>{client.email}</td>
-                        <td>{client.profession || '-'}</td>
+                        <td>{client.profession || "-"}</td>
                         <td>
                           <div className={styles.actionButtons}>
                             <button
-                              onClick={() => navigate(`/clients/update/${client.client_id}`)}
+                              onClick={() =>
+                                navigate(`/clients/update/${client.client_id}`)
+                              }
                               className={`${styles.actionButton} ${styles.editButton}`}
-                              title={t('Update')}
+                              title={t("Update")}
                             >
-                              <Pencil/>
+                              <Pencil />
                             </button>
                             <button
                               onClick={() => handleDelete(client.client_id)}
                               className={`${styles.actionButton} ${styles.deleteButton}`}
-                              title={t('Delete')}
+                              title={t("Delete")}
                             >
-                                <Trash2/>
+                              <Trash2 />
                             </button>
                           </div>
                         </td>
@@ -206,14 +203,24 @@ const ClientList = ({ userInfo }) => {
           ) : (
             <div className={styles.emptyStateCard}>
               <div className={styles.emptyState}>
-                <FontAwesomeIcon icon={faUserTie} className={styles.emptyIcon} />
-                <p>{searchTerm ? t('NoClientsMatchingSearch') : t('NoClientsFound')}</p>
+                <FontAwesomeIcon
+                  icon={faUserTie}
+                  className={styles.emptyIcon}
+                />
+                <p>
+                  {searchTerm
+                    ? t("NoClientsMatchingSearch")
+                    : t("NoClientsFound")}
+                </p>
                 <button
-                  onClick={() => navigate('/clients/add')}
+                  onClick={() => navigate("/clients/add")}
                   className={styles.emptyStateButton}
                 >
-                  <FontAwesomeIcon icon={faUserPlus} className={styles.buttonIcon} />
-                  {t('Add_First_Client')}
+                  <FontAwesomeIcon
+                    icon={faUserPlus}
+                    className={styles.buttonIcon}
+                  />
+                  {t("Add_First_Client")}
                 </button>
               </div>
             </div>

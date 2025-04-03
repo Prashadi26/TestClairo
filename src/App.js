@@ -282,7 +282,7 @@ function App() {
             element={<CaseStatusUpdate userInfo={userInfo} />}
           />
           <Route
-            path="fee/:caseId"
+            path="fee/add/:caseId"
             element={<FeeDetails userInfo={userInfo} />}
           />
           <Route

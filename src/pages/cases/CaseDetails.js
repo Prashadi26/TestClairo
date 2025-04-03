@@ -21,6 +21,8 @@ import {
   AlertTriangle,
   MessageSquare,
 } from "lucide-react";
+import {  FaArrowLeft } from 'react-icons/fa';
+
 
 const CaseDetails = ({ userInfo }) => {
   // All state variables and hooks
@@ -634,7 +636,15 @@ const CaseDetails = ({ userInfo }) => {
       {error && <div className={styles.errorNotification}>{error}</div>}
 
       <header className={styles.pageHeader}>
+        <button
+          className={styles["back-button"]}
+          onClick={() => navigate(-1)}
+          aria-label={t("Back")}
+        >
+          <FaArrowLeft  className={styles['header-icon']}/>
+        </button>
         <h1>{t("CaseDetails")}</h1>
+        <div></div>
       </header>
 
       {/* Main Information Section */}
@@ -1051,7 +1061,7 @@ const CaseDetails = ({ userInfo }) => {
             <div className={styles.contentHeader}>
               <h3>{t("FeeDetails")}</h3>
               <button
-                onClick={() => navigate(`/case-boards/fee/${caseId}`)}
+                onClick={() => navigate(`/fee/add/${caseId}`)}
                 className={styles.addButton}
               >
                 <Plus /> {t("AddFeeDetails")}
@@ -1080,9 +1090,7 @@ const CaseDetails = ({ userInfo }) => {
                       <td>
                         <button
                           onClick={() =>
-                            navigate(
-                              `/case-boards/fee/update/${fee.fee_id}/${caseId}`
-                            )
+                            navigate(`/fee/update/${fee.fee_id}/${caseId}`)
                           }
                           className={styles.editButton}
                           title={t("EditFee")}
@@ -1228,15 +1236,13 @@ const CaseDetails = ({ userInfo }) => {
               <h3>{t("CaseStatus")}</h3>
               <div className={styles.headerActions}>
                 <button
-                  onClick={() => navigate(`/case-boards/casestatus/${caseId}/`)}
+                  onClick={() => navigate(`/casestatus/${caseId}`)}
                   className={styles.addButton}
                 >
                   <Plus /> {t("AddUpdate")}
                 </button>
                 <button
-                  onClick={() =>
-                    navigate(`/case-boards/case-history/${caseId}`)
-                  }
+                  onClick={() => navigate(`/case-history/${caseId}`)}
                   className={styles.historyButton}
                   title={t("CaseHistory")}
                 >
@@ -1269,7 +1275,7 @@ const CaseDetails = ({ userInfo }) => {
                         <button
                           onClick={() =>
                             navigate(
-                              `/case-boards/casestatus/${update.case_update_id}/${caseId}`
+                              `/casestatus/${update.case_update_id}/${caseId}`
                             )
                           }
                           className={styles.editButton}
