@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #3498db;
+  background-color: #2c3e50;
   color: white;
   border: none;
   border-radius: 6px;
@@ -102,7 +102,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 3rem;
-  color: #3498db;
+  color: #2c3e50;
 }
 
 .loadingSpinner {
@@ -189,7 +189,7 @@
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background-color: #3498db;
+  background-color: #2c3e50;
   color: white;
   display: flex;
   align-items: center;
