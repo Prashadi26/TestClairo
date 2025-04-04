@@ -68,7 +68,7 @@ const CaseStatus = () => {
 
       // Navigate back to the specified path after successful submission
       setTimeout(() => {
-        navigate(`/dashboard/case-details/${caseId}`); // Keeping original navigation path
+        navigate(-1); // Keeping original navigation path
       }, 1500);
     } catch (err) {
       setError(err.message);
@@ -84,7 +84,7 @@ const CaseStatus = () => {
   };
   
   const handleCancel = () => {
-    navigate(`/dashboard/case-details/${caseId}`);
+    navigate(-1);
   };
 
   return (

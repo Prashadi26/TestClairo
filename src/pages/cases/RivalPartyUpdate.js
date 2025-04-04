@@ -76,7 +76,7 @@ const RivalPartyUpdate = () => {
       
       // Navigate after a short delay to show success message
       setTimeout(() => {
-        navigate(`/dashboard/case-details/${caseId}`);
+        navigate(-1);
       }, 1500);
       
     } catch (error) {

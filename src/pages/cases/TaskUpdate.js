@@ -73,7 +73,7 @@ const TaskUpdate = () => {
       setSuccess('Task updated successfully!');
       
       // Redirect back to CaseBoard after successful update
-      navigate(`/dashboard/case-details/${caseId}`);
+      navigate(-1);
       
     } catch (err) {
       console.error(err);

@@ -892,12 +892,12 @@ const CaseDetails = ({ userInfo }) => {
         {activeTab === "rivalParties" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t("OppositePartiesList")}</h3>
+              <h3>{t("Opposite Parties List")}</h3>
               <button
                 className={styles.addButton}
                 onClick={() => navigate(`/rival-party/${caseId}`)}
               >
-                <Plus /> {t("CreateOppositeParty")}
+                <Plus /> {t("Create Opposite Party")}
               </button>
             </div>
 
@@ -930,7 +930,7 @@ const CaseDetails = ({ userInfo }) => {
                               )
                             }
                             className={styles.editButton}
-                            title={t("EditOppositeParty")}
+                            title={t("Edit Opposite Party")}
                           >
                             <Pencil className={styles.actionIcon} />
                           </button>
@@ -958,7 +958,7 @@ const CaseDetails = ({ userInfo }) => {
 
             {/* Add Opposite Parties Section */}
             <div className={styles.addSection}>
-              <h3>{t("AddExistingOppositeParties")}</h3>
+              <h3>{t("Add Existing Opposite Parties")}</h3>
               <select
                 multiple
                 className={styles.multiSelect}
@@ -977,7 +977,7 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={handleAddOppositePartyToCase}
                 className={styles.addButton}
               >
-                <Plus /> {t("AddOppositeParties")}
+                <Plus /> {t("Add Opposite Parties")}
               </button>
             </div>
           </div>
