@@ -106,13 +106,11 @@ const CaseBoard = ({ userInfo }) => {
   return (
     <div className={styles.caseBoardContainer}>
       <div className={styles.header}>
-        <h2>{t("MyCases")}</h2>
-        <button
-          className={styles.backButton}
-          onClick={() => navigate("/my-case-boards")}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} />
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
+          <FontAwesomeIcon icon={faArrowLeft} className={styles.headerIcon} />
         </button>
+        <h2>{t("MyCases")}</h2>
+        <div></div>
       </div>
 
       {/* Error Handling */}
@@ -170,7 +168,7 @@ const CaseBoard = ({ userInfo }) => {
 
           {/* Add Case Button */}
           <button
-            onClick={() => navigate("/my-case-boards/case/add")}
+            onClick={() => navigate("/case/add")}
             className={styles.addCaseButton}
           >
             <FontAwesomeIcon icon={faPlus} /> {t("add_case")}
@@ -182,7 +180,7 @@ const CaseBoard = ({ userInfo }) => {
               filteredCases.map((caseItem) => (
                 <Link
                   key={caseItem.case_id}
-                  to={`my-case-boards/case-details/${caseItem.case_id}`}
+                  to={`/case-details/${caseItem.case_id}`}
                   className={styles.caseCard}
                 >
                   <h3>{caseItem.case_no}</h3>

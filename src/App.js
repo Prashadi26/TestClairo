@@ -265,7 +265,7 @@ function App() {
             element={<CaseBoard userInfo={userInfo} />}
           />
           <Route
-            path="case-details/:caseId"
+            path="/case-details/:caseId"
             element={<CaseDetails userInfo={userInfo} />}
           />
           <Route path="case/add" element={<AddCase userInfo={userInfo} />} />

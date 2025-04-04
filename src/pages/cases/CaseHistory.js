@@ -62,7 +62,7 @@ const CaseHistory = () => {
       <div className={styles.headerSection}>
         <button
           className={styles["back-button"]}
-          onClick={()=>navigate(-1)}
+          onClick={() => navigate(-2)}
           aria-label={t("Back")}
         >
           <FaArrowLeft />
