@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../../supabaseClient'; // Adjust path as needed
-import { useNavigate, useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { FaUserGraduate, FaArrowLeft, FaExclamationTriangle, FaUser, FaEnvelope, FaPhone, FaGraduationCap, FaCalendarAlt } from 'react-icons/fa';
-import styles from './ApprenticeUpdateForm.module.css'; // This will use the same style as Apprentice.module.css
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../supabaseClient"; // Adjust path as needed
+import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import {
+  FaUserGraduate,
+  FaArrowLeft,
+  FaExclamationTriangle,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaGraduationCap,
+  FaCalendarAlt,
+} from "react-icons/fa";
+import styles from "./ApprenticeUpdateForm.module.css"; // This will use the same style as Apprentice.module.css
 
 const ApprenticeUpdateForm = () => {
   const { t } = useTranslation();
@@ -12,43 +21,40 @@ const ApprenticeUpdateForm = () => {
 
   // Form state
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    contactNo: '',
-    education: '',
-    joinedDate: ''
+    name: "",
+    email: "",
+    contactNo: "",
+    education: "",
+    joinedDate: "",
   });
-  
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
 
-  
- 
-
   // Fetch apprentice details when component mounts
   useEffect(() => {
     const fetchApprentice = async () => {
       try {
-       // setLoading(true);
+        // setLoading(true);
         const { data, error } = await supabase
-          .from('apprentice')
-          .select('*')
-          .eq('id', apprenticeId)
+          .from("apprentice")
+          .select("*")
+          .eq("id", apprenticeId)
           .single();
-        
+
         if (error) {
           throw new Error(error.message);
         }
-        
+
         setFormData({
-          name: data.name || '',
-          email: data.email || '',
-          contactNo: data.contact_no || '',
-          education: data.education || '',
-          joinedDate: data.joined_date || ''
+          name: data.name || "",
+          email: data.email || "",
+          contactNo: data.contact_no || "",
+          education: data.education || "",
+          joinedDate: data.joined_date || "",
         });
       } catch (err) {
         setError(err.message);
@@ -65,12 +71,11 @@ const ApprenticeUpdateForm = () => {
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
-
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -82,7 +87,7 @@ const ApprenticeUpdateForm = () => {
     try {
       // Update data in Supabase for apprentices
       const { error: updateError } = await supabase
-        .from('apprentice')
+        .from("apprentice")
         .update({
           name: formData.name,
           email: formData.email,
@@ -90,19 +95,23 @@ const ApprenticeUpdateForm = () => {
           education: formData.education || null,
           joined_date: formData.joinedDate,
         })
-        .eq('id', apprenticeId);
+        .eq("id", apprenticeId);
 
       if (updateError) {
         throw new Error(updateError.message);
       }
 
-      setSuccess(t('ApprenticeUpdatedSuccessfully', 'Apprentice details updated successfully!'));
-      
+      setSuccess(
+        t(
+          "ApprenticeUpdatedSuccessfully",
+          "Apprentice details updated successfully!"
+        )
+      );
+
       // Navigate back to apprentice details page after short delay
       setTimeout(() => {
-        navigate(`/dashboard/apprentice-details`);
+        navigate(-1);
       }, 1500);
-      
     } catch (err) {
       setError(err.message);
     } finally {

@@ -800,12 +800,7 @@ const CaseDetails = ({ userInfo }) => {
           <div>
             <div className={styles.contentHeader}>
               <h3>{t("Clients List")}</h3>
-              <button
-                onClick={() => navigate(`/clients/add`)}
-                className={styles.addButton}
-              >
-                <Plus /> {t("Add")}
-              </button>
+              
             </div>
 
             {clientsData.length > 0 ? (
@@ -831,8 +826,10 @@ const CaseDetails = ({ userInfo }) => {
                           <button
                             onClick={() =>
                               navigate(
-                                `client-view/${client.client_id}/${caseId}`
+                                `/client-view/${client.client_id}/${caseId}`
                               )
+                              
+                              
                             }
                             className={styles.viewButton}
                             title={t("ViewClient")}
@@ -885,7 +882,7 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={handleAddClientsToCase}
                 className={styles.addButton}
               >
-                <Plus /> {t("AddClients")}
+                <Plus /> {t("Add Clients")}
               </button>
             </div>
           </div>

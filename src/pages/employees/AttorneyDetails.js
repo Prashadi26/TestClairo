@@ -66,7 +66,7 @@ const AttorneyDetails = () => {
     // Prevent self-deletion
     // Show an alert message
     if (currentUserId === lawyerId) {
-      alert(t("cannot_delete_self"));
+      alert(t("Cannot Delete Attorney"));
       return;
     }
 
@@ -185,22 +185,10 @@ const AttorneyDetails = () => {
                 <thead>
                   <tr>
                     <th>
-                      <div className={styles.thContent}>
-                        {t("Name")}
-                        <FontAwesomeIcon
-                          icon={faSort}
-                          className={styles.sortIcon}
-                        />
-                      </div>
+                      <div className={styles.thContent}>{t("Name")}</div>
                     </th>
                     <th>
-                      <div className={styles.thContent}>
-                        {t("Email")}
-                        <FontAwesomeIcon
-                          icon={faSort}
-                          className={styles.sortIcon}
-                        />
-                      </div>
+                      <div className={styles.thContent}>{t("Email")}</div>
                     </th>
                     <th>
                       <div className={styles.thContent}>{t("Contact_No")}</div>
@@ -213,10 +201,6 @@ const AttorneyDetails = () => {
                     <th>
                       <div className={styles.thContent}>
                         {t("Years_Of_Experience")}
-                        <FontAwesomeIcon
-                          icon={faSort}
-                          className={styles.sortIcon}
-                        />
                       </div>
                     </th>
                     <th>{t("Actions")}</th>
@@ -225,7 +209,16 @@ const AttorneyDetails = () => {
                 <tbody>
                   {filteredLawyers.map((lawyer) => (
                     <tr key={lawyer.lawyer_id}>
-                      <td data-label={t("Name")}>{lawyer.name}</td>
+                      <td data-label={t("Name")}>
+                        <div className={styles.nameCell}>
+                          <div className={styles.avatar}>
+                            {lawyer.name?.charAt(0).toUpperCase() || "A"}
+                          </div>
+                          <span>{lawyer.name}</span>
+                        </div>
+
+                        {/* {lawyer.name} */}
+                      </td>
                       <td data-label={t("Email")}>{lawyer.email}</td>
                       <td data-label={t("Contact_No")}>{lawyer.contact_no}</td>
                       <td data-label={t("Language_Competency")}>

@@ -5,12 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUserPlus,
   faUserTie,
   faSearch,
   faExclamationTriangle,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { FaPlus } from "react-icons/fa";
+
 import { Pencil, Trash2 } from "lucide-react";
 
 const ClientList = ({ userInfo }) => {
@@ -99,7 +100,6 @@ const ClientList = ({ userInfo }) => {
   return (
     <div className={styles.clientListContainer}>
       <div className={styles.header}>
-        
         <h2>
           <FontAwesomeIcon icon={faUserTie} className={styles.headerIcon} />
           {t("Client_List")}
@@ -108,7 +108,7 @@ const ClientList = ({ userInfo }) => {
           onClick={() => navigate("/clients/add")}
           className={styles.addButton}
         >
-          <FontAwesomeIcon icon={faUserPlus} className={styles.buttonIcon} />
+          <FontAwesomeIcon icon={FaPlus} className={styles.buttonIcon} />
           {t("Add")}
         </button>
       </div>
@@ -164,13 +164,20 @@ const ClientList = ({ userInfo }) => {
                       <th>{t("ContactNo")}</th>
                       <th>{t("Email")}</th>
                       <th>{t("Profession")}</th>
-                      <th></th>
+                      <th>{t("Actions")}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredClients.map((client) => (
                       <tr key={client.client_id}>
-                        <td>{client.name}</td>
+                        <td>
+                          <div className={styles.nameCell}>
+                            <div className={styles.avatar}>
+                              {client.name?.charAt(0).toUpperCase() || "A"}
+                            </div>
+                            <span>{client.name}</span>
+                          </div>
+                        </td>
                         <td>{client.contact_no}</td>
                         <td>{client.email}</td>
                         <td>{client.profession || "-"}</td>
@@ -209,19 +216,9 @@ const ClientList = ({ userInfo }) => {
                 />
                 <p>
                   {searchTerm
-                    ? t("NoClientsMatchingSearch")
-                    : t("NoClientsFound")}
+                    ? t("No Clients Matching Search")
+                    : t("No Clients Found")}
                 </p>
-                <button
-                  onClick={() => navigate("/clients/add")}
-                  className={styles.emptyStateButton}
-                >
-                  <FontAwesomeIcon
-                    icon={faUserPlus}
-                    className={styles.buttonIcon}
-                  />
-                  {t("Add_First_Client")}
-                </button>
               </div>
             </div>
           )}

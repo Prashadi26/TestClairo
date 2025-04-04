@@ -94,7 +94,7 @@ const AttorneyUpdate = () => {
       setSuccess(t("attorney_updated_successfully"));
 
       // Redirect back to Lawyer Details page after successful update
-      navigate(`dashboard/attorney-details`);
+      navigate(-1);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -105,10 +105,14 @@ const AttorneyUpdate = () => {
   return (
     <div className={styles.formContainer}>
       <div className={styles.header}>
-        <button className={styles.backButton} 
-        onClick={() => navigate(-1)}
-        >
-          <FontAwesomeIcon icon={faArrowLeft} className={styles.headerIcon} />
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
+          <h2>
+            {" "}
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              className={styles["headerIcon"]}
+            />
+          </h2>
         </button>
         <h2>
           <FontAwesomeIcon icon={faUserTie} className={styles.headerIcon} />
@@ -207,7 +211,7 @@ const AttorneyUpdate = () => {
               <button
                 type="button"
                 className={styles.cancelButton}
-                onClick={() => navigate(`/attorney-details`)}
+                onClick={() => navigate(-1)}
               >
                 {t("Cancel")}
               </button>

@@ -257,11 +257,11 @@ function App() {
             element={<CaseDetails userInfo={userInfo} />}
           />
           <Route
-            path="my-case-boards"
+            path="/my-case-boards"
             element={<MyCaseBoard userInfo={userInfo} />}
           />
           <Route
-            path="case-boards"
+            path="/case-boards"
             element={<CaseBoard userInfo={userInfo} />}
           />
           <Route

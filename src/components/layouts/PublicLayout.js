@@ -2,24 +2,22 @@ import React, { useState } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./PublicLayout.css";
-import LanguageSlider from "./LanguageSlider"; // Import the language slider component
+import LanguageSlider from "./LanguageSlider";
 
 const PublicLayout = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const { t } = useTranslation();
 
-  // Toggle mobile menu
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
-  // Close menu when clicking a link
   const closeMenu = () => {
     setMenuOpen(false);
   };
 
-  // Check if on auth pages
+  const isClientViewPage = location.pathname.includes("/clientseeview/");
   const isAuthPage =
     location.pathname.includes("/signin") ||
     location.pathname.includes("/signup") ||
@@ -44,49 +42,53 @@ const PublicLayout = () => {
             {menuOpen ? "X" : "☰"}
           </button>
 
-          {/* Navigation Links */}
+          {/* Navigation Menu */}
           <nav className={`nav-menu ${menuOpen ? "open" : ""}`}>
-            <ul className="nav-links">
-              <li>
-                <Link
-                  to="/"
-                  className={location.pathname === "/" ? "active" : ""}
-                  onClick={closeMenu}
-                >
-                  {t("home")}
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/aboutUs"
-                  className={location.pathname === "/aboutUs" ? "active" : ""}
-                  onClick={closeMenu}
-                >
-                  {t("About Us")}
-                </Link>
-              </li>
-            </ul>
+            {!isClientViewPage && (
+              <ul className="nav-links">
+                <li>
+                  <Link
+                    to="/"
+                    className={location.pathname === "/" ? "active" : ""}
+                    onClick={closeMenu}
+                  >
+                    {t("home")}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/aboutUs"
+                    className={location.pathname === "/aboutUs" ? "active" : ""}
+                    onClick={closeMenu}
+                  >
+                    {t("About Us")}
+                  </Link>
+                </li>
+              </ul>
+            )}
 
-            {/* Language Slider Toggle */}
+            {/* Language Slider is always shown */}
             <LanguageSlider />
 
             {/* Auth Buttons */}
-            <div className="auth-buttons">
-              <Link
-                to="/signin"
-                className="button signin-button"
-                onClick={closeMenu}
-              >
-                {t("signin")}
-              </Link>
-              <Link
-                to="/signup"
-                className="button signup-button"
-                onClick={closeMenu}
-              >
-                {t("signup")}
-              </Link>
-            </div>
+            {!isClientViewPage && (
+              <div className="auth-buttons">
+                <Link
+                  to="/signin"
+                  className="button signin-button"
+                  onClick={closeMenu}
+                >
+                  {t("signin")}
+                </Link>
+                <Link
+                  to="/signup"
+                  className="button signup-button"
+                  onClick={closeMenu}
+                >
+                  {t("signup")}
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
       </header>
@@ -96,7 +98,7 @@ const PublicLayout = () => {
         <Outlet />
       </main>
 
-      {/* Footer only on non-auth pages */}
+      {/* Footer */}
       {!isAuthPage && (
         <footer className="footer">
           <div className="container">

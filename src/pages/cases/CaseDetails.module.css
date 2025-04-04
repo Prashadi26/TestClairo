@@ -26,7 +26,7 @@ color: #1e293b;
 }
 .header-icon {
   margin-right: 0.75rem;
-  color: #3b82f6;
+  color: #0f1a26;
   font-size: 1.5rem;
 }
 /* Info Sections Layout */
@@ -37,7 +37,7 @@ color: #1e293b;
   margin-bottom: 1.5rem;
 }
 .back-button {
-  background-color: #f1f5f9;
+  background-color: transparent;
   border: none;
   color: #000000;
   font-size: 1.5rem;
