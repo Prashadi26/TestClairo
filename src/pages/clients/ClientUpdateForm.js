@@ -67,7 +67,7 @@ const ClientUpdateForm = () => {
       
       // Navigate back to client list after short delay
       setTimeout(() => {
-        navigate('/dashboard/clients');
+        navigate(-1);
       }, 1500);
     } catch (err) {
       setError(err.message);
@@ -78,7 +78,7 @@ const ClientUpdateForm = () => {
 
   // Handle cancel button
   const handleCancel = () => {
-    navigate('/clients');
+    navigate(-1);
   };
 
   return (
