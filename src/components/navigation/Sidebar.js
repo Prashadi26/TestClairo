@@ -5,7 +5,9 @@ import './Sidebar.css';
 
 const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
+  const username = localStorage.getItem("username") ;
+   // Initialize the navigate function
   
   // Navigation items
   const navItems = [
@@ -87,34 +89,38 @@ const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
   };
   
   return (
-    <aside className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
+    <aside className={`sidebar ${isOpen ? "open" : "closed"}`}>
       {/* Sidebar header with logo */}
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <span className="logo-text">Clairo</span>
         </div>
       </div>
-      
+
       {/* User profile section */}
       <div className="sidebar-user">
         <div className="user-avatar">
-          {userInfo?.name ? userInfo.name.charAt(0).toUpperCase() : 'A'}
+          {username ? username.charAt(0).toUpperCase() : "A"}
+          {/* {userInfo?.name ? userInfo.name.charAt(0).toUpperCase() : "A"} */}
         </div>
         <div className="user-info">
-          <h3 className="user-name">{userInfo?.name || t('attorney')}</h3>
-          <p className="user-role">{t('Attorney_at_Law')}</p>
+          <h3 className="user-name">
+            {username || "Attorney"}
+            {/* {userInfo?.name || t("attorney")} */}
+            </h3>
+          <p className="user-role">{t("Attorney_at_Law")}</p>
         </div>
       </div>
-      
+
       {/* Main navigation */}
       <nav className="sidebar-nav">
         <div className="nav-section">
-          <h4 className="nav-section-title">{t('Main')}</h4>
+          <h4 className="nav-section-title">{t("Main")}</h4>
           <ul className="nav-list">
             {navItems.map((item) => (
               <li key={item.path} className="nav-item">
                 <button
-                  className={`nav-link ${isActive(item.path) ? 'active' : ''}`}
+                  className={`nav-link ${isActive(item.path) ? "active" : ""}`}
                   onClick={() => onNavigation(item.path)}
                 >
                   <span className="nav-icon">{item.icon}</span>
@@ -124,15 +130,15 @@ const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
             ))}
           </ul>
         </div>
-        
+
         {/* Settings section */}
         <div className="nav-section">
-          <h4 className="nav-section-title">{t('Account')}</h4>
+          <h4 className="nav-section-title">{t("Account")}</h4>
           <ul className="nav-list">
             {settingsItems.map((item) => (
               <li key={item.path} className="nav-item">
                 <button
-                  className={`nav-link ${isActive(item.path) ? 'active' : ''}`}
+                  className={`nav-link ${isActive(item.path) ? "active" : ""}`}
                   onClick={() => onNavigation(item.path)}
                 >
                   <span className="nav-icon">{item.icon}</span>
@@ -143,18 +149,28 @@ const Sidebar = ({ isOpen, currentPath, onNavigation, userInfo, onLogout }) => {
           </ul>
         </div>
       </nav>
-      
+
       {/* Sidebar footer with logout button */}
       <div className="sidebar-footer">
         <button className="logout-button" onClick={handleLogout}>
           <span className="logout-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
               <polyline points="16 17 21 12 16 7"></polyline>
               <line x1="21" y1="12" x2="9" y2="12"></line>
             </svg>
           </span>
-          <span className="logout-label">{t('signout')}</span>
+          <span className="logout-label">{t("signout")}</span>
         </button>
       </div>
     </aside>

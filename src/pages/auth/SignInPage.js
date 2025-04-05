@@ -43,9 +43,9 @@ const SignInPage = ({ onLogin }) => {
 
       // Step 2: Retrieve user data including lawyer_id
       const { data: userData, error: fetchUserError } = await supabase
-        .from('users')
-        .select('lawyer_id')
-        .eq('email', formData.email)
+        .from("users")
+        .select("lawyer_id ,username")
+        .eq("email", formData.email)
         .single();
 
       if (fetchUserError) {
@@ -56,8 +56,10 @@ const SignInPage = ({ onLogin }) => {
 
       // Step 3: Redirect to dashboard with lawyer ID
       if (userData) {
+        const username  = userData.username;
         const lawyerId = userData.lawyer_id;
         localStorage.setItem('lawyerId', lawyerId);
+        localStorage.setItem('username', username);
         
         // Call the onLogin function from props
         onLogin();
