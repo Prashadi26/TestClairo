@@ -114,9 +114,9 @@ const CaseBoard = ({ userInfo }) => {
   return (
     <div className={styles.caseBoardContainer}>
       <div className={styles.header}>
-        <button className={styles.backButton} onClick={() => navigate(-1)}>
+        {/* <button className={styles.backButton} onClick={() => navigate(-1)}>
           <FontAwesomeIcon icon={faArrowLeft} className={styles.headerIcon} />
-        </button>
+        </button> */}
         <h2>{t("MyCases")}</h2>
         <div></div>
       </div>
@@ -200,7 +200,7 @@ const CaseBoard = ({ userInfo }) => {
               ))
             ) : (
               <div className={styles.noCases}>
-                <p>{t("no_cases_found")}</p>
+                <p>{t("No cases found")}</p>
               </div>
             )}
           </div>

@@ -1123,7 +1123,7 @@ const CaseDetails = ({ userInfo }) => {
             >
               <div className={styles.dropzoneContent}>
                 <Upload size={48} className={styles.uploadIcon} />
-                <p className={styles.dragText}>{t("DragDocumentsHere")}</p>
+                <p className={styles.dragText}>{t("Drag Documents Here")}</p>
                 <p className={styles.orText}>{t("Or")}</p>
                 <label className={styles.fileInputLabel}>
                   {t("BrowseFiles")}

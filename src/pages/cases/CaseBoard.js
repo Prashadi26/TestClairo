@@ -22,40 +22,40 @@ const CaseBoard = () => {
   const navigate = useNavigate();
 
   // Fetch all cases and case types when the component mounts
- const fetchCasesAndTypes = async () => {
-   try {
-     setLoading(true);
+  const fetchCasesAndTypes = async () => {
+    try {
+      setLoading(true);
 
-     const { data: caseData, error: caseError } = await supabase
-       .from("cases")
-       .select("*");
+      const { data: caseData, error: caseError } = await supabase
+        .from("cases")
+        .select("*");
 
-     if (caseError) {
-       setError(caseError.message);
-     } else {
-       setCases(caseData);
-       setFilteredCases(caseData);
-     }
+      if (caseError) {
+        setError(caseError.message);
+      } else {
+        setCases(caseData);
+        setFilteredCases(caseData);
+      }
 
-     const { data: typeData, error: typeError } = await supabase
-       .from("case_types")
-       .select("*");
+      const { data: typeData, error: typeError } = await supabase
+        .from("case_types")
+        .select("*");
 
-     if (typeError) {
-       setError(typeError.message);
-     } else {
-       setCaseTypes(typeData);
-     }
-   } catch (err) {
-     setError(err.message);
-   } finally {
-     setLoading(false);
-   }
- };
+      if (typeError) {
+        setError(typeError.message);
+      } else {
+        setCaseTypes(typeData);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
- useEffect(() => {
-   fetchCasesAndTypes();
- }, []);
+  useEffect(() => {
+    fetchCasesAndTypes();
+  }, []);
   // Handle search input change
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -183,7 +183,7 @@ const CaseBoard = () => {
                   icon={faBriefcase}
                   className={styles.emptyIcon}
                 />
-                <p>{t("no_cases_found")}</p>
+                <p>{t("No cases found")}</p>
               </div>
             ) : (
               filteredCases.map((caseItem) => (
