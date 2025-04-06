@@ -109,7 +109,7 @@ const UpdateCase = () => {
           <FaArrowLeft />
         </button>
         <h2>
-          <FaGavel className={styles.headerIcon} /> {t("UpdateCaseDetails")}
+          <FaGavel className={styles.headerIcon} /> {t("Update Case Details")}
         </h2>
       </div>
 
