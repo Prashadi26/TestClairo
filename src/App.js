@@ -40,6 +40,7 @@ import ClientSeeView from "./pages/clients/ClientSeeView";
 //Case Pages
 import CaseDetails from "./pages/cases/CaseDetails";
 import CaseStatus from "./pages/cases/CaseStatus";
+import UpdateCase from "./pages/cases/UpdateCase";
 import CaseStatusUpdate from "./pages/cases/CaseStatusUpdate";
 import CaseHistory from "./pages/cases/CaseHistory";
 import MyCaseBoard from "./pages/cases/MyCaseBoard";
@@ -269,6 +270,7 @@ function App() {
             element={<CaseDetails userInfo={userInfo} />}
           />
           <Route path="case/add" element={<AddCase userInfo={userInfo} />} />
+          <Route path="case/update/:caseId" element={<UpdateCase userInfo={userInfo} />} />
           <Route
             path="case-history/:caseId"
             element={<CaseHistory userInfo={userInfo} />}

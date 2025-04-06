@@ -657,7 +657,9 @@ const CaseDetails = ({ userInfo }) => {
               {t("Case Information")}
               <div className={styles.caseInfoHeader}>
                 <button
-                  onClick={() => navigate()}
+                  onClick={() =>
+                    navigate(`/case/update/${caseId}`)
+                  }
                   className={styles.viewButton}
                   title={t("Edit Case")}
                 >
