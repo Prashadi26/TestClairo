@@ -22,7 +22,7 @@ const UpdateCase = () => {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { caseId } = useParams(); // Assuming route is like /update-case/:caseId
+  const { caseId } = useParams(); 
   const navigate = useNavigate();
 
   useEffect(() => {
