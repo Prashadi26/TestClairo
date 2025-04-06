@@ -25,24 +25,25 @@ const ClientList = ({ userInfo }) => {
 
   // Fetch clients from Supabase on component mount
   useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        setLoading(true);
-
-        // Fetch clients linked to this lawyer
-        const { data } = await supabase.from("clients").select("*");
-
-        setClients(data);
-        setTotalClients(data.length);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchClients();
   }, []);
+
+  
+  const fetchClients = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch clients linked to this lawyer
+      const { data } = await supabase.from("clients").select("*");
+
+      setClients(data);
+      setTotalClients(data.length);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleDelete = async (clientId) => {
     if (window.confirm(t("confirm_delete_client"))) {

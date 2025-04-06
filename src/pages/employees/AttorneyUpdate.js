@@ -23,37 +23,37 @@ const AttorneyUpdate = () => {
 
   // Fetch lawyer details when component mounts
   useEffect(() => {
-    const fetchLawyer = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from("attorney_at_law")
-          .select("*")
-          .eq("lawyer_id", lawyerId)
-          .single();
-
-        if (error) {
-          throw new Error(error.message);
-        }
-
-        if (data) {
-          setName(data.name);
-          setContactNo(data.contact_no);
-          setEmail(data.email);
-          setLanguageCompetency(
-            data.language_competency ? data.language_competency.split(", ") : []
-          );
-          setYearsOfExperience(data.years_of_experience || "");
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLawyer();
-  }, [lawyerId]);
+  }, []);
+
+  const fetchLawyer = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("attorney_at_law")
+        .select("*")
+        .eq("lawyer_id", lawyerId)
+        .single();
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data) {
+        setName(data.name);
+        setContactNo(data.contact_no);
+        setEmail(data.email);
+        setLanguageCompetency(
+          data.language_competency ? data.language_competency.split(", ") : []
+        );
+        setYearsOfExperience(data.years_of_experience || "");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle language checkbox changes
   const handleLanguageChange = (e) => {

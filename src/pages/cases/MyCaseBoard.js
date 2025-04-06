@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { supabase } from '../../supabaseClient';
-import styles from './MyCaseBoard.module.css';
-import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+import styles from "./MyCaseBoard.module.css";
+import { useTranslation } from "react-i18next";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSearch,
+  faPlus,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 const CaseBoard = ({ userInfo }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [cases, setCases] = useState([]);
   const [filteredCases, setFilteredCases] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const [caseTypes, setCaseTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [error, setError] = useState(null);
@@ -21,47 +25,50 @@ const CaseBoard = ({ userInfo }) => {
 
   // Get lawyer ID from different possible sources
   const queryParams = new URLSearchParams(location.search);
-  const queryLawyerId = queryParams.get('lawyerId');
-  const lawyerId = queryLawyerId || userInfo?.lawyer_id || localStorage.getItem('lawyerId');
+  const queryLawyerId = queryParams.get("lawyerId");
+  const lawyerId =
+    queryLawyerId || userInfo?.lawyer_id || localStorage.getItem("lawyerId");
 
   // Fetch all cases and case types when the component mounts
   useEffect(() => {
-    const fetchCasesAndTypes = async () => {
-      try {
-       // setLoading(true);
-        
-        // Build query to fetch cases
-        const query = supabase.from('cases').select('*').eq('lawyer_id', lawyerId);
-        
-        
-        const { data: caseData, error: caseError } = await query;
-
-        if (caseError) {
-          setError(caseError.message);
-        } else {
-          setCases(caseData);
-          setFilteredCases(caseData);
-        }
-
-        // Fetch all case types
-        const { data: typeData, error: typeError } = await supabase
-          .from('case_types')
-          .select('*');
-
-        if (typeError) {
-          setError(typeError.message);
-        } else {
-          setCaseTypes(typeData);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCasesAndTypes();
-  }, [lawyerId]);
+  }, []);
+
+  const fetchCasesAndTypes = async () => {
+    try {
+      // setLoading(true);
+
+      // Build query to fetch cases
+      const query = supabase
+        .from("cases")
+        .select("*")
+        .eq("lawyer_id", lawyerId);
+
+      const { data: caseData, error: caseError } = await query;
+
+      if (caseError) {
+        setError(caseError.message);
+      } else {
+        setCases(caseData);
+        setFilteredCases(caseData);
+      }
+
+      // Fetch all case types
+      const { data: typeData, error: typeError } = await supabase
+        .from("case_types")
+        .select("*");
+
+      if (typeError) {
+        setError(typeError.message);
+      } else {
+        setCaseTypes(typeData);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -73,10 +80,10 @@ const CaseBoard = ({ userInfo }) => {
   // Handle case type selection change
   const handleTypeChange = (e) => {
     const { value, checked } = e.target;
-    const newSelectedTypes = checked 
+    const newSelectedTypes = checked
       ? [...selectedTypes, value]
       : selectedTypes.filter((typeId) => typeId !== value);
-    
+
     setSelectedTypes(newSelectedTypes);
     filterCases(searchInput, newSelectedTypes);
   };
@@ -93,15 +100,16 @@ const CaseBoard = ({ userInfo }) => {
 
     if (selectedTypes.length > 0) {
       // Create a string of selected types to check against case numbers
-      const selectedLetters = selectedTypes.map(typeId => typeId.trim()).join('');
+      const selectedLetters = selectedTypes
+        .map((typeId) => typeId.trim())
+        .join("");
       filtered = filtered.filter((caseItem) =>
-        [...caseItem.case_no].some(letter => selectedLetters.includes(letter))
+        [...caseItem.case_no].some((letter) => selectedLetters.includes(letter))
       );
     }
 
     setFilteredCases(filtered);
   };
-
 
   return (
     <div className={styles.caseBoardContainer}>

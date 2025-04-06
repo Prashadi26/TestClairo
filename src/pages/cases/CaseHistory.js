@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { supabase } from '../../supabaseClient';
-import styles from './CaseHistory.module.css'; // Updated to use CSS modules
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil, faHistory, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'; 
-import {  FaArrowLeft } from 'react-icons/fa';
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+import styles from "./CaseHistory.module.css"; // Updated to use CSS modules
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPencil,
+  faHistory,
+  faExclamationTriangle,
+} from "@fortawesome/free-solid-svg-icons";
+import { FaArrowLeft } from "react-icons/fa";
 // Keep original icons
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 const CaseHistory = () => {
   const { t } = useTranslation();
@@ -18,41 +22,40 @@ const CaseHistory = () => {
   const navigate = useNavigate(); // Initialize navigate function
 
   useEffect(() => {
-    const fetchPreviousUpdates = async () => {
-      try {
-        setLoading(true);
-        // Fetch updates for the specific case
-        const { data: previousUpdateData, error: previousUpdateError } = await supabase
-          .from('case_updates')
-          .select('*')
-          .eq('case_id', caseId); // Fetch updates for the current case
-
-        if (previousUpdateError) throw new Error(previousUpdateError.message);
-        setPreviousUpdates(previousUpdateData);
-
-        // Fetch case details to get lawyerId
-        const { data: caseDetail, error: caseError } = await supabase
-          .from('cases')
-          .select('*')
-          .eq('case_id', caseId)
-          .single();
-
-        if (caseError) throw new Error(caseError.message);
-        setCaseData(caseDetail);
-
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPreviousUpdates();
-  }, [caseId]);
+  }, []);
+
+  
+  const fetchPreviousUpdates = async () => {
+    try {
+      setLoading(true);
+      // Fetch updates for the specific case
+      const { data: previousUpdateData, error: previousUpdateError } =
+        await supabase.from("case_updates").select("*").eq("case_id", caseId); // Fetch updates for the current case
+
+      if (previousUpdateError) throw new Error(previousUpdateError.message);
+      setPreviousUpdates(previousUpdateData);
+
+      // Fetch case details to get lawyerId
+      const { data: caseDetail, error: caseError } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("case_id", caseId)
+        .single();
+
+      if (caseError) throw new Error(caseError.message);
+      setCaseData(caseDetail);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // Function to format dates nicely (if needed)
   const formatDate = (dateString) => {
-    if (!dateString) return '-';
+    if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString();
   };

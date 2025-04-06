@@ -32,7 +32,7 @@ const ApprenticeDetails = () => {
   // Fetch apprentices on component mount and when lawyerId changes
   useEffect(() => {
     fetchApprentices();
-  }, [lawyerId]);
+  }, []);
 
   const fetchApprentices = async () => {
     try {

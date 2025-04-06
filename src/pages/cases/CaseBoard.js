@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../../supabaseClient';
-import styles from './CaseBoard.module.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faBriefcase } from '@fortawesome/free-solid-svg-icons';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect } from "react";
+import { supabase } from "../../supabaseClient";
+import styles from "./CaseBoard.module.css";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSearch,
+  faPlus,
+  faBriefcase,
+} from "@fortawesome/free-solid-svg-icons";
+import { useTranslation } from "react-i18next";
 
 const CaseBoard = () => {
   const { t } = useTranslation();
   const [cases, setCases] = useState([]);
   const [filteredCases, setFilteredCases] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const [caseTypes, setCaseTypes] = useState([]);
   const [selectedTypes, setSelectedTypes] = useState([]);
   const [error, setError] = useState(null);
@@ -18,43 +22,40 @@ const CaseBoard = () => {
   const navigate = useNavigate();
 
   // Fetch all cases and case types when the component mounts
-  useEffect(() => {
-    const fetchCasesAndTypes = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch all cases
-        const { data: caseData, error: caseError } = await supabase
-          .from('cases')
-          .select('*');
+ const fetchCasesAndTypes = async () => {
+   try {
+     setLoading(true);
 
-        if (caseError) {
-          setError(caseError.message);
-        } else {
-          setCases(caseData);
-          setFilteredCases(caseData);
-        }
+     const { data: caseData, error: caseError } = await supabase
+       .from("cases")
+       .select("*");
 
-        // Fetch all case types
-        const { data: typeData, error: typeError } = await supabase
-          .from('case_types')
-          .select('*');
+     if (caseError) {
+       setError(caseError.message);
+     } else {
+       setCases(caseData);
+       setFilteredCases(caseData);
+     }
 
-        if (typeError) {
-          setError(typeError.message);
-        } else {
-          setCaseTypes(typeData);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+     const { data: typeData, error: typeError } = await supabase
+       .from("case_types")
+       .select("*");
 
-    fetchCasesAndTypes();
-  }, []);
+     if (typeError) {
+       setError(typeError.message);
+     } else {
+       setCaseTypes(typeData);
+     }
+   } catch (err) {
+     setError(err.message);
+   } finally {
+     setLoading(false);
+   }
+ };
 
+ useEffect(() => {
+   fetchCasesAndTypes();
+ }, []);
   // Handle search input change
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -70,7 +71,12 @@ const CaseBoard = () => {
     } else {
       setSelectedTypes((prev) => prev.filter((typeId) => typeId !== value));
     }
-    filterCases(searchInput, checked ? [...selectedTypes, value] : selectedTypes.filter((typeId) => typeId !== value));
+    filterCases(
+      searchInput,
+      checked
+        ? [...selectedTypes, value]
+        : selectedTypes.filter((typeId) => typeId !== value)
+    );
   };
 
   // Filter cases based on search input and selected types
@@ -85,9 +91,11 @@ const CaseBoard = () => {
 
     if (selectedTypes.length > 0) {
       // Create a string of selected types to check against case numbers
-      const selectedLetters = selectedTypes.map(typeId => typeId.trim()).join('');
+      const selectedLetters = selectedTypes
+        .map((typeId) => typeId.trim())
+        .join("");
       filtered = filtered.filter((caseItem) =>
-        [...caseItem.case_no].some(letter => selectedLetters.includes(letter))
+        [...caseItem.case_no].some((letter) => selectedLetters.includes(letter))
       );
     }
 
@@ -154,7 +162,7 @@ const CaseBoard = () => {
               </div>
             </div>
           </div>
-     
+
           {/* Add Case Button */}
           <div className={styles.actionButtonContainer}>
             <button

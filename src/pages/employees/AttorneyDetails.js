@@ -31,7 +31,7 @@ const AttorneyDetails = () => {
   // Fetch lawyers on component mount
   useEffect(() => {
     fetchLawyers();
-  }, [lawyerId]);
+  }, []);
 
   const fetchLawyers = async () => {
     try {

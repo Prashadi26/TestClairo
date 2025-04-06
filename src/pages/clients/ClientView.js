@@ -43,95 +43,94 @@ const ClientView = () => {
   useEffect(() => {
     fetchAllTasks();
 
-    const fetchCaseDetails = async () => {
-      try {
-        // setLoading(true);
-
-        const { data: casesData, error: casesError } = await supabase
-          .from("cases")
-          .select("case_id, case_no, case_type_id, opened_date, lawyer_id")
-          .eq("case_id", caseId)
-          .single();
-
-        if (casesError) throw new Error(casesError.message);
-
-        if (casesData) {
-          setCaseDetails(casesData);
-
-          // Fetch lawyer details
-          if (casesData.lawyer_id) {
-            const { data: lawyerDetail, error: lawyerError } = await supabase
-              .from("attorney_at_law")
-              .select("*")
-              .eq("lawyer_id", casesData.lawyer_id)
-              .single();
-
-            if (lawyerError) throw new Error(lawyerError.message);
-            setLawyerData(lawyerDetail);
-          }
-
-          // Fetch updates
-          if (casesData.case_id) {
-            const { data: updateData, error: updateError } = await supabase
-              .from("case_updates")
-              .select("*")
-              .eq("case_id", casesData.case_id);
-
-            if (updateError) throw new Error(updateError.message);
-            setUpdates(updateData);
-
-            // Set most recent update
-            if (updateData && updateData.length > 0) {
-              const sortedUpdates = updateData.sort(
-                (a, b) => new Date(b.previous_date) - new Date(a.previous_date)
-              );
-              setCurrentUpdate(sortedUpdates[0]);
-            }
-          }
-
-          // Fetch case type
-          if (casesData.case_type_id) {
-            const { data: caseTypeDetail, error: caseTypeError } =
-              await supabase
-                .from("case_types")
-                .select("*")
-                .eq("id", casesData.case_type_id)
-                .single();
-
-            if (caseTypeError) throw new Error(caseTypeError.message);
-            setCaseTypeData(caseTypeDetail);
-          }
-        } else {
-          throw new Error("No cases found for this client.");
-        }
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchClientDetails = async () => {
-      try {
-        const { data: clientDetail, error: clientError } = await supabase
-          .from("clients")
-          .select("*")
-          .eq("client_id", clientId)
-          .single();
-
-        if (clientError) throw new Error(clientError.message);
-        setClientData(clientDetail);
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      }
-    };
-
     fetchCaseDetails();
     fetchClientDetails();
     fetchTasks();
-  }, [clientId, caseId]);
+  }, []);
+
+  const fetchCaseDetails = async () => {
+    try {
+      // setLoading(true);
+
+      const { data: casesData, error: casesError } = await supabase
+        .from("cases")
+        .select("case_id, case_no, case_type_id, opened_date, lawyer_id")
+        .eq("case_id", caseId)
+        .single();
+
+      if (casesError) throw new Error(casesError.message);
+
+      if (casesData) {
+        setCaseDetails(casesData);
+
+        // Fetch lawyer details
+        if (casesData.lawyer_id) {
+          const { data: lawyerDetail, error: lawyerError } = await supabase
+            .from("attorney_at_law")
+            .select("*")
+            .eq("lawyer_id", casesData.lawyer_id)
+            .single();
+
+          if (lawyerError) throw new Error(lawyerError.message);
+          setLawyerData(lawyerDetail);
+        }
+
+        // Fetch updates
+        if (casesData.case_id) {
+          const { data: updateData, error: updateError } = await supabase
+            .from("case_updates")
+            .select("*")
+            .eq("case_id", casesData.case_id);
+
+          if (updateError) throw new Error(updateError.message);
+          setUpdates(updateData);
+
+          // Set most recent update
+          if (updateData && updateData.length > 0) {
+            const sortedUpdates = updateData.sort(
+              (a, b) => new Date(b.previous_date) - new Date(a.previous_date)
+            );
+            setCurrentUpdate(sortedUpdates[0]);
+          }
+        }
+
+        // Fetch case type
+        if (casesData.case_type_id) {
+          const { data: caseTypeDetail, error: caseTypeError } = await supabase
+            .from("case_types")
+            .select("*")
+            .eq("id", casesData.case_type_id)
+            .single();
+
+          if (caseTypeError) throw new Error(caseTypeError.message);
+          setCaseTypeData(caseTypeDetail);
+        }
+      } else {
+        throw new Error("No cases found for this client.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchClientDetails = async () => {
+    try {
+      const { data: clientDetail, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("client_id", clientId)
+        .single();
+
+      if (clientError) throw new Error(clientError.message);
+      setClientData(clientDetail);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
+  };
 
   const fetchTasks = async () => {
     try {
@@ -303,7 +302,7 @@ const ClientView = () => {
           onClick={() => navigate(-1)}
           aria-label={t("Back")}
         >
-          <FaArrowLeft className={styles.headerIcon}/>
+          <FaArrowLeft className={styles.headerIcon} />
         </button>
         <h1 className={styles.dashboardTitle}>
           <User className={styles.headerIcon} />

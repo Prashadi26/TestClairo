@@ -5,7 +5,6 @@ import styles from "./ClientSeeView.module.css"; // Updated to use CSS modules
 import { useTranslation } from "react-i18next";
 import { Calendar, Trash2 } from "lucide-react";
 
-
 const ClientSeeView = () => {
   const { t } = useTranslation();
   const { clientId, caseId } = useParams(); // Get clientId and caseId from URL parameters
@@ -18,104 +17,103 @@ const ClientSeeView = () => {
   const [activeTab, setActiveTab] = useState("status"); // 'status' or 'tasks'
 
   useEffect(() => {
-    const fetchCaseDetails = async () => {
-      try {
-        // Fetch case details directly using the caseId parameter
-        const { data: casesData, error: casesError } = await supabase
-          .from("cases")
-          .select("case_id, case_no, case_type_id, opened_date")
-          .eq("case_id", caseId) // Use the caseId from URL parameters
-          .single();
-
-        if (casesError) throw new Error(casesError.message);
-
-        if (casesData) {
-          setCaseDetails(casesData); // Set the case details
-
-          // Fetch updates for this specific case using the correct case_id
-          if (casesData.case_id) {
-            const { data: updateData, error: updateError } = await supabase
-              .from("case_updates")
-              .select("*")
-              .eq("case_id", casesData.case_id);
-
-            if (updateError) throw new Error(updateError.message);
-            setUpdates(updateData); // Set updates state with fetched data
-          }
-
-          // Fetch the corresponding case type using the case_type_id
-          if (casesData.case_type_id) {
-            const { data: caseTypeDetail, error: caseTypeError } =
-              await supabase
-                .from("case_types")
-                .select("*")
-                .eq("id", casesData.case_type_id)
-                .single();
-
-            if (caseTypeError) throw new Error(caseTypeError.message);
-            setCaseTypeData(caseTypeDetail); // Set fetched case type data
-          }
-        } else {
-          throw new Error("No cases found for this client.");
-        }
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      }
-    };
-
-    const fetchClientDetails = async () => {
-      try {
-        // Fetch clicked client details based on clientId
-        const { data: clientDetail, error: clientError } = await supabase
-          .from("clients") // Assuming 'clients' is your table name
-          .select("*")
-          .eq("client_id", clientId)
-          .single();
-
-        if (clientError) throw new Error(clientError.message);
-        setClientData(clientDetail); // Set clicked client details in state
-      } catch (err) {
-        console.error(err);
-        setError(err.message);
-      }
-    };
-
-    const fetchTasks = async () => {
-      try {
-        // First fetch client_case_id using both clientId and caseId
-        const { data: clientCaseEntry, error: clientCaseError } = await supabase
-          .from("client_case")
-          .select("client_case_id")
-          .eq("client_id", clientId)
-          .eq("case_id", caseId)
-          .single();
-
-        if (clientCaseError) throw new Error(clientCaseError.message);
-
-        if (clientCaseEntry) {
-          const clientCaseId = clientCaseEntry.client_case_id;
-
-          // Now fetch tasks associated with this specific client_case_id.
-          const { data: tasksData, error } = await supabase
-            .from("client_case_task")
-            .select("*")
-            .eq("client_case_id", clientCaseId);
-
-          if (error) throw new Error(error.message);
-
-          setTasks(tasksData); // Update state with fetched tasks
-        }
-      } catch (err) {
-        console.error(err);
-        alert(`Failed to fetch tasks: ${err.message}`);
-      }
-    };
-
     fetchCaseDetails();
     fetchClientDetails();
     fetchTasks();
-  }, [clientId, caseId]); // Added both clientId and caseId to dependencies
+  }, []); // Added both clientId and caseId to dependencies
+
+  const fetchCaseDetails = async () => {
+    try {
+      // Fetch case details directly using the caseId parameter
+      const { data: casesData, error: casesError } = await supabase
+        .from("cases")
+        .select("case_id, case_no, case_type_id, opened_date")
+        .eq("case_id", caseId) // Use the caseId from URL parameters
+        .single();
+
+      if (casesError) throw new Error(casesError.message);
+
+      if (casesData) {
+        setCaseDetails(casesData); // Set the case details
+
+        // Fetch updates for this specific case using the correct case_id
+        if (casesData.case_id) {
+          const { data: updateData, error: updateError } = await supabase
+            .from("case_updates")
+            .select("*")
+            .eq("case_id", casesData.case_id);
+
+          if (updateError) throw new Error(updateError.message);
+          setUpdates(updateData); // Set updates state with fetched data
+        }
+
+        // Fetch the corresponding case type using the case_type_id
+        if (casesData.case_type_id) {
+          const { data: caseTypeDetail, error: caseTypeError } = await supabase
+            .from("case_types")
+            .select("*")
+            .eq("id", casesData.case_type_id)
+            .single();
+
+          if (caseTypeError) throw new Error(caseTypeError.message);
+          setCaseTypeData(caseTypeDetail); // Set fetched case type data
+        }
+      } else {
+        throw new Error("No cases found for this client.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
+  };
+
+  const fetchClientDetails = async () => {
+    try {
+      // Fetch clicked client details based on clientId
+      const { data: clientDetail, error: clientError } = await supabase
+        .from("clients") // Assuming 'clients' is your table name
+        .select("*")
+        .eq("client_id", clientId)
+        .single();
+
+      if (clientError) throw new Error(clientError.message);
+      setClientData(clientDetail); // Set clicked client details in state
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
+  };
+
+  const fetchTasks = async () => {
+    try {
+      // First fetch client_case_id using both clientId and caseId
+      const { data: clientCaseEntry, error: clientCaseError } = await supabase
+        .from("client_case")
+        .select("client_case_id")
+        .eq("client_id", clientId)
+        .eq("case_id", caseId)
+        .single();
+
+      if (clientCaseError) throw new Error(clientCaseError.message);
+
+      if (clientCaseEntry) {
+        const clientCaseId = clientCaseEntry.client_case_id;
+
+        // Now fetch tasks associated with this specific client_case_id.
+        const { data: tasksData, error } = await supabase
+          .from("client_case_task")
+          .select("*")
+          .eq("client_case_id", clientCaseId);
+
+        if (error) throw new Error(error.message);
+
+        setTasks(tasksData); // Update state with fetched tasks
+      }
+    } catch (err) {
+      console.error(err);
+      alert(`Failed to fetch tasks: ${err.message}`);
+    }
+  };
 
   // Function to format dates
   const formatDate = (dateString) => {

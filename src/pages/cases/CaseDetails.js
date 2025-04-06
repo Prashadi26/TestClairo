@@ -83,7 +83,7 @@ const CaseDetails = ({ userInfo }) => {
     fetchTasks();
     checkLawyerOwnership();
     fetchAllLawyers();
-  }, [caseId]);
+  }, []);
 
   // This is taking the lawyers from the DB and setting it to layer variable
   const checkLawyerOwnership = async () => {

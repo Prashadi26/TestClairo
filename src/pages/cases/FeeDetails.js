@@ -8,7 +8,7 @@ import { faCalendarAlt, faMoneyBillWave, faClipboard, faPlus, faArrowLeft } from
 
 const FeeDetails = () => {
   const { t } = useTranslation();
-  const { caseId, lawyerId } = useParams();
+  const { caseId } = useParams();
   const navigate = useNavigate();
   const [newFee, setNewFee] = useState({ date: '', amount: '', purpose: '' });
   const [error, setError] = useState(null);

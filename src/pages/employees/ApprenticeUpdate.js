@@ -36,37 +36,35 @@ const ApprenticeUpdateForm = () => {
 
   // Fetch apprentice details when component mounts
   useEffect(() => {
-    const fetchApprentice = async () => {
-      try {
-        // setLoading(true);
-        const { data, error } = await supabase
-          .from("apprentice")
-          .select("*")
-          .eq("id", apprenticeId)
-          .single();
+    fetchApprentice();
+  }, []);
 
-        if (error) {
-          throw new Error(error.message);
-        }
+  const fetchApprentice = async () => {
+    try {
+      // setLoading(true);
+      const { data, error } = await supabase
+        .from("apprentice")
+        .select("*")
+        .eq("id", apprenticeId)
+        .single();
 
-        setFormData({
-          name: data.name || "",
-          email: data.email || "",
-          contactNo: data.contact_no || "",
-          education: data.education || "",
-          joinedDate: data.joined_date || "",
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      if (error) {
+        throw new Error(error.message);
       }
-    };
 
-    if (apprenticeId) {
-      fetchApprentice();
+      setFormData({
+        name: data.name || "",
+        email: data.email || "",
+        contactNo: data.contact_no || "",
+        education: data.education || "",
+        joinedDate: data.joined_date || "",
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  }, [apprenticeId]);
+  };
 
   // Handle input change
   const handleChange = (e) => {
