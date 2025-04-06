@@ -21,8 +21,7 @@ import {
   AlertTriangle,
   MessageSquare,
 } from "lucide-react";
-import {  FaArrowLeft } from 'react-icons/fa';
-
+import { FaArrowLeft } from "react-icons/fa";
 
 const CaseDetails = ({ userInfo }) => {
   // All state variables and hooks
@@ -641,7 +640,7 @@ const CaseDetails = ({ userInfo }) => {
           onClick={() => navigate(-1)}
           aria-label={t("Back")}
         >
-          <FaArrowLeft  className={styles['header-icon']}/>
+          <FaArrowLeft className={styles["header-icon"]} />
         </button>
         <h1>{t("CaseDetails")}</h1>
         <div></div>
@@ -653,10 +652,20 @@ const CaseDetails = ({ userInfo }) => {
 
         {caseData && (
           <section className={styles.caseInfoSection}>
-            <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionTitle}>
               <Briefcase className={styles.sectionIcon} />
               {t("Case Information")}
-            </h2>
+              <div className={styles.caseInfoHeader}>
+                <button
+                  onClick={() => navigate()}
+                  className={styles.viewButton}
+                  title={t("Edit Case")}
+                >
+                  <Pencil className={styles.actionIcon} />
+                </button>
+              </div>
+            </div>
+
             <div className={styles.caseDetails}>
               <div className={styles.detailItem}>
                 <span className={styles.detailLabel}>{t("CaseNo")}</span>
@@ -800,7 +809,6 @@ const CaseDetails = ({ userInfo }) => {
           <div>
             <div className={styles.contentHeader}>
               <h3>{t("Clients List")}</h3>
-              
             </div>
 
             {clientsData.length > 0 ? (
@@ -828,8 +836,6 @@ const CaseDetails = ({ userInfo }) => {
                               navigate(
                                 `/client-view/${client.client_id}/${caseId}`
                               )
-                              
-                              
                             }
                             className={styles.viewButton}
                             title={t("ViewClient")}
