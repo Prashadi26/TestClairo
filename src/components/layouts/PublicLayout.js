@@ -29,7 +29,7 @@ const PublicLayout = () => {
       <header className="navbar">
         <div className="container navbar-container">
           {/* Logo */}
-          <Link to="/" className="logo">
+          <Link to="/home" className="logo">
             <span className="logo-text">Clairo</span>
           </Link>
 
@@ -48,7 +48,7 @@ const PublicLayout = () => {
               <ul className="nav-links">
                 <li>
                   <Link
-                    to="/"
+                    to="/home"
                     className={location.pathname === "/" ? "active" : ""}
                     onClick={closeMenu}
                   >
