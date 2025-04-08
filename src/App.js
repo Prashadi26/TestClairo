@@ -179,7 +179,6 @@ function App() {
     <Router>
       <Routes>
         {/* Routes which are accessible for everyone */}
-
         {/* Setting the Header and Nevigate to Home if its " / " */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Navigate to="/home" replace />} />
@@ -210,18 +209,16 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/update-password" element={<UpdatePassword />} />
         </Route>
-
         {/*Setting the Route to Dashboards */}
         {/* Setting the Dashboard Layout and Navigating to Common Dashboard */}
         {/* This route is protected and requires authentication */}
-
         <Route
           path="/"
           element={
             isAuthenticated ? (
               <DashboardLayout onLogout={handleLogout} userInfo={userInfo} />
             ) : (
-              <Navigate to="/signin" />
+              <Navigate to="/home" />
             )
           }
         >
@@ -270,7 +267,10 @@ function App() {
             element={<CaseDetails userInfo={userInfo} />}
           />
           <Route path="case/add" element={<AddCase userInfo={userInfo} />} />
-          <Route path="case/update/:caseId" element={<UpdateCase userInfo={userInfo} />} />
+          <Route
+            path="case/update/:caseId"
+            element={<UpdateCase userInfo={userInfo} />}
+          />
           <Route
             path="case-history/:caseId"
             element={<CaseHistory userInfo={userInfo} />}
@@ -328,10 +328,9 @@ function App() {
             element={<AttorneyUpdate userInfo={userInfo} />}
           />
         </Route>
-
-        {/* For backward compatibility with your existing routes */}
-        <Route
-          path="/mainlayout/commondashboard"
+        For backward compatibility with your existing routes
+        {/* <Route
+          path="/commondashboard"
           element={
             isAuthenticated ? (
               <Navigate to="/dashboard" />
@@ -339,10 +338,9 @@ function App() {
               <Navigate to="/signin" />
             )
           }
-        />
-
+        /> */}
         {/* Fallback route */}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </Router>
   );
