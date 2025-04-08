@@ -182,7 +182,7 @@ function App() {
 
         {/* Setting the Header and Nevigate to Home if its " / " */}
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<LandingPage />} />
           <Route path="/aboutUs" element={<AboutPage />} />
 
@@ -197,14 +197,18 @@ function App() {
               isAuthenticated ? (
                 <Navigate to="/dashboard" />
               ) : (
-                <SignInPage onLogin={handleLogin} />
+                <Navigate to="/home" />
               )
             }
           />
           <Route
             path="/signup"
             element={
-              isAuthenticated ? <Navigate to="/dashboard" /> : <SignUpPage />
+              isAuthenticated ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <Navigate to="/home" />
+              )
             }
           />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
@@ -270,7 +274,10 @@ function App() {
             element={<CaseDetails userInfo={userInfo} />}
           />
           <Route path="case/add" element={<AddCase userInfo={userInfo} />} />
-          <Route path="case/update/:caseId" element={<UpdateCase userInfo={userInfo} />} />
+          <Route
+            path="case/update/:caseId"
+            element={<UpdateCase userInfo={userInfo} />}
+          />
           <Route
             path="case-history/:caseId"
             element={<CaseHistory userInfo={userInfo} />}
