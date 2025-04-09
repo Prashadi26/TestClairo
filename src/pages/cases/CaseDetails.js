@@ -50,7 +50,7 @@ const CaseDetails = ({ userInfo }) => {
   const [error, setError] = useState(null);
 
   const [activeTab, setActiveTab] = useState("clients");
-  const [activeOppositePartyTab, setActiveOppositePartyTab] = useState("list");
+  
 
   // Document handling states
   const [newDocuments, setNewDocuments] = useState([]);
@@ -99,19 +99,19 @@ const CaseDetails = ({ userInfo }) => {
 
       if (caseLawyerId === lawyerId) {
         setIsOwner(true);
-        setButtonTitle("Handover");
+        setButtonTitle(t("Handover"));
       } else {
         setIsOwner(false);
-        setButtonTitle("Take Over");
+        setButtonTitle(t("Take Over"));
       }
     } catch (err) {
-      console.error("Error fetching lawyer ID:", err.message);
+      console.error(t("Error fetching lawyer ID:"), err.message);
     }
   };
 
   const handleHandover = async () => {
     if (!selectedLawyerId) {
-      alert("Please select a lawyer to hand over the case.");
+      alert(t("Please select a lawyer to hand over the case."));
       return;
     }
 
@@ -123,11 +123,11 @@ const CaseDetails = ({ userInfo }) => {
 
       if (error) throw error;
       setIsOwner(false);
-      setButtonTitle("Take Over");
+      setButtonTitle(t("Take Over"));
       fetchDetails();
-      alert("Case handed over successfully!");
+      alert(t("Case handed over successfully!"));
     } catch (err) {
-      console.error("Error during handover:", err.message);
+      console.error(t("Error during handover:"), err.message);
     }
   };
 
@@ -140,12 +140,12 @@ const CaseDetails = ({ userInfo }) => {
 
       if (error) throw error;
       setIsOwner(true);
-      setButtonTitle("Handover");
+      setButtonTitle (t("Handover"));
 
-      alert("You have taken over the case successfully!");
+      alert(t("You have taken over the case successfully!"));
       fetchDetails();
     } catch (err) {
-      console.error("Error during take over:", err.message);
+      console.error(t("Error during take over:"), err.message);
     }
   };
 
@@ -191,7 +191,7 @@ const CaseDetails = ({ userInfo }) => {
           // Update state with fetched clients data
           setClientsData(clientsDetail);
         } else {
-          console.warn("No client IDs found for fetching details.");
+          console.warn(t("No client IDs found for fetching details."));
         }
       }
 
@@ -319,7 +319,7 @@ const CaseDetails = ({ userInfo }) => {
             case_id: caseId,
             client_id: clientId,
           });
-          alert("Clients added successfully!");
+          alert(t("Clients added successfully!"));
         } else {
           duplicateClients.push(clientId);
         }
@@ -337,16 +337,22 @@ const CaseDetails = ({ userInfo }) => {
           })
         );
         alert(
-          `The following clients are already associated with this case and cannot be added again: ${duplicateClientNames.join(
-            ", "
-          )}`
+          t("clientsAlreadyAssociated", {
+            names: duplicateClientNames.join(", ")
+          })
         );
+        
       }
 
       fetchDetails();
     } catch (err) {
       console.error(err);
-      alert(`Failed to add clients: ${err.message}`);
+      alert(
+        t("failedToAddClients", {
+          error: err.message
+        })
+      );
+      
     }
   };
 
@@ -388,7 +394,7 @@ const CaseDetails = ({ userInfo }) => {
             case_id: caseId,
             oppositeparty_id: OppositePartyId,
           });
-          alert("OppositeParty added successfully!");
+          alert(t("OppositeParty added successfully!"));
         } else {
           duplicateOppositeParties.push(OppositePartyId);
         }
@@ -406,16 +412,22 @@ const CaseDetails = ({ userInfo }) => {
           })
         );
         alert(
-          `The following OppositeParties are already associated with this case and cannot be added again: ${duplicateOppositePartiesNames.join(
-            ", "
-          )}`
+          t("oppositePartiesAlreadyAssociated", {
+            names: duplicateOppositePartiesNames.join(", ")
+          })
         );
+        
       }
 
       fetchDetails();
     } catch (err) {
       console.error(err);
-      alert(`Failed to add OppositeParties: ${err.message}`);
+      alert(
+        t("failedToAddOppositeParties", {
+          error: err.message
+        })
+      );
+      
     }
   };
 
@@ -430,9 +442,14 @@ const CaseDetails = ({ userInfo }) => {
         .eq("case_id", caseId);
 
       if (error) throw new Error(error.message);
-      console.log("Status updated successfully!");
+      alert(t("Status updated successfully!"));
     } catch (err) {
-      console.error("Error updating status:", err.message);
+      console.error(
+        t("errorUpdatingStatus", {
+          error: err.message
+        })
+      );
+      
     }
   };
 
@@ -466,7 +483,7 @@ const CaseDetails = ({ userInfo }) => {
 
   const handleUploadDocuments = async () => {
     if (newDocuments.length === 0) {
-      setUploadError("No documents selected for upload.");
+      setUploadError(t("No documents selected for upload."));
       return;
     }
 
@@ -508,11 +525,16 @@ const CaseDetails = ({ userInfo }) => {
         document.querySelector('input[type="file"]').value = null;
       }
 
-      alert("Documents uploaded successfully!");
+      alert(t("Documents uploaded successfully!"));
       fetchDetails();
     } catch (err) {
       console.error(err);
-      setUploadError(`Failed to upload documents: ${err.message}`);
+      setUploadError(
+        t("failedToUploadDocuments", {
+          error: err.message
+        })
+      );
+      
     }
   };
 
@@ -521,7 +543,7 @@ const CaseDetails = ({ userInfo }) => {
       .substring(docUrl.lastIndexOf("/") + 1)
       .split("?")[0];
 
-    if (window.confirm("Are you sure you want to delete this document?")) {
+      if (window.confirm(t("confirmDeleteDocument")))  {
       try {
         const { error: deleteError } = await supabase.storage
           .from("case-documents")
@@ -540,11 +562,16 @@ const CaseDetails = ({ userInfo }) => {
 
         if (updateError) throw updateError;
 
-        alert("Document deleted successfully!");
+        alert(t("Document deleted successfully!"));
         fetchDetails();
       } catch (err) {
         console.error(err);
-        alert(`Failed to delete document: ${err.message}`);
+        alert(
+          t("failedToDeleteDocument", {
+            error: err.message
+          })
+        );
+        
       }
     }
   };
@@ -562,7 +589,7 @@ const CaseDetails = ({ userInfo }) => {
   };
 
   const handleDelete = async (taskId) => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
+    if (window.confirm(t("Are you sure you want to delete this task?"))) {
       const { error } = await supabase
         .from("tasks")
         .delete()
@@ -578,7 +605,7 @@ const CaseDetails = ({ userInfo }) => {
   const handleDeleteClient = async (clientId, caseId) => {
     if (
       window.confirm(
-        "Are you sure you want to delete this client from the case?"
+       t( "Are you sure you want to delete this client from the case?")
       )
     ) {
       try {
@@ -596,7 +623,12 @@ const CaseDetails = ({ userInfo }) => {
           prevClients.filter((client) => client.client_id !== clientId)
         );
       } catch (err) {
-        console.error("Error deleting client:", err);
+        console.error(
+          t("errorDeletingClient", {
+            error: err.toString()
+          })
+        );
+        
       }
     }
   };
@@ -604,7 +636,7 @@ const CaseDetails = ({ userInfo }) => {
   const handleDeleteOppositeParty = async (OppositePartyId, caseId) => {
     if (
       window.confirm(
-        "Are you sure you want to delete this oppositeparty from the case?"
+       t( "Are you sure you want to delete this oppositeparty from the case?")
       )
     ) {
       try {
@@ -625,7 +657,12 @@ const CaseDetails = ({ userInfo }) => {
           )
         );
       } catch (err) {
-        console.error("Error deleting client:", err);
+        console.error(
+          t("errorDeletingRivalParty", {
+            error: err.toString()
+          })
+        );
+        
       }
     }
   };
@@ -654,7 +691,7 @@ const CaseDetails = ({ userInfo }) => {
           <section className={styles.caseInfoSection}>
             <div className={styles.sectionTitle}>
               <Briefcase className={styles.sectionIcon} />
-              {t("Case Information")}
+              {t("Case")}
               <div className={styles.caseInfoHeader}>
                 <button
                   onClick={() =>
@@ -711,7 +748,7 @@ const CaseDetails = ({ userInfo }) => {
         <section className={styles.attorneySection}>
           <h2 className={styles.sectionTitle}>
             <UserCircle2 className={styles.sectionIcon} />
-            {t("Attorney Information")}
+            {t("AttorneyDetails")}
           </h2>
 
           {lawyerData ? (
