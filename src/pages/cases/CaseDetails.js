@@ -727,7 +727,7 @@ const CaseDetails = ({ userInfo }) => {
                 <span className={styles.detailValue}>{caseData.court}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t("Status")}:</span>
+                <span className={styles.detailLabel}>{t("Progress Status")}:</span>
                 <div className={styles.statusSelectWrapper}>
                   <select
                     value={currentStatus}
