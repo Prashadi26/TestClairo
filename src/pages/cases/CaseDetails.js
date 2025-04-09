@@ -21,6 +21,7 @@ import {
   AlertTriangle,
   MessageSquare,
 } from "lucide-react";
+import { FaArrowLeft } from "react-icons/fa";
 
 const CaseDetails = ({ userInfo }) => {
   // All state variables and hooks
@@ -81,7 +82,7 @@ const CaseDetails = ({ userInfo }) => {
     fetchTasks();
     checkLawyerOwnership();
     fetchAllLawyers();
-  }, [caseId]);
+  }, []);
 
   // This is taking the lawyers from the DB and setting it to layer variable
   const checkLawyerOwnership = async () => {
@@ -634,7 +635,15 @@ const CaseDetails = ({ userInfo }) => {
       {error && <div className={styles.errorNotification}>{error}</div>}
 
       <header className={styles.pageHeader}>
+        <button
+          className={styles["back-button"]}
+          onClick={() => navigate(-1)}
+          aria-label={t("Back")}
+        >
+          <FaArrowLeft className={styles["header-icon"]} />
+        </button>
         <h1>{t("CaseDetails")}</h1>
+        <div></div>
       </header>
 
       {/* Main Information Section */}
@@ -643,10 +652,22 @@ const CaseDetails = ({ userInfo }) => {
 
         {caseData && (
           <section className={styles.caseInfoSection}>
-            <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionTitle}>
               <Briefcase className={styles.sectionIcon} />
               {t("Case Information")}
-            </h2>
+              <div className={styles.caseInfoHeader}>
+                <button
+                  onClick={() =>
+                    navigate(`/case/update/${caseId}`)
+                  }
+                  className={styles.viewButton}
+                  title={t("Edit Case")}
+                >
+                  <Pencil className={styles.actionIcon} />
+                </button>
+              </div>
+            </div>
+
             <div className={styles.caseDetails}>
               <div className={styles.detailItem}>
                 <span className={styles.detailLabel}>{t("CaseNo")}</span>
@@ -790,12 +811,6 @@ const CaseDetails = ({ userInfo }) => {
           <div>
             <div className={styles.contentHeader}>
               <h3>{t("Clients List")}</h3>
-              <button
-                onClick={() => navigate(`/clients/add`)}
-                className={styles.addButton}
-              >
-                <Plus /> {t("Add")}
-              </button>
             </div>
 
             {clientsData.length > 0 ? (
@@ -820,7 +835,9 @@ const CaseDetails = ({ userInfo }) => {
                         <div className={styles.actionButtons}>
                           <button
                             onClick={() =>
-                              navigate(`client-view/:caseUpdateId/${caseId}`)
+                              navigate(
+                                `/client-view/${client.client_id}/${caseId}`
+                              )
                             }
                             className={styles.viewButton}
                             title={t("ViewClient")}
@@ -873,7 +890,7 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={handleAddClientsToCase}
                 className={styles.addButton}
               >
-                <Plus /> {t("AddClients")}
+                <Plus /> {t("Add Clients")}
               </button>
             </div>
           </div>
@@ -883,12 +900,12 @@ const CaseDetails = ({ userInfo }) => {
         {activeTab === "rivalParties" && (
           <div>
             <div className={styles.contentHeader}>
-              <h3>{t("OppositePartiesList")}</h3>
+              <h3>{t("Opposite Parties List")}</h3>
               <button
                 className={styles.addButton}
-                onClick={() => navigate(`/case-boards/rival-party/${caseId}`)}
+                onClick={() => navigate(`/rival-party/${caseId}`)}
               >
-                <Plus /> {t("CreateOppositeParty")}
+                <Plus /> {t("Create Opposite Party")}
               </button>
             </div>
 
@@ -917,11 +934,11 @@ const CaseDetails = ({ userInfo }) => {
                           <button
                             onClick={() =>
                               navigate(
-                                `/case-boards/rival-party/update/${party.oppositeparty_id}/${caseId}`
+                                `/rival-party/update/${party.oppositeparty_id}/${caseId}`
                               )
                             }
                             className={styles.editButton}
-                            title={t("EditOppositeParty")}
+                            title={t("Edit Opposite Party")}
                           >
                             <Pencil className={styles.actionIcon} />
                           </button>
@@ -949,7 +966,7 @@ const CaseDetails = ({ userInfo }) => {
 
             {/* Add Opposite Parties Section */}
             <div className={styles.addSection}>
-              <h3>{t("AddExistingOppositeParties")}</h3>
+              <h3>{t("Add Existing Opposite Parties")}</h3>
               <select
                 multiple
                 className={styles.multiSelect}
@@ -968,7 +985,7 @@ const CaseDetails = ({ userInfo }) => {
                 onClick={handleAddOppositePartyToCase}
                 className={styles.addButton}
               >
-                <Plus /> {t("AddOppositeParties")}
+                <Plus /> {t("Add Opposite Parties")}
               </button>
             </div>
           </div>
@@ -980,7 +997,7 @@ const CaseDetails = ({ userInfo }) => {
             <div className={styles.contentHeader}>
               <h3>{t("TasksList")}</h3>
               <button
-                onClick={() => navigate(`/case-boards/task/${caseId}`)}
+                onClick={() => navigate(`/task/${caseId}`)}
                 className={styles.addButton}
               >
                 <Plus /> {t("AddTask")}
@@ -1017,9 +1034,7 @@ const CaseDetails = ({ userInfo }) => {
                         <div className={styles.actionButtons}>
                           <button
                             onClick={() =>
-                              navigate(
-                                `/case-boards/task/update/${task.task_id}/${caseId}`
-                              )
+                              navigate(`/task/update/${task.task_id}/${caseId}`)
                             }
                             className={styles.editButton}
                             title={t("EditTask")}
@@ -1051,7 +1066,7 @@ const CaseDetails = ({ userInfo }) => {
             <div className={styles.contentHeader}>
               <h3>{t("FeeDetails")}</h3>
               <button
-                onClick={() => navigate(`/case-boards/fee/${caseId}`)}
+                onClick={() => navigate(`/fee/add/${caseId}`)}
                 className={styles.addButton}
               >
                 <Plus /> {t("AddFeeDetails")}
@@ -1080,9 +1095,7 @@ const CaseDetails = ({ userInfo }) => {
                       <td>
                         <button
                           onClick={() =>
-                            navigate(
-                              `/case-boards/fee/update/${fee.fee_id}/${caseId}`
-                            )
+                            navigate(`/fee/update/${fee.fee_id}/${caseId}`)
                           }
                           className={styles.editButton}
                           title={t("EditFee")}
@@ -1118,7 +1131,7 @@ const CaseDetails = ({ userInfo }) => {
             >
               <div className={styles.dropzoneContent}>
                 <Upload size={48} className={styles.uploadIcon} />
-                <p className={styles.dragText}>{t("DragDocumentsHere")}</p>
+                <p className={styles.dragText}>{t("Drag Documents Here")}</p>
                 <p className={styles.orText}>{t("Or")}</p>
                 <label className={styles.fileInputLabel}>
                   {t("BrowseFiles")}
@@ -1228,15 +1241,13 @@ const CaseDetails = ({ userInfo }) => {
               <h3>{t("CaseStatus")}</h3>
               <div className={styles.headerActions}>
                 <button
-                  onClick={() => navigate(`/case-boards/casestatus/${caseId}/`)}
+                  onClick={() => navigate(`/casestatus/${caseId}`)}
                   className={styles.addButton}
                 >
                   <Plus /> {t("AddUpdate")}
                 </button>
                 <button
-                  onClick={() =>
-                    navigate(`/case-boards/case-history/${caseId}`)
-                  }
+                  onClick={() => navigate(`/case-history/${caseId}`)}
                   className={styles.historyButton}
                   title={t("CaseHistory")}
                 >
@@ -1269,7 +1280,7 @@ const CaseDetails = ({ userInfo }) => {
                         <button
                           onClick={() =>
                             navigate(
-                              `/case-boards/casestatus/${update.case_update_id}/${caseId}`
+                              `/casestatus/${update.case_update_id}/${caseId}`
                             )
                           }
                           className={styles.editButton}

@@ -22,31 +22,30 @@ const EmployeeDetails = ({ userInfo }) => {
 
   // Fetch counts for apprentices and attorneys based on employee type
   useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        // Fetch count of apprentices
-        const { count: apprenticeCount } = await supabase
-          .from("apprentice")
-          .select("id", { count: "exact", head: true });
-
-        // Fetch count of attorneys
-        const { count: attorneyCount } = await supabase
-          .from("attorney_at_law")
-          .select("lawyer_id", { count: "exact", head: true });
-
-        // Set counts in state
-        setApprenticeCount(apprenticeCount || 0);
-        setAttorneyCount(attorneyCount || 0);
-        setTotalEmployees((apprenticeCount || 0) + (attorneyCount || 0));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCounts();
-  }, [t]);
+  }, []);
+  const fetchCounts = async () => {
+    try {
+      // Fetch count of apprentices
+      const { count: apprenticeCount } = await supabase
+        .from("apprentice")
+        .select("id", { count: "exact", head: true });
+
+      // Fetch count of attorneys
+      const { count: attorneyCount } = await supabase
+        .from("attorney_at_law")
+        .select("lawyer_id", { count: "exact", head: true });
+
+      // Set counts in state
+      setApprenticeCount(apprenticeCount || 0);
+      setAttorneyCount(attorneyCount || 0);
+      setTotalEmployees((apprenticeCount || 0) + (attorneyCount || 0));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.employeeDetailsContainer}>
@@ -87,6 +86,7 @@ const EmployeeDetails = ({ userInfo }) => {
           {/* Employee Category Cards */}
           <div className={styles.cardsGrid}>
             {/* Apprentice Card */}
+
             <div
               className={`${styles.employeeCard} ${styles.apprenticeCard}`}
               onClick={() => navigate("/employee-details/apprentice-details")}
@@ -147,7 +147,7 @@ const EmployeeDetails = ({ userInfo }) => {
               </div>
 
               <div className={styles.cardFooter}>
-                <button className={styles.viewDetailsButton} >
+                <button className={styles.viewDetailsButton}>
                   <span>{t("ViewDetails")}</span>
                   <ChevronRight size={16} />
                 </button>

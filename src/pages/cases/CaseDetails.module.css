@@ -8,19 +8,27 @@
 
 /* Page Header */
 .pageHeader {
-  display: flex;
-  justify-content: space-between;
+ display: flex;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
 }
 
 .pageHeader h1 {
-  color: #2c3e50;
-  font-size: 1.8rem;
-  font-weight: 600;
+color: #1e293b;
+  font-size: 1.75rem;
+  font-weight: 700;
   margin: 0;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.025em;
 }
-
+.header-icon {
+  margin-right: 0.75rem;
+  color: #0f1a26;
+  font-size: 1.5rem;
+}
 /* Info Sections Layout */
 .infoSections {
   display: grid;
@@ -28,7 +36,22 @@
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
-
+.back-button {
+  background-color: transparent;
+  border: none;
+  color: #000000;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 1.25rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  height: 2.5rem;
+  width: 2.5rem;
+  transition: all 0.2s ease;
+}
 /* Section Styling */
 .caseInfoSection,
 .attorneySection {

@@ -46,10 +46,6 @@ const Apprentice = () => {
     setError(null);
   };
 
-  // Go back to apprentice list
-  const handleBack = () => {
-    navigate(`/employee-details/apprentice-details`);
-  };
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -96,7 +92,7 @@ const Apprentice = () => {
       <div className={styles['form-header']}>
         <button 
           className={styles['back-button']} 
-          onClick={handleBack}
+          onClick={()=>navigate(-1)}
           aria-label={t('Back')}
         >
           <FaArrowLeft />
