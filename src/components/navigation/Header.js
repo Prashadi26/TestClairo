@@ -86,7 +86,7 @@ const Header = ({
                 className="dropdown-item"
                 onClick={() => {
                   setDropdownOpen(false);
-                  navigate("/dashboard/profile"); // Use navigate instead of window.location
+                  navigate("#"); // Use navigate instead of window.location
                 }}
               >
                 <span className="item-icon">
@@ -112,7 +112,7 @@ const Header = ({
                 className="dropdown-item"
                 onClick={() => {
                   setDropdownOpen(false);
-                  navigate("/dashboard/settings"); // Use navigate instead of window.location
+                  navigate("##"); // Use navigate instead of window.location
                 }}
               >
                 <span className="item-icon">

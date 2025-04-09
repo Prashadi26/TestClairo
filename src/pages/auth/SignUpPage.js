@@ -216,6 +216,7 @@ const SignUpPage = () => {
                   value={formData.yearsOfExperience}
                   onChange={handleChange}
                   className="auth-input"
+                  required
                 />
               </div>
             </div>
