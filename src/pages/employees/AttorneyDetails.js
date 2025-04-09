@@ -69,7 +69,20 @@ const AttorneyDetails = () => {
       alert(t("Cannot Delete Attorney"));
       return;
     }
+    const { data: assignedCases, error: caseCheckError } = await supabase
+      .from("cases")
+      .select("case_id") 
+      .eq("lawyer_id", lawyerId);
 
+    if (caseCheckError) {
+      setError(caseCheckError.message);
+      return;
+    }
+
+    if (assignedCases.length > 0) {
+      alert(t("Cannot delete. Attorney has assigned cases."));
+      return;
+    }
     if (window.confirm(t("confirm_delete_lawyer"))) {
       try {
         setLoading(true);
