@@ -25,8 +25,8 @@ const RivalParty = () => {
     setLoading(true);
     setError(null);
     setSuccess(null);
-  
     try {
+      // Validate required fields
       const { data, error: OppositePartyError } = await supabase
         .from('opposite_parties')
         .insert([

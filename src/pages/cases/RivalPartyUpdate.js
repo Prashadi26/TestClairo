@@ -34,6 +34,7 @@ const RivalPartyUpdate = () => {
     fetchOppositePartyData();
   }, []);
 
+  // Fetch existing data for the opposite party
   const fetchOppositePartyData = async () => {
     try {
       setLoading(true);

@@ -28,6 +28,8 @@ const FeeUpdate = () => {
     fetchFeeDetails();
   }, []);
 
+  // Fetch fee details from Supabase
+  
   const fetchFeeDetails = async () => {
     try {
       setLoading(true);

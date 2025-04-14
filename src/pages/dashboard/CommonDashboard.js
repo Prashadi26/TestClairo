@@ -147,6 +147,7 @@ const CommonDashboard = ({ userInfo }) => {
       const nextWeek = new Date();
       nextWeek.setDate(today.getDate() + 7);
 
+      // Fetch tasks from Supabase
       const { data } = await supabase
         .from("tasks")
         .select(

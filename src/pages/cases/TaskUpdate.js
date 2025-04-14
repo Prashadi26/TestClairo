@@ -22,6 +22,8 @@ const TaskUpdate = () => {
     fetchTaskDetails();
   }, []);
 
+
+  // Fetch task details from Supabase
   const fetchTaskDetails = async () => {
     try {
       setLoading(false);

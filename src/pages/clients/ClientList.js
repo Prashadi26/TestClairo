@@ -50,7 +50,7 @@ const ClientList = ({ userInfo }) => {
       try {
         setLoading(true);
 
-        // Step 1: Check if the client is associated with any cases
+        //  Check if the client is associated with any cases
         const { data: associatedCases } = await supabase
           .from("client_case")
           .select("case_id")
@@ -58,7 +58,7 @@ const ClientList = ({ userInfo }) => {
 
         // If there are associated cases, fetch their details
         if (associatedCases && associatedCases.length > 0) {
-          // Step 2: Retrieve case numbers from the cases table
+          //  Retrieve case numbers from the cases table
           const caseIds = associatedCases.map((c) => c.case_id);
           const { data: caseDetails, error: detailsError } = await supabase
             .from("cases")
@@ -67,13 +67,13 @@ const ClientList = ({ userInfo }) => {
 
           if (detailsError) throw detailsError;
 
-          // Step 3: Create a message listing the associated case numbers
+          //  Create a message listing the associated case numbers
           const caseNumbers = caseDetails.map((c) => c.case_no).join(", ");
           alert(`${t("client_association_warning")}: ${caseNumbers}`);
           return; // Exit without deleting
         }
 
-        // Step 4: Proceed with deletion since there are no associated cases
+        //  Proceed with deletion since there are no associated cases
         const { error } = await supabase
           .from("clients")
           .delete()

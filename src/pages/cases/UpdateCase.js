@@ -22,7 +22,7 @@ const UpdateCase = () => {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { caseId } = useParams(); 
+  const { caseId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const UpdateCase = () => {
         .select("*")
         .eq("case_id", caseId)
         .single();
-
+      // fetch single case details
       if (error) throw new Error(error.message);
       setCaseNo(data.case_no);
       setOpenedDate(data.opened_date);
