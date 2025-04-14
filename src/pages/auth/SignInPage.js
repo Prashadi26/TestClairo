@@ -29,7 +29,7 @@ const SignInPage = ({ onLogin }) => {
     // setLoading(true);
 
     try {
-      // Step 1: Sign in the user
+      //: Sign in the user
       const { data, error: signInError } =
         await supabase.auth.signInWithPassword({
           email: formData.email,
@@ -42,7 +42,7 @@ const SignInPage = ({ onLogin }) => {
         return;
       }
 
-      // Step 2: Retrieve user data including lawyer_id
+      // : Retrieve user data including lawyer_id
       const { data: userData, error: fetchUserError } = await supabase
         .from("users")
         .select("lawyer_id ,username")
@@ -55,7 +55,7 @@ const SignInPage = ({ onLogin }) => {
         return;
       }
 
-      // Step 3: Redirect to dashboard with lawyer ID
+    //  Redirect to dashboard with lawyer ID
       if (userData) {
         const username = userData.username;
         const lawyerId = userData.lawyer_id;

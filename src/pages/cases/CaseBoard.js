@@ -20,12 +20,16 @@ const CaseBoard = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  
+  useEffect(() => {
+    fetchCasesAndTypes();
+  }, []);
   // Fetch all cases and case types when the component mounts
   const fetchCasesAndTypes = async () => {
     try {
       setLoading(true);
 
+      //fetch alll cases and case types
       const { data: caseData, error: caseError } = await supabase
         .from("cases")
         .select("*");
@@ -53,9 +57,6 @@ const CaseBoard = () => {
     }
   };
 
-  useEffect(() => {
-    fetchCasesAndTypes();
-  }, []);
   // Handle search input change
   const handleSearchChange = (e) => {
     const value = e.target.value;

@@ -9,7 +9,8 @@ import {
   FaBuilding,
   FaClipboardList,
 } from "react-icons/fa";
-import styles from "./AddCase.module.css"; // Update to use CSS modules
+import styles from "./AddCase.module.css"; 
+// Update to use CSS modules
 
 const AddCase = () => {
   const { t } = useTranslation();
@@ -126,7 +127,9 @@ const AddCase = () => {
       ) : (
         <div className={styles.cardContainer}>
           <form onSubmit={handleSubmit} className={styles.formCard}>
+
             {/* Case Number Field */}
+            
             <div className={styles.formGroup}>
               <label htmlFor="caseNo">
                 <FaClipboardList className={styles.inputIcon} /> {t("CaseNo")}

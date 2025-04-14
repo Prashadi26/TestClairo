@@ -68,13 +68,10 @@ function App() {
     const checkAuth = async () => {
       try {
         // Check if user is signed in with Supabase
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+        const {data: { session },} = await supabase.auth.getSession();
 
         if (session) {
           setIsAuthenticated(true);
-
           // Get lawyer ID from local storage
           const lawyerId = localStorage.getItem("lawyerId");
 
@@ -86,6 +83,8 @@ function App() {
               .eq("lawyer_id", lawyerId)
               .single();
 
+              // get only one record from the table
+
             if (userData && !error) {
               setUserInfo({
                 ...userData,
@@ -93,6 +92,7 @@ function App() {
               });
             }
           }
+          
         } else {
           setIsAuthenticated(false);
           setUserInfo(null);

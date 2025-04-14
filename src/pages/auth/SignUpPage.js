@@ -63,7 +63,7 @@ const SignUpPage = () => {
     setLoading(true);
     
     try {
-      // Step 1: Sign up user with Supabase Auth first
+      //  Sign up user with Supabase Auth first
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -81,7 +81,7 @@ const SignUpPage = () => {
         throw new Error(t('user_creation_failed'));
       }
 
-      // Step 2: First create the attorney record to get the lawyer_id
+      //  First create the attorney record to get the lawyer_id
       // Convert language array to comma-separated string
       const languageString = formData.languageCompetency.join(', ');
 
@@ -102,8 +102,8 @@ const SignUpPage = () => {
       // Get the newly created attorney's ID
       const attorneyId = attorneyData[0].lawyer_id;
 
-      // Step 3: Now insert user details into users table with the lawyer_id
-      // Step 4: Insert user details with the lawyer_id we now have
+      //  Now insert user details into users table with the lawyer_id
+      //  Insert user details with the lawyer_id we now have
       const { error: userInsertError } = await supabase
         .from('users')
         .insert([{

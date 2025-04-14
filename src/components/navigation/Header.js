@@ -2,32 +2,19 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import "./Header.css";
+import LanguageSlider from "../layouts/LanguageSlider.js";
 
-const Header = ({
-  toggleSidebar,
-  sidebarOpen,
-  pageTitle,
-  userInfo,
-  onLogout,
-  languageSlider,
-}) => {
+const Header = ({ toggleSidebar, sidebarOpen, onLogout }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate(); // Initialize the navigate function
+  const navigate = useNavigate();
+  // Initialize the navigate function
 
   const username = localStorage.getItem("username");
 
   // Toggle dropdown menu
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
-  };
-
-  // Toggle language - Keep this for backward compatibility
-  const toggleLanguage = () => {
-    const newLang = i18n.language === "en" ? "ta" : "en";
-    i18n.changeLanguage(newLang);
-    // Close dropdown after changing language
-    setDropdownOpen(false);
   };
 
   // Handle logout
@@ -38,7 +25,6 @@ const Header = ({
     if (onLogout) {
       onLogout();
     }
-
     // Navigate to the home page
     navigate("/");
   };
@@ -60,15 +46,8 @@ const Header = ({
       </div>
 
       <div className="header-right">
-        {/* Language slider - Show if provided, otherwise fallback to button */}
-        {languageSlider ? (
-          <div className="language-slider-container">{languageSlider}</div>
-        ) : (
-          <button className="language-button" onClick={toggleLanguage}>
-            {i18n.language === "en" ? "தமிழ்" : "English"}
-          </button>
-        )}
-
+        {/* Language slider */}
+        <div className="language-slider-container">{<LanguageSlider />}</div>
         {/* User dropdown */}
         <div className="user-dropdown">
           <button className="dropdown-toggle" onClick={toggleDropdown}>
@@ -86,7 +65,7 @@ const Header = ({
                 className="dropdown-item"
                 onClick={() => {
                   setDropdownOpen(false);
-                  navigate("#"); // Use navigate instead of window.location
+                  navigate("#"); // make them as placeholders
                 }}
               >
                 <span className="item-icon">
@@ -112,7 +91,7 @@ const Header = ({
                 className="dropdown-item"
                 onClick={() => {
                   setDropdownOpen(false);
-                  navigate("##"); // Use navigate instead of window.location
+                  navigate("##"); // make them as placeholders
                 }}
               >
                 <span className="item-icon">

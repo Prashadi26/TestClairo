@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../navigation/Sidebar";
 import Header from "../navigation/Header";
-import LanguageSlider from "./LanguageSlider";
 import "./DashboardLayout.css";
 import { useTranslation } from "react-i18next";
 
-const DashboardLayout = ({ onLogout, userInfo }) => {
+const DashboardLayout = ({ onLogout }) => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileView, setMobileView] = useState(window.innerWidth < 1024);
   const location = useLocation();
@@ -35,7 +34,6 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
   }, [sidebarOpen]);
 
   // Toggle sidebar
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
@@ -49,31 +47,6 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
     }
   };
 
-  // Get the current page title
-  const getPageTitle = () => {
-    const path = location.pathname.split("/").pop();
-
-    switch (path) {
-      case "dashboard":
-        return t("dashboard");
-      case "cases":
-        return t("cases");
-      case "clients":
-        return t("clients");
-      case "tasks":
-        return t("tasks");
-      case "calendar":
-        return t("calendar");
-      case "messaging":
-        return t("messaging");
-      case "profile":
-        return t("profile");
-      case "settings":
-        return t("settings");
-      default:
-        return t("dashboard");
-    }
-  };
 
   return (
     <div className="dashboard-layout">
@@ -82,7 +55,6 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
         isOpen={sidebarOpen}
         currentPath={location.pathname}
         onNavigation={handleNavigation}
-        userInfo={userInfo}
         onLogout={onLogout}
       />
 
@@ -90,12 +62,9 @@ const DashboardLayout = ({ onLogout, userInfo }) => {
       <main className={`main-content ${sidebarOpen ? "" : "expanded"}`}>
         {/* Header with toggle button */}
         <Header
-          toggleSidebar={toggleSidebar}
-          sidebarOpen={sidebarOpen}
-          pageTitle={getPageTitle()}
-          userInfo={userInfo}
-          onLogout={onLogout}
-          languageSlider={<LanguageSlider />}
+          toggleSidebar={toggleSidebar}//To Trigger the toggle sidebar funtion
+          sidebarOpen={sidebarOpen}//status of side bar
+          onLogout={onLogout}//logout funtion
         />
 
         {/* Page content */}

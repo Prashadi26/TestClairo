@@ -15,11 +15,13 @@ const ResetPasswordPage = () => {
     e.preventDefault();
     setMessage('');
     setError('');
-    setLoading(true); // Uncommented this line to properly set loading state
+    setLoading(true); 
+    // Uncommented this line to properly set loading state
 
     try {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/update-password`,
+        //redirect here if we want to update password 
       });
 
       if (resetError) {

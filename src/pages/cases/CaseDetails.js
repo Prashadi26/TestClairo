@@ -32,6 +32,7 @@ const CaseDetails = ({ userInfo }) => {
   const { t } = useTranslation();
   const { caseId } = useParams();
   const navigate = useNavigate();
+
   const [caseData, setCaseData] = useState(null);
   const [clientsData, setClientsData] = useState([]);
   const [allClients, setAllClients] = useState([]);
@@ -50,7 +51,6 @@ const CaseDetails = ({ userInfo }) => {
   const [error, setError] = useState(null);
 
   const [activeTab, setActiveTab] = useState("clients");
-  
 
   // Document handling states
   const [newDocuments, setNewDocuments] = useState([]);
@@ -61,6 +61,7 @@ const CaseDetails = ({ userInfo }) => {
   // Use userInfo or fallback to localStorage
   const lawyerId = userInfo?.lawyer_id || localStorage.getItem("lawyerId");
 
+  // Fetch all lawyers from the database
   const fetchAllLawyers = async () => {
     try {
       const { data: allLawyersData, error } = await supabase
@@ -109,6 +110,7 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+  // Handle case handover or takeover based on the button clicked
   const handleHandover = async () => {
     if (!selectedLawyerId) {
       alert(t("Please select a lawyer to hand over the case."));
@@ -131,6 +133,7 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+  // Handle case takeover
   const handleTakeOver = async () => {
     try {
       const { error } = await supabase
@@ -140,7 +143,7 @@ const CaseDetails = ({ userInfo }) => {
 
       if (error) throw error;
       setIsOwner(true);
-      setButtonTitle (t("Handover"));
+      setButtonTitle(t("Handover"));
 
       alert(t("You have taken over the case successfully!"));
       fetchDetails();
@@ -281,6 +284,7 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+  // Fetch all clients from the database
   const fetchAllClients = async () => {
     try {
       const { data: allClientsData, error } = await supabase
@@ -294,6 +298,7 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+  // Handle client selection change
   const handleClientSelectionChange = (e) => {
     const value = Array.from(
       e.target.selectedOptions,
@@ -304,6 +309,8 @@ const CaseDetails = ({ userInfo }) => {
 
   const handleAddClientsToCase = async () => {
     try {
+      // Check if any clients are selected
+
       let duplicateClients = [];
 
       for (const clientId of selectedClientIds) {
@@ -325,6 +332,7 @@ const CaseDetails = ({ userInfo }) => {
         }
       }
 
+      // Check for duplicates and alert the user
       if (duplicateClients.length > 0) {
         const duplicateClientNames = await Promise.all(
           duplicateClients.map(async (id) => {
@@ -338,10 +346,9 @@ const CaseDetails = ({ userInfo }) => {
         );
         alert(
           t("clientsAlreadyAssociated", {
-            names: duplicateClientNames.join(", ")
+            names: duplicateClientNames.join(", "),
           })
         );
-        
       }
 
       fetchDetails();
@@ -349,13 +356,13 @@ const CaseDetails = ({ userInfo }) => {
       console.error(err);
       alert(
         t("failedToAddClients", {
-          error: err.message
+          error: err.message,
         })
       );
-      
     }
   };
 
+  // Fetch all opposite parties from the database
   const fetchAllOppositeParties = async () => {
     try {
       const { data: allOppositePartyData, error } = await supabase
@@ -369,6 +376,7 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+  // Handle opposite party selection change
   const handleOppositePartySelectionChange = (e) => {
     const value = Array.from(
       e.target.selectedOptions,
@@ -377,6 +385,8 @@ const CaseDetails = ({ userInfo }) => {
     setSelectedOppositePartyIds(value);
   };
 
+
+  // Handle adding opposite parties to the case
   const handleAddOppositePartyToCase = async () => {
     try {
       let duplicateOppositeParties = [];
@@ -400,6 +410,7 @@ const CaseDetails = ({ userInfo }) => {
         }
       }
 
+      // Check for duplicates and alert the user
       if (duplicateOppositeParties.length > 0) {
         const duplicateOppositePartiesNames = await Promise.all(
           duplicateOppositeParties.map(async (id) => {
@@ -413,10 +424,9 @@ const CaseDetails = ({ userInfo }) => {
         );
         alert(
           t("oppositePartiesAlreadyAssociated", {
-            names: duplicateOppositePartiesNames.join(", ")
+            names: duplicateOppositePartiesNames.join(", "),
           })
         );
-        
       }
 
       fetchDetails();
@@ -424,13 +434,13 @@ const CaseDetails = ({ userInfo }) => {
       console.error(err);
       alert(
         t("failedToAddOppositeParties", {
-          error: err.message
+          error: err.message,
         })
       );
-      
     }
   };
 
+  // Handle status change
   const handleStatusChange = async (event) => {
     const newStatus = event.target.value;
     setCurrentStatus(newStatus);
@@ -446,13 +456,13 @@ const CaseDetails = ({ userInfo }) => {
     } catch (err) {
       console.error(
         t("errorUpdatingStatus", {
-          error: err.message
+          error: err.message,
         })
       );
-      
     }
   };
 
+  // Handle file upload
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -503,6 +513,7 @@ const CaseDetails = ({ userInfo }) => {
 
         if (error) throw error;
 
+        //save the file URL to the database
         const url = `${supabase.supabaseUrl}/storage/v1/object/public/case-documents/${fileName}`;
         urls.push(url);
 
@@ -531,19 +542,19 @@ const CaseDetails = ({ userInfo }) => {
       console.error(err);
       setUploadError(
         t("failedToUploadDocuments", {
-          error: err.message
+          error: err.message,
         })
       );
-      
     }
   };
 
+  // Handle document deletion
   const handleDeleteDocument = async (docUrl) => {
     const fileName = docUrl
       .substring(docUrl.lastIndexOf("/") + 1)
       .split("?")[0];
 
-      if (window.confirm(t("confirmDeleteDocument")))  {
+    if (window.confirm(t("confirmDeleteDocument"))) {
       try {
         const { error: deleteError } = await supabase.storage
           .from("case-documents")
@@ -568,14 +579,15 @@ const CaseDetails = ({ userInfo }) => {
         console.error(err);
         alert(
           t("failedToDeleteDocument", {
-            error: err.message
+            error: err.message,
           })
         );
-        
       }
     }
   };
 
+
+  // Handle task deletion
   const fetchTasks = async () => {
     const { data, error } = await supabase
       .from("tasks")
@@ -588,6 +600,8 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+
+  // Handle task deletion
   const handleDelete = async (taskId) => {
     if (window.confirm(t("Are you sure you want to delete this task?"))) {
       const { error } = await supabase
@@ -602,10 +616,11 @@ const CaseDetails = ({ userInfo }) => {
     }
   };
 
+  // Handle client and opposite party deletion
   const handleDeleteClient = async (clientId, caseId) => {
     if (
       window.confirm(
-       t( "Are you sure you want to delete this client from the case?")
+        t("Are you sure you want to delete this client from the case?")
       )
     ) {
       try {
@@ -625,18 +640,18 @@ const CaseDetails = ({ userInfo }) => {
       } catch (err) {
         console.error(
           t("errorDeletingClient", {
-            error: err.toString()
+            error: err.toString(),
           })
         );
-        
       }
     }
   };
 
+  // Handle opposite party deletion
   const handleDeleteOppositeParty = async (OppositePartyId, caseId) => {
     if (
       window.confirm(
-       t( "Are you sure you want to delete this oppositeparty from the case?")
+        t("Are you sure you want to delete this oppositeparty from the case?")
       )
     ) {
       try {
@@ -659,10 +674,9 @@ const CaseDetails = ({ userInfo }) => {
       } catch (err) {
         console.error(
           t("errorDeletingRivalParty", {
-            error: err.toString()
+            error: err.toString(),
           })
         );
-        
       }
     }
   };
@@ -694,9 +708,7 @@ const CaseDetails = ({ userInfo }) => {
               {t("Case")}
               <div className={styles.caseInfoHeader}>
                 <button
-                  onClick={() =>
-                    navigate(`/case/update/${caseId}`)
-                  }
+                  onClick={() => navigate(`/case/update/${caseId}`)}
                   className={styles.viewButton}
                   title={t("Edit Case")}
                 >
@@ -727,7 +739,9 @@ const CaseDetails = ({ userInfo }) => {
                 <span className={styles.detailValue}>{caseData.court}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.detailLabel}>{t("Progress Status")}:</span>
+                <span className={styles.detailLabel}>
+                  {t("Progress Status")}:
+                </span>
                 <div className={styles.statusSelectWrapper}>
                   <select
                     value={currentStatus}
