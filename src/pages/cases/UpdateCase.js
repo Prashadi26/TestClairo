@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   FaGavel,
@@ -9,10 +9,9 @@ import {
   FaBuilding,
   FaClipboardList,
 } from "react-icons/fa";
-import styles from "./AddCase.module.css"; 
-// Update to use CSS modules
+import styles from "./AddCase.module.css"; // Reuse same styling
 
-const AddCase = () => {
+const UpdateCase = () => {
   const { t } = useTranslation();
   const [caseNo, setCaseNo] = useState("");
   const [openedDate, setOpenedDate] = useState("");
@@ -23,34 +22,51 @@ const AddCase = () => {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const { caseId } = useParams();
   const navigate = useNavigate();
 
-  // Fetch case types
   useEffect(() => {
     fetchCaseTypes();
+    fetchCaseDetails();
   }, []);
 
   const fetchCaseTypes = async () => {
     try {
-      setLoading(true);
-      const { data: caseTypeData, error: caseTypeError } = await supabase
+      const { data, error } = await supabase
         .from("case_types")
         .select("id, case_type");
 
-      if (caseTypeError) throw new Error(caseTypeError.message);
-      setCaseTypes(caseTypeData);
+      if (error) throw new Error(error.message);
+      setCaseTypes(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const fetchCaseDetails = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("cases")
+        .select("*")
+        .eq("case_id", caseId)
+        .single();
+      // fetch single case details
+      if (error) throw new Error(error.message);
+      setCaseNo(data.case_no);
+      setOpenedDate(data.opened_date);
+      setCourt(data.court);
+      setCaseTypeId(data.case_type_id);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
-  // Go back to case board
+
   const handleBack = () => {
-    navigate("/case-boards");
+    navigate(-1);
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -61,33 +77,25 @@ const AddCase = () => {
         throw new Error("All fields are required.");
       }
 
-      const { error: caseError } = await supabase.from("cases").insert([
-        {
+      const { error: updateError } = await supabase
+        .from("cases")
+        .update({
           case_no: caseNo,
           opened_date: openedDate,
           court: court,
           case_type_id: caseTypeId,
-        },
-      ]);
+        })
+        .eq("case_id", caseId);
 
-      if (caseError)
-        throw new Error(`Failed to save case: ${caseError.message}`);
+      if (updateError)
+        throw new Error(`Failed to update case: ${updateError.message}`);
 
-      setSuccess("Case added successfully!");
-      resetForm();
-      navigate("/case-boards");
+      setSuccess("Case updated successfully!");
+      navigate(-1);
     } catch (err) {
       console.error(err);
       setError(err.message);
     }
-  };
-
-  // Reset form fields
-  const resetForm = () => {
-    setCaseNo("");
-    setOpenedDate("");
-    setCourt("");
-    setCaseTypeId("");
   };
 
   return (
@@ -101,11 +109,10 @@ const AddCase = () => {
           <FaArrowLeft />
         </button>
         <h2>
-          <FaGavel className={styles.headerIcon} /> {t("AddCaseDetails")}
+          <FaGavel className={styles.headerIcon} /> {t("Update Case Details")}
         </h2>
       </div>
 
-      {/* Notification area */}
       {error && (
         <div className={`${styles.notification} ${styles.errorNotification}`}>
           <span>{error}</span>
@@ -118,7 +125,6 @@ const AddCase = () => {
         </div>
       )}
 
-      {/* Loading State */}
       {loading ? (
         <div className={styles.loadingContainer}>
           <div className={styles.spinner}></div>
@@ -127,9 +133,6 @@ const AddCase = () => {
       ) : (
         <div className={styles.cardContainer}>
           <form onSubmit={handleSubmit} className={styles.formCard}>
-
-            {/* Case Number Field */}
-            
             <div className={styles.formGroup}>
               <label htmlFor="caseNo">
                 <FaClipboardList className={styles.inputIcon} /> {t("CaseNo")}
@@ -144,7 +147,6 @@ const AddCase = () => {
               />
             </div>
 
-            {/* Case Type Field */}
             <div className={styles.formGroup}>
               <label htmlFor="caseTypeId">
                 <FaGavel className={styles.inputIcon} /> {t("CaseType")}
@@ -165,7 +167,6 @@ const AddCase = () => {
               </select>
             </div>
 
-            {/* Opened Date Field */}
             <div className={styles.formGroup}>
               <label htmlFor="openedDate">
                 <FaCalendarAlt className={styles.inputIcon} /> {t("OpenedDate")}
@@ -179,7 +180,6 @@ const AddCase = () => {
               />
             </div>
 
-            {/* Court Field */}
             <div className={styles.formGroup}>
               <label htmlFor="court">
                 <FaBuilding className={styles.inputIcon} /> {t("Court")}
@@ -194,17 +194,16 @@ const AddCase = () => {
               />
             </div>
 
-            {/* Form Actions */}
             <div className={styles.formActions}>
               <button
                 type="button"
                 className={styles.secondaryButton}
-                onClick={resetForm}
+                onClick={handleBack}
               >
-                {t("Reset")}
+                {t("Cancel")}
               </button>
               <button type="submit" className={styles.primaryButton}>
-                {t("Add")}
+                {t("Update")}
               </button>
             </div>
           </form>
@@ -214,4 +213,4 @@ const AddCase = () => {
   );
 };
 
-export default AddCase;
+export default UpdateCase;

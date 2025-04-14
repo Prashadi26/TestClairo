@@ -57,155 +57,145 @@ const CommonDashboard = ({ userInfo }) => {
 
   // Fetch counts for employees, clients, and cases
   useEffect(() => {
-    const fetchCounts = async () => {
-      try {
-        // take counts for employees, clients, and cases in parallel
-        const [
-          { count: apprenticeCount },
-          { count: attorneyCount },
-          { count: clientCount },
-          { count: caseCount },
-        ] = await Promise.all([
-          supabase
-            .from("apprentice")
-            .select("id", { count: "exact", head: true }),
-          supabase
-            .from("attorney_at_law")
-            .select("lawyer_id", { count: "exact", head: true }),
-          supabase
-            .from("clients")
-            .select("client_id", { count: "exact", head: true }),
-          supabase
-            .from("cases")
-            .select("case_id", { count: "exact", head: true }),
-        ]);
-        setCounts({
-          employees: (apprenticeCount || 0) + (attorneyCount || 0),
-          clients: clientCount || 0,
-          cases: caseCount || 0,
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCounts();
-  }, []);
-
-  // Taking the Cases and Seperate it to Count and Cases to Arrays
-
-  useEffect(() => {
-    const fetchCaseStatusCounts = async () => {
-      try {
-        const { data } = await supabase
-          .from("cases")
-          .select("current_status, case_no, case_id");
-
-        if (data) {
-          const statusCounts = { in_progress: 0, on_hold: 0, completed: 0 };
-          const details = { in_progress: [], on_hold: [], completed: [] };
-
-          data.forEach((item) => {
-            if (item.current_status === "in_progress") {
-              statusCounts.in_progress += 1;
-              details.in_progress.push({
-                case_no: item.case_no,
-                case_id: item.case_id,
-              });
-            } else if (item.current_status === "on_hold") {
-              statusCounts.on_hold += 1;
-              details.on_hold.push({
-                case_no: item.case_no,
-                case_id: item.case_id,
-              });
-            } else if (item.current_status === "completed") {
-              statusCounts.completed += 1;
-              details.completed.push({
-                case_no: item.case_no,
-                case_id: item.case_id,
-              });
-            }
-          });
-
-          setCaseStatusCounts(statusCounts);
-          setCaseDetails(details);
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCaseStatusCounts();
+    fetchUpcomingTasks();
+    fetchUpcomingHearings();
   }, []);
 
-  // Fetch upcoming tasks within the next week
-  useEffect(() => {
-    const fetchUpcomingTasks = async () => {
-      try {
-        const today = new Date();
-        const nextWeek = new Date();
-        nextWeek.setDate(today.getDate() + 7);
+  const fetchCounts = async () => {
+    try {
+      // take counts for employees, clients, and cases in parallel
+      const [
+        { count: apprenticeCount },
+        { count: attorneyCount },
+        { count: clientCount },
+        { count: caseCount },
+      ] = await Promise.all([
+        supabase
+          .from("apprentice")
+          .select("id", { count: "exact", head: true }),
+        supabase
+          .from("attorney_at_law")
+          .select("lawyer_id", { count: "exact", head: true }),
+        supabase
+          .from("clients")
+          .select("client_id", { count: "exact", head: true }),
+        supabase
+          .from("cases")
+          .select("case_id", { count: "exact", head: true }),
+      ]);
+      setCounts({
+        employees: (apprenticeCount || 0) + (attorneyCount || 0),
+        clients: clientCount || 0,
+        cases: caseCount || 0,
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  // Taking the Cases and Seperate it to Count and Cases to Arrays
+  const fetchCaseStatusCounts = async () => {
+    try {
+      const { data } = await supabase
+        .from("cases")
+        .select("current_status, case_no, case_id");
 
-        const { data } = await supabase
-          .from("tasks")
-          .select(
-            `
+      if (data) {
+        const statusCounts = { in_progress: 0, on_hold: 0, completed: 0 };
+        const details = { in_progress: [], on_hold: [], completed: [] };
+
+        data.forEach((item) => {
+          if (item.current_status === "in_progress") {
+            statusCounts.in_progress += 1;
+            details.in_progress.push({
+              case_no: item.case_no,
+              case_id: item.case_id,
+            });
+          } else if (item.current_status === "on_hold") {
+            statusCounts.on_hold += 1;
+            details.on_hold.push({
+              case_no: item.case_no,
+              case_id: item.case_id,
+            });
+          } else if (item.current_status === "completed") {
+            statusCounts.completed += 1;
+            details.completed.push({
+              case_no: item.case_no,
+              case_id: item.case_id,
+            });
+          }
+        });
+
+        setCaseStatusCounts(statusCounts);
+        setCaseDetails(details);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // Fetch upcoming tasks within the next week
+
+  const fetchUpcomingTasks = async () => {
+    try {
+      const today = new Date();
+      const nextWeek = new Date();
+      nextWeek.setDate(today.getDate() + 7);
+
+      // Fetch tasks from Supabase
+      const { data } = await supabase
+        .from("tasks")
+        .select(
+          `
             task_name,
             end_date,
             case_id,
             status,
             cases (case_no)
           `
-          )
-          .gte("end_date", today.toISOString())
-          .lte("end_date", nextWeek.toISOString());
+        )
+        .gte("end_date", today.toISOString())
+        .lte("end_date", nextWeek.toISOString());
 
-        setUpcomingTasks(data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUpcomingTasks();
-  }, []);
+      setUpcomingTasks(data || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Fetch upcoming hearings within the next month
+  const fetchUpcomingHearings = async () => {
+    try {
+      const today = new Date();
+      const nextMonth = new Date();
+      nextMonth.setMonth(today.getMonth() + 1);
 
-  useEffect(() => {
-    const fetchUpcomingHearings = async () => {
-      try {
-        const today = new Date();
-        const nextMonth = new Date();
-        nextMonth.setMonth(today.getMonth() + 1);
-
-        const { data } = await supabase
-          .from("case_updates")
-          .select(
-            `
+      const { data } = await supabase
+        .from("case_updates")
+        .select(
+          `
             next_date,
             case_id,
             cases (case_no, court)
           `
-          )
-          .gte("next_date", today.toISOString())
-          .lte("next_date", nextMonth.toISOString());
+        )
+        .gte("next_date", today.toISOString())
+        .lte("next_date", nextMonth.toISOString());
 
-        setUpcomingHearings(data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUpcomingHearings();
-  }, []);
+      setUpcomingHearings(data || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Prepare data for the chart
   const chartData = {

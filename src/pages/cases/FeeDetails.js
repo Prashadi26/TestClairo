@@ -8,7 +8,7 @@ import { faCalendarAlt, faMoneyBillWave, faClipboard, faPlus, faArrowLeft } from
 
 const FeeDetails = () => {
   const { t } = useTranslation();
-  const { caseId, lawyerId } = useParams();
+  const { caseId } = useParams();
   const navigate = useNavigate();
   const [newFee, setNewFee] = useState({ date: '', amount: '', purpose: '' });
   const [error, setError] = useState(null);
@@ -32,7 +32,7 @@ const FeeDetails = () => {
       if (error) throw error;
 
       // Redirect back to Case Details page after successful addition
-      navigate(`/dashboard/case-details/${caseId}`);
+      navigate(`/case-details/${caseId}`);
       
     } catch (error) {
       setError(error.message);
@@ -40,17 +40,14 @@ const FeeDetails = () => {
     }
   };
 
-  // Function to go back to case details
-  const handleBack = () => {
-    navigate(`/dashboard/casedetails/${caseId}`);
-  };
+
 
   return (
     <div className={styles.feeDetailsContainer}>
       <div className={styles.header}>
         <button 
           className={styles.backButton} 
-          onClick={handleBack}
+          onClick={()=> navigate(-1) }
         >
           <FontAwesomeIcon icon={faArrowLeft} />
         </button>
@@ -94,6 +91,7 @@ const FeeDetails = () => {
                 placeholder={t('EnterAmount')} 
                 required
                 className={styles.numberInput}
+                min={0}
               />
             </div>
 
@@ -118,7 +116,7 @@ const FeeDetails = () => {
             <button 
               type="button" 
               className={styles.cancelButton}
-              onClick={handleBack}
+              onClick={()=>navigate(-1) }
             >
               {t('Cancel')}
             </button>

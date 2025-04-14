@@ -14,15 +14,15 @@
   
   .header h2 {
     color: #2c3e50;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 2rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
   }
   
   .headerIcon {
     margin-right: 0.75rem;
-    color: #3498db;
+    color: #2c3e50;
   }
   
   .backButton {
@@ -30,19 +30,16 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background-color: #f1f2f6;
+    background-color: transparent;
     border: none;
     border-radius: 4px;
     color: #2c3e50;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    /* transition: all 0.2s ease; */
   }
   
-  .backButton:hover {
-    background-color: #e3e7eb;
-  }
-  
+ 
   /* Notification Styles */
   .notification {
     padding: 1rem;
@@ -117,7 +114,7 @@
   
   .formInput:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: #2c3e50;
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
   }
   
@@ -140,7 +137,7 @@
     cursor: pointer;
     width: 18px;
     height: 18px;
-    accent-color: #3498db;
+    accent-color: #2c3e50;
   }
   
   .checkboxLabel {
@@ -168,7 +165,7 @@
   }
   
   .submitButton {
-    background-color: #3498db;
+    background-color: #2c3e50;
     color: white;
     border: none;
   }
@@ -189,7 +186,8 @@
   }
   
   .cancelButton:hover {
-    background-color: #eee;
+    background-color: #2c3e50;
+    color: white;
   }
   
   /* Responsive Adjustments */

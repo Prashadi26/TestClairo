@@ -63,7 +63,7 @@ const TaskForm = () => {
       setSuccess('Task added successfully!');
       
       // Navigate after success, but still inside the try block
-      navigate(`/dashboard/case-details/${caseId}`);
+      navigate(-1);
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -82,7 +82,7 @@ const TaskForm = () => {
 
   // Function to go back
   const handleBack = () => {
-    navigate(`/dashboard/case-details/${caseId}`);
+    navigate(-1);
   };
 
   // Get status icon based on current status
@@ -213,7 +213,7 @@ const TaskForm = () => {
               <button 
                 type="button" 
                 className={styles.cancelButton}
-                onClick={handleBack}
+                onClick={() => navigate(-1)}
               >
                 {t('Cancel')}
               </button>

@@ -15,7 +15,7 @@
   }
   
   .formHeader h2 {
-    color: #1e293b;
+    color: #2c3e50;
     font-size: 1.75rem;
     font-weight: 700;
     margin: 0;
@@ -26,14 +26,14 @@
   
   .headerIcon {
     margin-right: 0.75rem;
-    color: #6366f1; /* Indigo color for apprentice-specific styling */
+    color: #2c3e50; /* Indigo color for apprentice-specific styling */
     font-size: 1.5rem;
   }
   
   .backButton {
     background-color: #f1f5f9;
     border: none;
-    color: #64748b;
+    color: #2c3e50;
     font-size: 1.25rem;
     cursor: pointer;
     margin-right: 1.25rem;
@@ -125,7 +125,7 @@
   
   .inputIcon {
     margin-right: 0.5rem;
-    color: #6366f1;
+    color: #2c3e50;
     font-size: 1rem;
   }
   
@@ -192,7 +192,7 @@
   }
   
   .primaryButton {
-    background-color: #6366f1; /* Indigo for apprentice-specific styling */
+    background-color: #2c3e50; /* Indigo for apprentice-specific styling */
     color: white;
     border: none;
     box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.1);

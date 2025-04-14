@@ -1,4 +1,4 @@
-# LegalCase - Attorney Dashboard Application
+# Clairo - Client Case Management System
 
 A modern, responsive legal case management system with WhatsApp integration for attorney-client communication.
 

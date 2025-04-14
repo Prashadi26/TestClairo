@@ -25,8 +25,8 @@ const RivalParty = () => {
     setLoading(true);
     setError(null);
     setSuccess(null);
-  
     try {
+      // Validate required fields
       const { data, error: OppositePartyError } = await supabase
         .from('opposite_parties')
         .insert([
@@ -69,7 +69,7 @@ const RivalParty = () => {
       
       // Navigate after a short delay to show success message
       setTimeout(() => {
-        navigate(`/dashboard/case-details/${caseId}`);
+        navigate(-1);
       }, 800);
       
     } catch (error) {
@@ -89,7 +89,7 @@ const RivalParty = () => {
 
   // Function to go back
   const handleBack = () => {
-    navigate(`/dashboard/case-details/${caseId}`);
+    navigate(-1);
   };
 
   return (
