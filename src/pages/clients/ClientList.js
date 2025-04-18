@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { supabase } from "../../supabaseClient";
-import styles from "./ClientList.module.css";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import React, { useState, useEffect } from "react"; // Importing React and hooks
+import { supabase } from "../../supabaseClient";// Importing Supabase client
+import styles from "./ClientList.module.css";// Importing CSS module for styling
+import { useNavigate } from "react-router-dom";// Importing useNavigate from react-router-dom for navigation
+import { useTranslation } from "react-i18next";// Importing useTranslation hook for internationalization
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUserTie,

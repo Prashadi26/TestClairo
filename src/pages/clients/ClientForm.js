@@ -3,7 +3,7 @@ import { supabase } from '../../supabaseClient'; // Importing Supabase client
 import { useNavigate } from 'react-router-dom';// Importing useNavigate from react-router-dom for navigation
 import { useTranslation } from 'react-i18next';// Importing useTranslation hook for internationalization
 import { FaUserPlus, FaArrowLeft, FaTimes, FaUser, FaPhone, FaEnvelope, FaBriefcase, FaCheck } from 'react-icons/fa';
-import styles from './ClientForm.module.css'; // Make sure to update the path
+import styles from './ClientForm.module.css'; 
 
 const ClientForm = () => {
   const { t } = useTranslation(); // Importing useTranslation hook for internationalization
