@@ -23,6 +23,7 @@ const ClientUpdateForm = () => {
   const fetchClientDetails = async () => {
     try {
       setLoading(true);
+      // Fetch client details from Supabase using the clientId from URL parameters
       const { data, error } = await supabase
         .from("clients")
         .select("*")
