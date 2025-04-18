@@ -66,12 +66,9 @@ const ClientUpdateForm = () => {
         })
         .eq("client_id", clientId);
       // Check for errors during the update operation
-      if (error) {
-        throw new Error(error.message);
-      }
+      if (error) {throw new Error(error.message); }
       setSuccess(t("ClientUpdatedSuccessfully"));
       // Navigate back to client list after short delay
-
       setTimeout(() => {
         // Set a timeout to navigate back to the previous page after 1.5 seconds
         navigate(-1);
