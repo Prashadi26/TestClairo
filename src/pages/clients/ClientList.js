@@ -50,7 +50,6 @@ const ClientList = ({}) => {
           .from("client_case")
           .select("case_id")
           .eq("client_id", clientId);
-
         // If there are associated cases, fetch their details
         if (associatedCases && associatedCases.length > 0) {
           //  Retrieve case numbers from the cases table
@@ -59,7 +58,6 @@ const ClientList = ({}) => {
             .from("cases")
             .select("case_no")
             .in("case_id", caseIds);
-
           if (detailsError) throw detailsError;
           //  Create a message listing the associated case numbers
           const caseNumbers = caseDetails.map((c) => c.case_no).join(", ");
@@ -67,7 +65,6 @@ const ClientList = ({}) => {
           return;
           // Exit without deleting Because of associated cases
         }
-
         //  Proceed with deletion since there are no associated cases
         const { error } = await supabase
           .from("clients")

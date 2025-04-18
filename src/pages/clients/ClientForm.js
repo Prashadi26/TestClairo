@@ -48,7 +48,6 @@ const ClientForm = () => {
   const handleBack = () => {
     navigate('/clients');
   };
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -64,9 +63,7 @@ const ClientForm = () => {
           profession: formData.profession || null
         },
       ]);
-      if (clientError) {
-        throw new Error(clientError.message);
-      }
+      if (clientError) {throw new Error(clientError.message);}
       // Set success message
       setSuccess(t('ClientAddedSuccessfully', 'Client added successfully!'));
       // Reset form after successful submission
@@ -75,7 +72,6 @@ const ClientForm = () => {
       setTimeout(() => {
         navigate('/clients');
       }, 800);
-      
     } catch (err) {
       setError(err.message);
     } finally {
