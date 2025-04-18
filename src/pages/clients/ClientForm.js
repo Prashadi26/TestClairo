@@ -1,37 +1,39 @@
-import React, { useState } from 'react';
-import { supabase } from '../../supabaseClient'; // Adjust the path as needed
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-// Assuming you're using react-icons
+import React, { useState } from 'react'; // Importing React and useState hook
+import { supabase } from '../../supabaseClient'; // Importing Supabase client
+import { useNavigate } from 'react-router-dom';// Importing useNavigate from react-router-dom for navigation
+import { useTranslation } from 'react-i18next';// Importing useTranslation hook for internationalization
 import { FaUserPlus, FaArrowLeft, FaTimes, FaUser, FaPhone, FaEnvelope, FaBriefcase, FaCheck } from 'react-icons/fa';
 import styles from './ClientForm.module.css'; // Make sure to update the path
 
 const ClientForm = () => {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
-  
-  const [formData, setFormData] = useState({
+  const { t } = useTranslation(); // Importing useTranslation hook for internationalization
+  const navigate = useNavigate();// Hook to navigate between routes
+  const [formData, setFormData] = useState({ // Initializing form data state
+    // State to manage form data with fields: name, contactNo, email, and profession
     name: '',
     contactNo: '',
     email: '',
     profession: ''
   });
   
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
+  const [error, setError] = useState(null); // State to manage error messages
+  const [success, setSuccess] = useState(null); // State to manage success messages
+  const [loading, setLoading] = useState(false); // State to manage loading status
+  const [focusedField, setFocusedField] = useState(null); // State to manage focused input field
 
   // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevData => ({
+    setFormData(prevData => ({// Updating formData state
+      // Using functional update to ensure we get the latest state
       ...prevData,
       [name]: value
     }));
   };
 
   // Reset form to initial state
+  // Function to reset the form fields and clear error/success messages
+  // This function is called when the user clicks the reset button or after successful submission
   const resetForm = () => {
     setFormData({
       name: '',
@@ -43,17 +45,16 @@ const ClientForm = () => {
     setSuccess(null);
   };
 
-  // Go back to client list
+  // Function to navigate back to the client list page
   const handleBack = () => {
     navigate('/clients');
   };
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
     setLoading(true); // Enable loading state
     setError(null);
-
     try {
       // Insert data into Supabase for clients
       const { error: clientError } = await supabase.from('clients').insert([
@@ -64,18 +65,13 @@ const ClientForm = () => {
           profession: formData.profession || null
         },
       ]);
-
       if (clientError) {
         throw new Error(clientError.message);
       }
-
       // Set success message
       setSuccess(t('ClientAddedSuccessfully', 'Client added successfully!'));
-
-      
       // Reset form after successful submission
       resetForm();
-      
       // Navigate back to ClientList after short delay
       setTimeout(() => {
         navigate('/clients');
