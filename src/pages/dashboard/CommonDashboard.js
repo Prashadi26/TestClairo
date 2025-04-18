@@ -32,6 +32,7 @@ const CommonDashboard = () => {
   const navigate = useNavigate(); // initialize navigation
   const { t } = useTranslation(); // initialize translation
   const [counts, setCounts] = useState({ employees: 0, clients: 0, cases: 0 }); // initialize state for counts
+
   const [caseStatusCounts, setCaseStatusCounts] = useState({
     in_progress: 0,
     on_hold: 0,
@@ -64,8 +65,7 @@ const CommonDashboard = () => {
   }, []);
 
   const fetchCounts = async () => {
-    try {
-      // take counts for employees, clients, and cases in parallel
+    try {  // take counts for employees, clients, and cases in parallel
       const [
         { count: apprenticeCount },
         { count: attorneyCount },

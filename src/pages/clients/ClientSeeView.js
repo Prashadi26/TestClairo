@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
+import React, { useEffect, useState } from "react"; // Importing React and useState hook
+import { useParams } from "react-router-dom"; // Importing useParams from react-router-dom for routing
+import { supabase } from "../../supabaseClient"; // Importing Supabase client
 import styles from "./ClientSeeView.module.css"; // Updated to use CSS modules
-import { useTranslation } from "react-i18next";
-import { Calendar, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next"; // Importing useTranslation hook for internationalization
+import { Calendar, Trash2 } from "lucide-react"; // Importing icons from lucide-react
 
 const ClientSeeView = () => {
   const { t } = useTranslation();
   const { clientId, caseId } = useParams(); // Get clientId and caseId from URL parameters
-  const [caseDetails, setCaseDetails] = useState(null);
+  const [caseDetails, setCaseDetails] = useState(null); // State for case details
   const [caseTypeData, setCaseTypeData] = useState(null); // State for case type
-  const [updates, setUpdates] = useState([]);
+  const [updates, setUpdates] = useState([]); // State for case updates
   const [clientData, setClientData] = useState(null); // State for clicked client details
-  const [error, setError] = useState(null);
-  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null); // State for error messages
+  const [tasks, setTasks] = useState([]); // State for tasks
   const [activeTab, setActiveTab] = useState("status"); // 'status' or 'tasks'
 
   useEffect(() => {
     fetchCaseDetails();
     fetchClientDetails();
     fetchTasks();
-  }, []); // Added both clientId and caseId to dependencies
+  }, []); // Fetch case details, client details, and tasks when the component mounts
 
   const fetchCaseDetails = async () => {
     try {
@@ -29,10 +29,9 @@ const ClientSeeView = () => {
         .from("cases")
         .select("case_id, case_no, case_type_id, opened_date")
         .eq("case_id", caseId) // Use the caseId from URL parameters
-        .single();
+        .single(); // Fetch a single case entry
 
       if (casesError) throw new Error(casesError.message);
-
       if (casesData) {
         setCaseDetails(casesData); // Set the case details
 
@@ -41,7 +40,7 @@ const ClientSeeView = () => {
           const { data: updateData, error: updateError } = await supabase
             .from("case_updates")
             .select("*")
-            .eq("case_id", casesData.case_id);
+            .eq("case_id", casesData.case_id); // Fetch updates for the specific case_id
 
           if (updateError) throw new Error(updateError.message);
           setUpdates(updateData); // Set updates state with fetched data
@@ -53,7 +52,7 @@ const ClientSeeView = () => {
             .from("case_types")
             .select("*")
             .eq("id", casesData.case_type_id)
-            .single();
+            .single(); // Fetch a single case type entry
 
           if (caseTypeError) throw new Error(caseTypeError.message);
           setCaseTypeData(caseTypeDetail); // Set fetched case type data
@@ -74,7 +73,7 @@ const ClientSeeView = () => {
         .from("clients") // Assuming 'clients' is your table name
         .select("*")
         .eq("client_id", clientId)
-        .single();
+        .single(); // Fetch a single client entry
 
       if (clientError) throw new Error(clientError.message);
       setClientData(clientDetail); // Set clicked client details in state
@@ -104,7 +103,7 @@ const ClientSeeView = () => {
           .from("client_case_task")
           .select("*")
           .eq("client_case_id", clientCaseId);
-
+        // Fetch tasks for the specific client_case_id
         if (error) throw new Error(error.message);
 
         setTasks(tasksData); // Update state with fetched tasks
@@ -119,7 +118,7 @@ const ClientSeeView = () => {
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
-    return date.toLocaleDateString();
+    return date.toLocaleDateString();// Format date as per locale
   };
 
   return (
