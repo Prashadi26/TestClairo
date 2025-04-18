@@ -33,7 +33,6 @@ const ClientForm = () => {
 
   // Reset form to initial state
   // Function to reset the form fields and clear error/success messages
-  // This function is called when the user clicks the reset button or after successful submission
   const resetForm = () => {
     setFormData({
       name: '',
