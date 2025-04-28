@@ -24,61 +24,119 @@ const SignInPage = ({ onLogin }) => {
     });
   };
 
-  const handleSignIn = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setError(""); // setLoading(true);
+  const SignInPage = ({ onLogin }) => {
+    const navigate = useNavigate();
+    const { t } = useTranslation();
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+      email: "",
+      password: "",
+    });
 
-    try {
-      //Sign in the user
-      // Call Supabase's signInWithPassword method to authenticate the user
-      const { data, error: signInError } =
-        await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
-        });
+    // NEW: Handle After Login
+    const handleAfterLogin = async (user) => {
+      try {
+        const { data: attorneyData, error: fetchError } = await supabase
+          .from("attorney_at_law")
+          .select("lawyer_id")
+          .eq("email", user.email)
+          .single();
 
-      if (signInError) {
-        setError(signInError.message);
+        if (fetchError && fetchError.code !== "PGRST116") {
+          throw fetchError;
+        }
+
+        if (!attorneyData) {
+          const { user_metadata } = user;
+
+          const { data: newAttorney, error: createError } = await supabase
+            .from("attorney_at_law")
+            .insert([
+              {
+                email: user.email,
+                name: user_metadata.name,
+                contact_no: user_metadata.contact_no,
+                language_competency: user_metadata.language_competency,
+                years_of_experience: user_metadata.years_of_experience,
+              },
+            ])
+            .select();
+
+          if (createError) throw createError;
+
+          const attorneyId = newAttorney[0].lawyer_id;
+
+          const { error: userInsertError } = await supabase
+            .from("users")
+            .insert([
+              {
+                email: user.email,
+                username: user_metadata.username,
+                lawyer_id: attorneyId,
+              },
+            ]);
+
+          if (userInsertError) throw userInsertError;
+        }
+      } catch (error) {
+        console.error("Attorney creation after login failed:", error);
+      }
+    };
+
+    // Update inside handleSignIn
+    const handleSignIn = async (e) => {
+      e.preventDefault();
+      setError("");
+      setLoading(true);
+
+      try {
+        const { data, error: signInError } =
+          await supabase.auth.signInWithPassword({
+            email: formData.email,
+            password: formData.password,
+          });
+
+        if (signInError) {
+          setError(signInError.message);
+          setLoading(false);
+          return;
+        }
+
+        // 🆕 Call handleAfterLogin immediately after sign in
+        if (data?.user) {
+          await handleAfterLogin(data.user);
+        }
+
+        // Fetch user details after ensuring attorney profile exists
+        const { data: userData, error: fetchUserError } = await supabase
+          .from("users")
+          .select("lawyer_id, username")
+          .eq("email", formData.email)
+          .single();
+
+        if (fetchUserError) {
+          setError(fetchUserError.message);
+          setLoading(false);
+          return;
+        }
+
+        if (userData) {
+          const username = userData.username;
+          const lawyerId = userData.lawyer_id;
+          localStorage.setItem("lawyerId", lawyerId);
+          localStorage.setItem("username", username);
+          onLogin();
+          navigate("/dashboard");
+        }
+      } catch (err) {
+        setError(err.message || t("login_error"));
+      } finally {
         setLoading(false);
-        return;
       }
+    };
 
-      // Retrieve user data including lawyer_id
-      // Fetch user data from the "users" table using Supabase client
-      const { data: userData, error: fetchUserError } = await supabase
-        .from("users")
-        .select("lawyer_id ,username")
-        .eq("email", formData.email)
-        .single(); // Fetching only one record
-
-      if (fetchUserError) {
-        // Handle error if fetching user data fails
-        setError(fetchUserError.message);
-        // setLoading to false to stop loading state
-        setLoading(false);
-        return;
-      }
-
-      //  Redirect to dashboard with lawyer ID
-      // If user data is successfully retrieved,
-      // store lawyer ID and username in local storage and navigate to the dashboard
-      // so we can take the user to the dashboard page
-      if (userData) {
-        const username = userData.username;
-        const lawyerId = userData.lawyer_id;
-        localStorage.setItem("lawyerId", lawyerId);
-        localStorage.setItem("username", username);
-        // Call the onLogin function from props
-        onLogin();
-
-        // Navigate to dashboard
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      setError(err.message || t("login_error")); // Handle any unexpected errors
-    } finally {
-      setLoading(false); // Stop loading state once all finish 
-    }
+    // ... (your return UI part remains same)
   };
 
   return (
