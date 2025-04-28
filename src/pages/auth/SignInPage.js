@@ -1,28 +1,30 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "../../supabaseClient";
-import { useTranslation } from "react-i18next";
-import "./AuthPages.css";
+import React, { useState } from "react"; // Importing React and useState hook
+import { Link, useNavigate } from "react-router-dom"; // Importing Link and useNavigate from react-router-dom
+import { supabase } from "../../supabaseClient"; // Importing supabase client
+import { useTranslation } from "react-i18next"; // Importing useTranslation hook for internationalization
+import "./AuthPages.css"; // Importing CSS styles for authentication pages
 
 const SignInPage = ({ onLogin }) => {
-  // Only ONE SignInPage
-  const navigate = useNavigate();
-  const { t } = useTranslation();
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Hook to navigate
+  const { t } = useTranslation(); // Hook for translation
+  const [error, setError] = useState(""); // State for error messages
+  const [loading, setLoading] = useState(false); // State for loading status
   const [formData, setFormData] = useState({
+    // State for form data with email and password fields
     email: "",
     password: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Update the formData state when input fields change
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: value, // Dynamically update the field based on name
     });
   };
 
+  // NEW: Handle After Login
   const handleAfterLogin = async (user) => {
     try {
       const { data: attorneyData, error: fetchError } = await supabase
@@ -36,6 +38,7 @@ const SignInPage = ({ onLogin }) => {
       }
 
       if (!attorneyData) {
+        // Attorney profile does not exist yet, create it
         const { user_metadata } = user;
 
         const { data: newAttorney, error: createError } = await supabase
@@ -55,6 +58,7 @@ const SignInPage = ({ onLogin }) => {
 
         const attorneyId = newAttorney[0].lawyer_id;
 
+        // Insert into users table
         const { error: userInsertError } = await supabase.from("users").insert([
           {
             email: user.email,
@@ -70,8 +74,9 @@ const SignInPage = ({ onLogin }) => {
     }
   };
 
+  // Update inside handleSignIn
   const handleSignIn = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submit
     setError("");
     setLoading(true);
 
@@ -88,10 +93,12 @@ const SignInPage = ({ onLogin }) => {
         return;
       }
 
+      // 🆕 Call handleAfterLogin immediately after sign in
       if (data?.user) {
         await handleAfterLogin(data.user);
       }
 
+      // Fetch user details after ensuring attorney profile exists
       const { data: userData, error: fetchUserError } = await supabase
         .from("users")
         .select("lawyer_id, username")
@@ -110,7 +117,7 @@ const SignInPage = ({ onLogin }) => {
         localStorage.setItem("lawyerId", lawyerId);
         localStorage.setItem("username", username);
         onLogin();
-        navigate("/dashboard");
+        navigate("/dashboard"); // Redirect to dashboard
       }
     } catch (err) {
       setError(err.message || t("login_error"));
@@ -132,8 +139,8 @@ const SignInPage = ({ onLogin }) => {
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email}
-                onChange={handleChange}
+                value={formData.email} // Binding email input to formData state
+                onChange={handleChange} // Updating state on input change
                 className="auth-input"
                 placeholder="abc@gmail.com"
                 required
@@ -146,8 +153,8 @@ const SignInPage = ({ onLogin }) => {
                 type="password"
                 id="password"
                 name="password"
-                value={formData.password}
-                onChange={handleChange}
+                value={formData.password} // Binding password input to formData state
+                onChange={handleChange} // Updating state on input change
                 className="auth-input"
                 placeholder="xxxxxx"
                 required
