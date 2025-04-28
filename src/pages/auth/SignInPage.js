@@ -1,142 +1,122 @@
-import React, { useState } from "react"; // Importing React and useState hook
-import { Link, useNavigate } from "react-router-dom"; // Importing Link and useNavigate from react-router-dom
-import { supabase } from "../../supabaseClient"; // Importing supabase client
-import { useTranslation } from "react-i18next"; // Importing useTranslation hook for internationalization
-import "./AuthPages.css"; // Importing CSS styles for authentication pages
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../../supabaseClient";
+import { useTranslation } from "react-i18next";
+import "./AuthPages.css";
 
 const SignInPage = ({ onLogin }) => {
-  const navigate = useNavigate(); // Hook to navigate
-  const { t } = useTranslation(); // Hook for translation
-  const [error, setError] = useState(""); // State for error messages
-  const [loading, setLoading] = useState(false); //  State for loading status
+  // Only ONE SignInPage
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    // State for form data with email and password fields
     email: "",
     password: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // Update the formData state when input fields change
     setFormData({
       ...formData,
-      [name]: value, // Dynamically update the field based on name
+      [name]: value,
     });
   };
 
-  const SignInPage = ({ onLogin }) => {
-    const navigate = useNavigate();
-    const { t } = useTranslation();
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({
-      email: "",
-      password: "",
-    });
+  const handleAfterLogin = async (user) => {
+    try {
+      const { data: attorneyData, error: fetchError } = await supabase
+        .from("attorney_at_law")
+        .select("lawyer_id")
+        .eq("email", user.email)
+        .single();
 
-    // NEW: Handle After Login
-    const handleAfterLogin = async (user) => {
-      try {
-        const { data: attorneyData, error: fetchError } = await supabase
+      if (fetchError && fetchError.code !== "PGRST116") {
+        throw fetchError;
+      }
+
+      if (!attorneyData) {
+        const { user_metadata } = user;
+
+        const { data: newAttorney, error: createError } = await supabase
           .from("attorney_at_law")
-          .select("lawyer_id")
-          .eq("email", user.email)
-          .single();
+          .insert([
+            {
+              email: user.email,
+              name: user_metadata.name,
+              contact_no: user_metadata.contact_no,
+              language_competency: user_metadata.language_competency,
+              years_of_experience: user_metadata.years_of_experience,
+            },
+          ])
+          .select();
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError;
-        }
+        if (createError) throw createError;
 
-        if (!attorneyData) {
-          const { user_metadata } = user;
+        const attorneyId = newAttorney[0].lawyer_id;
 
-          const { data: newAttorney, error: createError } = await supabase
-            .from("attorney_at_law")
-            .insert([
-              {
-                email: user.email,
-                name: user_metadata.name,
-                contact_no: user_metadata.contact_no,
-                language_competency: user_metadata.language_competency,
-                years_of_experience: user_metadata.years_of_experience,
-              },
-            ])
-            .select();
+        const { error: userInsertError } = await supabase.from("users").insert([
+          {
+            email: user.email,
+            username: user_metadata.username,
+            lawyer_id: attorneyId,
+          },
+        ]);
 
-          if (createError) throw createError;
-
-          const attorneyId = newAttorney[0].lawyer_id;
-
-          const { error: userInsertError } = await supabase
-            .from("users")
-            .insert([
-              {
-                email: user.email,
-                username: user_metadata.username,
-                lawyer_id: attorneyId,
-              },
-            ]);
-
-          if (userInsertError) throw userInsertError;
-        }
-      } catch (error) {
-        console.error("Attorney creation after login failed:", error);
+        if (userInsertError) throw userInsertError;
       }
-    };
+    } catch (error) {
+      console.error("Attorney creation after login failed:", error);
+    }
+  };
 
-    // Update inside handleSignIn
-    const handleSignIn = async (e) => {
-      e.preventDefault();
-      setError("");
-      setLoading(true);
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-      try {
-        const { data, error: signInError } =
-          await supabase.auth.signInWithPassword({
-            email: formData.email,
-            password: formData.password,
-          });
+    try {
+      const { data, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
 
-        if (signInError) {
-          setError(signInError.message);
-          setLoading(false);
-          return;
-        }
-
-        // 🆕 Call handleAfterLogin immediately after sign in
-        if (data?.user) {
-          await handleAfterLogin(data.user);
-        }
-
-        // Fetch user details after ensuring attorney profile exists
-        const { data: userData, error: fetchUserError } = await supabase
-          .from("users")
-          .select("lawyer_id, username")
-          .eq("email", formData.email)
-          .single();
-
-        if (fetchUserError) {
-          setError(fetchUserError.message);
-          setLoading(false);
-          return;
-        }
-
-        if (userData) {
-          const username = userData.username;
-          const lawyerId = userData.lawyer_id;
-          localStorage.setItem("lawyerId", lawyerId);
-          localStorage.setItem("username", username);
-          onLogin();
-          navigate("/dashboard");
-        }
-      } catch (err) {
-        setError(err.message || t("login_error"));
-      } finally {
+      if (signInError) {
+        setError(signInError.message);
         setLoading(false);
+        return;
       }
-    };
 
-    // ... (your return UI part remains same)
+      if (data?.user) {
+        await handleAfterLogin(data.user);
+      }
+
+      const { data: userData, error: fetchUserError } = await supabase
+        .from("users")
+        .select("lawyer_id, username")
+        .eq("email", formData.email)
+        .single();
+
+      if (fetchUserError) {
+        setError(fetchUserError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (userData) {
+        const username = userData.username;
+        const lawyerId = userData.lawyer_id;
+        localStorage.setItem("lawyerId", lawyerId);
+        localStorage.setItem("username", username);
+        onLogin();
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setError(err.message || t("login_error"));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -152,8 +132,8 @@ const SignInPage = ({ onLogin }) => {
                 type="email"
                 id="email"
                 name="email"
-                value={formData.email} // Binding email input to formData state
-                onChange={handleChange} // Updating state on input change
+                value={formData.email}
+                onChange={handleChange}
                 className="auth-input"
                 placeholder="abc@gmail.com"
                 required
@@ -166,8 +146,8 @@ const SignInPage = ({ onLogin }) => {
                 type="password"
                 id="password"
                 name="password"
-                value={formData.password} // Binding password input to formData state
-                onChange={handleChange} // Updating state on input change
+                value={formData.password}
+                onChange={handleChange}
                 className="auth-input"
                 placeholder="xxxxxx"
                 required
