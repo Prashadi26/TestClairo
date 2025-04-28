@@ -121,9 +121,9 @@ const SignUpPage = () => {
       ]);
 
       if (userInsertError) throw userInsertError;
-      // If everything is successful, show success message and redirect to sign-in page
-      setSuccess(t("signup_successful"));
-      // Redirect to sign-in page after a short delay
+
+      setSuccess(t('confirm'));
+
       setTimeout(() => {
         navigate("/signin");
       }, 1500);
