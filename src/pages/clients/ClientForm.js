@@ -63,7 +63,9 @@ const ClientForm = () => {
           profession: formData.profession || null
         },
       ]);
-      if (clientError) {throw new Error(clientError.message);}
+      if (clientError) {
+        throw new Error(clientError.message);
+      }
       // Set success message
       setSuccess(t('ClientAddedSuccessfully', 'Client added successfully!'));
       // Reset form after successful submission
