@@ -60,17 +60,92 @@ const SignUpPage = () => {
     return true;
   };
 
+  // const handleSignUp = async (e) => {
+  //   e.preventDefault(); // Prevent the default form submission behavior
+  //   setError(""); // Clear any previous error messages
+  //   setSuccess(""); // Clear any previous success messages
+  //   // Validate form before submission
+  //   if (!validateForm()) {
+  //     return;
+  //   }
+  //   setLoading(true); // Set loading state to true to indicate that the sign-up process is in progress
+  //   try {
+  //     //  Sign up user with Supabase Auth first
+  //     const { data: authData, error: signUpError } = await supabase.auth.signUp(
+  //       {
+  //         email: formData.email,
+  //         password: formData.password,
+  //         options: {
+  //           data: {
+  //             username: formData.username,
+  //           },
+  //         },
+  //       }
+  //     );
+
+  //     if (signUpError) throw signUpError;
+  //     // Verify the user was created successfully
+  //     if (!authData.user) {
+  //       throw new Error(t("user_creation_failed"));
+  //     }
+
+  //     //  First create the attorney record to get the lawyer_id
+  //     // Convert language array to comma-separated string
+  //     const languageString = formData.languageCompetency.join(", ");
+
+  //     // Insert the attorney details into the attorney_at_law table if Successfully signed up
+  //     const { data: attorneyData, error: attorneyError } = await supabase
+  //       .from("attorney_at_law")
+  //       .insert([
+  //         {
+  //           email: formData.email,
+  //           name: formData.name,
+  //           contact_no: formData.contactNo,
+  //           language_competency: languageString,
+  //           years_of_experience: formData.yearsOfExperience,
+  //         },
+  //       ])
+  //       .select();
+  //     if (attorneyError) throw attorneyError;
+
+  //     // Get the newly created attorney's ID
+  //     const attorneyId = attorneyData[0].lawyer_id;
+
+  //     //  Now insert user details into users table with the lawyer_id
+  //     const { error: userInsertError } = await supabase.from("users").insert([
+  //       {
+  //         email: formData.email,
+  //         username: formData.username,
+  //         lawyer_id: attorneyId,
+  //       },
+  //     ]);
+
+  //     if (userInsertError) throw userInsertError;
+
+  //     setSuccess(t('confirm'));
+
+  //     setTimeout(() => {
+  //       navigate("/signin");
+  //     }, 1500);
+  //   } catch (err) {
+  //     // Handle any errors that occur during the sign-up process
+  //     console.error("Signup Error:", err);
+  //     // Set the error message to be displayed to the user
+  //     setError(err.message || t("signup_error"));
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSignUp = async (e) => {
-    e.preventDefault(); // Prevent the default form submission behavior
-    setError(""); // Clear any previous error messages
-    setSuccess(""); // Clear any previous success messages
-    // Validate form before submission
-    if (!validateForm()) {
-      return;
-    }
-    setLoading(true); // Set loading state to true to indicate that the sign-up process is in progress
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    if (!validateForm()) return;
+    setLoading(true);
+
     try {
-      //  Sign up user with Supabase Auth first
+      //  Sign up the user
       const { data: authData, error: signUpError } = await supabase.auth.signUp(
         {
           email: formData.email,
@@ -78,64 +153,36 @@ const SignUpPage = () => {
           options: {
             data: {
               username: formData.username,
+              name: formData.name,
+              contact_no: formData.contactNo,
+              language_competency: formData.languageCompetency.join(", "),
+              years_of_experience: formData.yearsOfExperience,
+              // Store all fields temporarily under 'user_metadata'
             },
           },
         }
       );
 
       if (signUpError) throw signUpError;
-      // Verify the user was created successfully
+
       if (!authData.user) {
         throw new Error(t("user_creation_failed"));
       }
 
-      //  First create the attorney record to get the lawyer_id
-      // Convert language array to comma-separated string
-      const languageString = formData.languageCompetency.join(", ");
-
-      // Insert the attorney details into the attorney_at_law table if Successfully signed up
-      const { data: attorneyData, error: attorneyError } = await supabase
-        .from("attorney_at_law")
-        .insert([
-          {
-            email: formData.email,
-            name: formData.name,
-            contact_no: formData.contactNo,
-            language_competency: languageString,
-            years_of_experience: formData.yearsOfExperience,
-          },
-        ])
-        .select();
-      if (attorneyError) throw attorneyError;
-
-      // Get the newly created attorney's ID
-      const attorneyId = attorneyData[0].lawyer_id;
-
-      //  Now insert user details into users table with the lawyer_id
-      const { error: userInsertError } = await supabase.from("users").insert([
-        {
-          email: formData.email,
-          username: formData.username,
-          lawyer_id: attorneyId,
-        },
-      ]);
-
-      if (userInsertError) throw userInsertError;
-
-      setSuccess(t('confirm'));
+      // Step 2: Ask user to confirm their email
+      setSuccess(t("Please check your email to confirm!")); // Display "Please check your email to confirm!"
 
       setTimeout(() => {
-        navigate("/signin");
+        navigate("/signin"); // Redirect to signin page
       }, 1500);
     } catch (err) {
-      // Handle any errors that occur during the sign-up process
       console.error("Signup Error:", err);
-      // Set the error message to be displayed to the user
       setError(err.message || t("signup_error"));
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="auth-page">

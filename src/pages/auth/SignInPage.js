@@ -8,7 +8,7 @@ const SignInPage = ({ onLogin }) => {
   const navigate = useNavigate(); // Hook to navigate
   const { t } = useTranslation(); // Hook for translation
   const [error, setError] = useState(""); // State for error messages
-  const [loading, setLoading] = useState(false); //  State for loading status
+  const [loading, setLoading] = useState(false); // State for loading status
   const [formData, setFormData] = useState({
     // State for form data with email and password fields
     email: "",
@@ -24,13 +24,66 @@ const SignInPage = ({ onLogin }) => {
     });
   };
 
+  // NEW: Handle After Login
+  const handleAfterLogin = async (user) => {
+    try {
+      //fetching the attorney profile using the email from the user object
+      const { data: attorneyData, error: fetchError } = await supabase
+        .from("attorney_at_law")
+        .select("lawyer_id")
+        .eq("email", user.email)
+        .single();
+
+      if (fetchError && fetchError.code !== "PGRST116") {
+        throw fetchError;
+      }
+
+      if (!attorneyData) {
+        // Attorney profile does not exist yet, create it
+        const { user_metadata } = user;
+
+        // user_metadata contains the additional fields we need
+        // Insert user_metadata into attorney_at_law table
+        const { data: newAttorney, error: createError } = await supabase
+          .from("attorney_at_law")
+          .insert([
+            {
+              email: user.email,
+              name: user_metadata.name,
+              contact_no: user_metadata.contact_no,
+              language_competency: user_metadata.language_competency,
+              years_of_experience: user_metadata.years_of_experience,
+            },
+          ])
+          .select();
+
+        if (createError) throw createError;
+
+        const attorneyId = newAttorney[0].lawyer_id;
+
+        // Insert into users table
+        const { error: userInsertError } = await supabase.from("users").insert([
+          {
+            email: user.email,
+            username: user_metadata.username,
+            lawyer_id: attorneyId,
+          },
+        ]);
+
+        if (userInsertError) throw userInsertError;
+      }
+    } catch (error) {
+      console.error("Attorney creation after login failed:", error);
+    }
+  };
+
+  // Update inside handleSignIn
   const handleSignIn = async (e) => {
-    e.preventDefault(); // Prevent default form submission
-    setError(""); // setLoading(true);
+    e.preventDefault(); // Prevent default form submit
+    setError("");
+    setLoading(true);
 
     try {
-      //Sign in the user
-      // Call Supabase's signInWithPassword method to authenticate the user
       const { data, error: signInError } =
         await supabase.auth.signInWithPassword({
           email: formData.email,
@@ -43,41 +96,37 @@ const SignInPage = ({ onLogin }) => {
         return;
       }
 
-      // Retrieve user data including lawyer_id
-      // Fetch user data from the "users" table using Supabase client
+      // 🆕 Call handleAfterLogin immediately after sign in
+      if (data?.user) {
+        await handleAfterLogin(data.user);
+      }
+
+      // Fetch user details after ensuring attorney profile exists
       const { data: userData, error: fetchUserError } = await supabase
         .from("users")
-        .select("lawyer_id ,username")
+        .select("lawyer_id, username")
         .eq("email", formData.email)
-        .single(); // Fetching only one record
+        .single();
 
       if (fetchUserError) {
-        // Handle error if fetching user data fails
         setError(fetchUserError.message);
-        // setLoading to false to stop loading state
         setLoading(false);
         return;
       }
 
-      //  Redirect to dashboard with lawyer ID
-      // If user data is successfully retrieved,
-      // store lawyer ID and username in local storage and navigate to the dashboard
-      // so we can take the user to the dashboard page
       if (userData) {
+        // Store user data in local storage
         const username = userData.username;
         const lawyerId = userData.lawyer_id;
         localStorage.setItem("lawyerId", lawyerId);
         localStorage.setItem("username", username);
-        // Call the onLogin function from props
         onLogin();
-
-        // Navigate to dashboard
-        navigate("/dashboard");
+        navigate("/dashboard"); // Redirect to dashboard
       }
     } catch (err) {
-      setError(err.message || t("login_error")); // Handle any unexpected errors
+      setError(err.message || t("login_error"));
     } finally {
-      setLoading(false); // Stop loading state once all finish 
+      setLoading(false);
     }
   };
 
