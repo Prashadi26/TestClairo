@@ -27,6 +27,7 @@ const SignInPage = ({ onLogin }) => {
   // NEW: Handle After Login
   const handleAfterLogin = async (user) => {
     try {
+      //fetching the attorney profile using the email from the user object
       const { data: attorneyData, error: fetchError } = await supabase
         .from("attorney_at_law")
         .select("lawyer_id")
@@ -41,6 +42,8 @@ const SignInPage = ({ onLogin }) => {
         // Attorney profile does not exist yet, create it
         const { user_metadata } = user;
 
+        // user_metadata contains the additional fields we need
+        // Insert user_metadata into attorney_at_law table
         const { data: newAttorney, error: createError } = await supabase
           .from("attorney_at_law")
           .insert([
@@ -112,6 +115,7 @@ const SignInPage = ({ onLogin }) => {
       }
 
       if (userData) {
+        // Store user data in local storage
         const username = userData.username;
         const lawyerId = userData.lawyer_id;
         localStorage.setItem("lawyerId", lawyerId);

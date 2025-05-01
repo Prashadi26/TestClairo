@@ -145,7 +145,7 @@ const SignUpPage = () => {
     setLoading(true);
 
     try {
-      // Step 1: Sign up the user
+      //  Sign up the user
       const { data: authData, error: signUpError } = await supabase.auth.signUp(
         {
           email: formData.email,
