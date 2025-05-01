@@ -96,7 +96,7 @@ const SignInPage = ({ onLogin }) => {
         return;
       }
 
-      // 🆕 Call handleAfterLogin immediately after sign in
+      // Call handleAfterLogin immediately after sign in
       if (data?.user) {
         await handleAfterLogin(data.user);
       }

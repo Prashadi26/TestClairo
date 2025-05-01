@@ -246,7 +246,7 @@ const SignUpPage = () => {
                   minLength="6"
                 />
                 <small className="form-hint">
-                  {t("Password_must_be_at_least_6_characters")}
+                  {t("Password must be at least 6 characters")}
                 </small>
               </div>
             </div>
